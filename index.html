@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
     <title>Meu Fluxo de Caixa</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f4f6f9; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; }
         
-        /* Seção de Cards (Topo) - Agora com 3 colunas para os menores */
         .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
         .card { background: white; padding: 12px 8px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
         .card h3 { font-size: 0.8rem; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -17,21 +22,18 @@
         .card.saldo-total { grid-column: span 3; padding: 15px; margin-top: 4px; }
         .card.saldo-total p { font-size: 1.4rem; }
         
-        /* Cores dos Cards e Saldo */
         .cor-entrada { color: #2ecc71; }
         .cor-saida { color: #e74c3c; }
         .cor-cartao { color: #f39c12; }
-        .positivo { color: #2980b9; } /* Azul para positivo */
-        .negativo { color: #e74c3c; } /* Vermelho para negativo */
+        .positivo { color: #2980b9; } 
+        .negativo { color: #e74c3c; } 
 
-        /* Formulário de Inclusão */
         .form-inclusao { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .radio-group { display: flex; justify-content: space-around; margin-bottom: 15px; }
         .radio-group label { cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; }
         .input-valor { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; margin-bottom: 10px; }
         .btn-adicionar { width: 100%; padding: 10px; background: #2c3e50; color: white; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; font-weight: bold; }
         
-        /* Lista de Rolagem (Abaixo) */
         .lista-titulo { font-size: 1rem; color: #444; margin-bottom: 10px; padding-left: 5px; font-weight: 600; }
         .lista-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); max-height: 230px; overflow-y: auto; padding: 10px; }
         .item-transacao { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.95rem; align-items: center; }
@@ -45,7 +47,6 @@
 <body>
 
 <div class="container">
-
     <div class="cards-container">
         <div class="card">
             <h3>Entradas</h3>
@@ -59,7 +60,6 @@
             <h3>Cartão</h3>
             <p class="cor-cartao">R$ <span id="card-cartao">0,00</span></p>
         </div>
-        
         <div class="card saldo-total">
             <h3>Saldo Final</h3>
             <p id="card-saldo" class="positivo">R$ 0,00</p>
@@ -77,13 +77,15 @@
     </div>
 
     <div class="lista-titulo">Histórico de Lançamentos</div>
-    <div class="lista-container" id="lista-transacoes">
-        </div>
-
+    <div class="lista-container" id="lista-transacoes"></div>
 </div>
 
 <script>
-    // Variáveis de controle por categoria
+    // Registro do Service Worker para permitir instalação do App
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log("Erro de SW:", err));
+    }
+
     let totalEntradas = 0;
     let totalSaidas = 0;
     let totalCartao = 0;
@@ -99,69 +101,45 @@
 
         const tipo = document.querySelector('input[name="tipo"]:checked').value;
         const lista = document.getElementById('lista-transacoes');
-        
         const item = document.createElement('div');
         item.className = 'item-transacao';
         
-        let tagClasse = '';
-        let tipoTexto = '';
-        let sinal = '';
-        let corTexto = '';
+        let tagClasse = '', tipoTexto = '', sinal = '', corTexto = '';
 
-        // Separação exata da lógica por canal
         if (tipo === 'entrada') {
             totalEntradas += valor;
-            tagClasse = 'tag-entrada';
-            tipoTexto = 'Entrada';
-            sinal = '+';
-            corTexto = '#2ecc71';
+            tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; sinal = '+'; corTexto = '#2ecc71';
         } else if (tipo === 'saida') {
             totalSaidas += valor;
-            tagClasse = 'tag-saida';
-            tipoTexto = 'Saída';
-            sinal = '-';
-            corTexto = '#e74c3c';
+            tagClasse = 'tag-saida'; tipoTexto = 'Saída'; sinal = '-'; corTexto = '#e74c3c';
         } else if (tipo === 'cartao') {
-            totalCartao += valor; // Soma no card do cartão
-            tagClasse = 'tag-cartao';
-            tipoTexto = 'Cartão';
-            sinal = '-';
-            corTexto = '#f39c12';
+            totalCartao += valor;
+            tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; sinal = '-'; corTexto = '#f39c12';
         }
 
-        // Insere o item na lista visual
         item.innerHTML = `
             <span><span class="tipo-tag ${tagClasse}">${tipoTexto}</span></span>
             <span style="font-weight: 600; color: ${corTexto}">${sinal} R$ ${valor.toFixed(2)}</span>
         `;
         
         lista.insertBefore(item, lista.firstChild);
-
-        // Atualiza os blocos e faz a conta matemática do saldo
         atualizarVisual();
-
-        // Limpa o campo
         inputValor.value = '';
     }
 
     function atualizarVisual() {
-        // Saldo Final = Entradas - Saídas - Cartão
         const saldoFinal = totalEntradas - totalSaidas - totalCartao;
-        
-        // Atualiza os três cards superiores
         document.getElementById('card-entradas').innerText = totalEntradas.toFixed(2);
         document.getElementById('card-saidas').innerText = totalSaidas.toFixed(2);
         document.getElementById('card-cartao').innerText = totalCartao.toFixed(2);
         
-        // Atualiza o card do Saldo Final
         const cardSaldo = document.getElementById('card-saldo');
         cardSaldo.innerText = `R$ ${saldoFinal.toFixed(2)}`;
 
-        // Regra de cor do Saldo Final: Azul (positivo) e Vermelho (negativo)
         if (saldoFinal >= 0) {
-            cardSaldo.style.color = '#2980b9'; // Azul
+            cardSaldo.style.color = '#2980b9';
         } else {
-            cardSaldo.style.color = '#e74c3c'; // Vermelho
+            cardSaldo.style.color = '#e74c3c';
         }
     }
 </script>
