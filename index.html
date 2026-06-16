@@ -220,27 +220,17 @@
     const DIA_FECHAMENTO_CARTAO = 5; // Configuração do fechamento mensal padrão do cartão
     
     const BANCOS_CADASTRADOS = {
-        "itau": "Itaú", "itaú": "Itaú",
-        "bradesco": "Bradesco",
-        "santander": "Santander",
-        "nubank": "Nubank", "nu": "Nubank",
-        "caixa": "Caixa",
-        "inter": "Inter",
-        "c6": "C6 Bank", "c6bank": "C6 Bank",
-        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago",
-        "picpay": "PicPay", "pic pay": "PicPay"
+        "itau": "Itaú", "itaú": "Itaú", "bradesco": "Bradesco", "santander": "Santander",
+        "nubank": "Nubank", "nu": "Nubank", "caixa": "Caixa", "inter": "Inter",
+        "c6": "C6 Bank", "c6bank": "C6 Bank", "mercado pago": "Mercado Pago", 
+        "mercadopago": "Mercado Pago", "picpay": "PicPay", "pic pay": "PicPay"
     };
 
     const CARTOES_CADASTRADOS = {
-        "itau": "Itaú", "itaú": "Itaú",
-        "picpay": "PicPay", "pic pay": "PicPay",
-        "bradesco": "Bradesco",
-        "santander": "Santander",
-        "nubank": "Nubank", "nu": "Nubank",
-        "inter": "Inter",
-        "c6": "C6 Bank", "c6bank": "C6 Bank",
-        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago",
-        "flash": "Flash"
+        "itau": "Itaú", "itaú": "Itaú", "picpay": "PicPay", "pic pay": "PicPay",
+        "bradesco": "Bradesco", "santander": "Santander", "nubank": "Nubank", 
+        "nu": "Nubank", "inter": "Inter", "c6": "C6 Bank", "c6bank": "C6 Bank",
+        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago", "flash": "Flash"
     };
 
     // AÇÃO DE CLICAR NOS CARDS PARA FILTRAR
@@ -265,7 +255,7 @@
     }
 
     function resetarTransacoes() {
-        if (confirm("Tem certeza que deseja apagar TODO o histórico de transações? Essa ação não pode ser desfeita.")) {
+        if (confirm("Tem certeza que deseja apagar TODO o histórico de transações?")) {
             transacoes = [];
             salvarDadosNoStorage();
             atualizarAplicativo();
@@ -274,7 +264,7 @@
     }
 
     function resetarAppTotal() {
-        if (confirm("ATENÇÃO: Isso apagará todas as transações, configurações e preferências do aplicativo. Deseja redefinir tudo?")) {
+        if (confirm("ATENÇÃO: Deseja redefinir todo o aplicativo?")) {
             localStorage.clear();
             transacoes = [];
             saldosOcultos = false;
@@ -292,17 +282,16 @@
 
     function carregarDadosDoStorage() {
         const bancoDados = localStorage.getItem('dados_transacoes');
-        if (bancoDados) {
-            transacoes = JSON.parse(bancoDados);
-        }
+        if (bancoDados) transacoes = JSON.parse(bancoDados);
     }
 
     function inicializarFiltroMeses() {
         const filter = document.getElementById('filtro-mes');
         const hoje = new Date();
         let opcoesHTML = '<option value="todos">Todos os Meses</option>';
-        for (let i = -1; i < 6; i++) { // Abre espaço para renderizar projeções de parcelas futuras (+1 mês à frente)
-            let d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+        // Criamos 12 meses de projeção para frente para acomodar parcelamentos longos
+        for (let i = -2; i < 12; i++) { 
+            let d = new Date(hoje.getFullYear(), hoje.getMonth() + i, 1);
             opcoesHTML += `<option value="${d.getMonth()}-${d.getFullYear()}">${nomesMeses[d.getMonth()]}/${d.getFullYear()}</option>`;
         }
         filter.innerHTML = opcoesHTML;
@@ -330,22 +319,26 @@
         if (e.key === 'Enter') processarComando();
     }
 
+    // PROCESSADOR INTELIGENTE CORRIGIDO
     function processarComando() {
         const input = document.getElementById('campo-texto');
         const fraseOriginal = input.value.trim();
         if (!fraseOriginal) return;
 
-        const frase = fraseOriginal.toLowerCase();
+        let frase = fraseOriginal.toLowerCase();
         
-        // Verifica padrão de parcelamento ex: "3x", "12x", "x4"
-        const regexParcela = /\b(\d+)x\b|\bx(\d+)\b/i;
+        // 1. Detectar parcelamento de forma isolada (ex: "4x", "x4", "4 x")
+        const regexParcela = /\b(\d+)\s*x\b|\bx\s*(\d+)\b/i;
         const correspondenciaParcela = frase.match(regexParcela);
         let parcelasTotais = 1;
 
         if (correspondenciaParcela) {
             parcelasTotais = parseInt(correspondenciaParcela[1] || correspondenciaParcela[2]);
+            // Remove o termo do parcelamento para não confundir com o valor numérico
+            frase = frase.replace(correspondenciaParcela[0], '');
         }
 
+        // 2. Capturar o valor real da transação
         const regexNumeros = /\d+([.,]\d+)?/g;
         const numerosEncontrados = frase.match(regexNumeros);
 
@@ -354,73 +347,64 @@
             return;
         }
 
-        // Se encontrou o multiplicador de parcelas, o valor principal deve ignorar esse número isolado
-        let valorTexto = numerosEncontrados[0].replace(',', '.');
-        if (correspondenciaParcela && numerosEncontrados.length > 1) {
-            const numParcelaDetectado = correspondenciaParcela[1] || correspondenciaParcela[2];
-            if (numerosEncontrados[0] === numParcelaDetectado) {
-                valorTexto = numerosEncontrados[1].replace(',', '.');
-            }
-        }
-        
+        const valorTexto = numerosEncontrados[0].replace(',', '.');
         const valorTotalInjetado = parseFloat(valorTexto);
         if (isNaN(valorTotalInjetado) || valorTotalInjetado <= 0) return;
 
+        // 3. Detectar Bancos e Cartões
         let contaDetectada = "";
         let cartaoDetectado = "";
 
         for (let chave in BANCOS_CADASTRADOS) {
-            let regexBanco = new RegExp(`\\b${chave}\\b`, "i");
-            if (regexBanco.test(frase)) {
+            if (new RegExp(`\\b${chave}\\b`, "i").test(frase)) {
                 contaDetectada = BANCOS_CADASTRADOS[chave];
                 break;
             }
         }
 
         for (let chave in CARTOES_CADASTRADOS) {
-            let regexCartao = new RegExp(`\\b${chave}\\b`, "i");
-            if (regexCartao.test(frase)) {
+            if (new RegExp(`\\b${chave}\\b`, "i").test(frase)) {
                 cartaoDetectado = CARTOES_CADASTRADOS[chave];
                 break;
             }
         }
 
+        // 4. Definir Tipo (Regra prioritária do Cartão caso haja parcelas)
         let tipo = 'saida'; 
         const eEntrada = /\b(recebi|ganhei|salario|salário|entrada)\b/i.test(frase) || frase.includes('+');
-        const eCartao = /\b(cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash|picpay|pic pay)\b/i.test(frase) || correspondenciaParcela;
-        const eSaidaForcada = /\b(gastei|comprei|paguei|fiz|transferencia|transferência)\b/i.test(frase);
+        const eCartao = /\b(cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/i.test(frase) || parcelasTotais > 1 || cartaoDetectado !== "";
 
         if (eCartao) {
             tipo = 'cartao';
         } else if (eEntrada) {
             tipo = 'entrada';
-        } else if (eSaidaForcada || /\b(pix)\b/i.test(frase)) {
-            tipo = 'saida';
         }
 
-        let descricao = fraseOriginal.replace(valorTexto, '');
+        // 5. Limpar a descrição do item
+        let descricao = fraseOriginal;
         if (correspondenciaParcela) descricao = descricao.replace(correspondenciaParcela[0], '');
+        descricao = descricao.replace(numerosEncontrados[0], '');
         
         const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|picpay|pic pay|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
-        
         descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         if (!descricao) descricao = "Lançamento Avulso";
 
         const dataAtual = new Date();
         const valorPorParcela = valorTotalInjetado / parcelasTotais;
 
-        // Se a compra for no cartão e o dia atual for igual ou maior que o fechamento, joga a primeira parcela pro mês seguinte
+        // Regra do Fechamento: Se passou do dia de fechamento, joga as parcelas 1 mês para frente
         let mesDeslocamento = 0;
         if (tipo === 'cartao' && dataAtual.getDate() >= DIA_FECHAMENTO_CARTAO) {
             mesDeslocamento = 1;
         }
 
-        // CRIAÇÃO E DISTRIBUIÇÃO DAS PARCELAS
+        // 6. Gerar parcelas no Histórico
+        const idBase = Date.now();
         for (let i = 0; i < parcelasTotais; i++) {
             let dataParcelada = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + mesDeslocamento + i, 1);
             
             const novaTransacao = {
-                id: Date.now() + i, // Evita IDs idênticos para loops na mesma fração de segundo
+                id: idBase + i,
                 descricao: parcelasTotais > 1 ? `${descricao} (${i + 1}/${parcelasTotais})` : descricao,
                 valor: valorPorParcela,
                 tipo: tipo,
@@ -428,7 +412,7 @@
                 cartao: cartaoDetectado,
                 mes: dataParcelada.getMonth(),
                 ano: dataParcelada.getFullYear(),
-                dia: i === 0 ? dataAtual.getDate() : 1 // Mantém o dia real na primeira e dia 1 nas futuras
+                dia: i === 0 && mesDeslocamento === 0 ? dataAtual.getDate() : 1 // Mantém o dia se cair no mês atual, senão vira vencimento padrão dia 1
             };
             transacoes.unshift(novaTransacao);
         }
@@ -455,7 +439,7 @@
             t.cartao = cartaoNome;
             salvarDadosNoStorage();
             atualizarAplicativo();
-            mostrarAviso("Cartão atualizado!");
+            mostrarAviso("Cartão updated!");
         }
     }
 
@@ -465,7 +449,7 @@
         const mesFiltroAtivo = hoje.getMonth();
         const anoFiltroAtivo = hoje.getFullYear();
 
-        // Para os cards informativos superiores, somamos apenas a projeção do mês vigente ativo
+        // Faz o cálculo baseado no mês corrente para atualizar os cards do topo
         transacoes.forEach(t => {
             if (t.mes == mesFiltroAtivo && t.ano == anoFiltroAtivo) {
                 if (t.tipo === 'entrada') totalEntradas += t.valor;
@@ -476,7 +460,6 @@
 
         const saldoFinal = totalEntradas - totalSaidas - totalCartao;
         const diaAtual = hoje.getDate();
-        
         const mediaDiaria = diaAtual > 0 ? (totalSaidas + totalCartao) / diaAtual : 0;
         const mediaGastoMes = mediaDiaria * 30;
 
@@ -498,18 +481,10 @@
         elementos.forEach(el => {
             const valorBruto = parseFloat(el.getAttribute('data-valor') || 0);
             if (saldosOcultos) {
-                if(el.id === 'card-saldo' || el.id === 'previsao-valor') {
-                     el.innerText = " R$ ••••";
-                } else {
-                     el.innerText = "••••";
-                }
+                el.innerText = (el.id === 'card-saldo' || el.id === 'previsao-valor') ? " R$ ••••" : "••••";
             } else {
                 const valorFormatado = valorBruto.toFixed(2).replace('.', ',');
-                if(el.id === 'card-saldo' || el.id === 'previsao-valor') {
-                    el.innerText = `R$ ${valorFormatado}`;
-                } else {
-                    el.innerText = valorFormatado;
-                }
+                el.innerText = (el.id === 'card-saldo' || el.id === 'previsao-valor') ? `R$ ${valorFormatado}` : valorFormatado;
             }
         });
     }
@@ -558,7 +533,7 @@
             `;
 
             if (precisaDeConta) {
-                const textoPergunta = t.tipo === 'entrada' ? '💬 Onde caiu essa entrada?' : '💬 Qual conta você utilizou para essa saída?';
+                const textoPergunta = t.tipo === 'entrada' ? '💬 Onde caiu essa entrada?' : '💬 Qual conta você utilizou?';
                 blocoHTML += `
                     <div class="container-pergunta">
                         <span class="texto-pergunta">${textoPergunta}</span>
@@ -574,7 +549,7 @@
             } else if (precisaDeCartao) {
                 blocoHTML += `
                     <div class="container-pergunta">
-                        <span class="texto-pergunta">💬 Qual cartão você usou para essa compra?</span>
+                        <span class="texto-pergunta">💬 Qual cartão você usou?</span>
                         <div class="botoes-resposta">
                             <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Nubank')">Nubank</button>
                             <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Itaú')">Itaú</button>
