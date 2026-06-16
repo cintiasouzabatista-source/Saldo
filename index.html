@@ -29,11 +29,11 @@
         .chat-input { flex-grow: 1; border: none; padding: 8px 5px; font-size: 1rem; outline: none; }
         .btn-enviar { background: #2c3e50; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
         
-        /* Alerta temporário flutuante */
+        /* Alerta flutuante */
         .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10; }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* SEÇÃO DE FILTROS */
+        /* FILTROS */
         .filtros-container { display: flex; gap: 6px; margin-bottom: 10px; }
         .filtro-select { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #ddd; background: white; font-size: 0.85rem; color: #444; outline: none; font-weight: 500; }
 
@@ -45,15 +45,17 @@
         .item-transacao:hover { background-color: #f5f6fa; }
         .item-transacao:last-child { border-bottom: none; }
         
-        .detalhes-item { display: flex; flex-direction: column; gap: 3px; }
+        .detalhes-item { display: flex; flex-direction: column; gap: 4px; }
         .descricao-texto { font-weight: 500; color: #222; text-transform: capitalize; }
         
-        .tipo-tag { font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; color: white; font-weight: bold; width: fit-content; text-transform: uppercase; }
+        .tags-row { display: flex; gap: 4px; align-items: center; }
+        .tipo-tag { font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; color: white; font-weight: bold; text-transform: uppercase; }
         .tag-entrada { background: #2ecc71; }
         .tag-saida { background: #e74c3c; }
         .tag-cartao { background: #f39c12; }
+        .tag-conta { background: #7f8c8d; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
 
-        /* ESTILO DO MODAL DE EDIÇÃO */
+        /* MODAL DE EDIÇÃO */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
         .modal-container { background: white; width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 12px; }
         .modal-title { font-size: 1.1rem; font-weight: bold; color: #333; margin-bottom: 4px; }
@@ -90,14 +92,14 @@
         </div>
     </div>
 
-    <!-- CAIXA DE TEXTO INTELLIGENT -->
+    <!-- CAIXA DE TEXTO -->
     <div class="chat-input-area">
         <div id="alerta" class="alerta-temporario">Lançado com sucesso!</div>
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: recebi pix 500 / comprei mercado 40" onkeypress="verificarTecla(event)">
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: gastei 100 mercado conta itau" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
 
-    <!-- FILTROS (MÊS E TIPO) -->
+    <!-- FILTROS -->
     <div class="filtros-container">
         <select id="filtro-mes" class="filtro-select" onchange="renderizarHistorico()"></select>
         <select id="filtro-tipo" class="filtro-select" onchange="renderizarHistorico()">
@@ -108,7 +110,7 @@
         </select>
     </div>
 
-    <!-- LISTA DE GASTOS ABAIXO -->
+    <!-- LISTA DE GASTOS -->
     <div class="lista-titulo">Histórico de Lançamentos</div>
     <div class="lista-container" id="lista-historico"></div>
 </div>
@@ -130,6 +132,9 @@
             <option value="saida">Saída (-)</option>
             <option value="cartao">Cartão (-)</option>
         </select>
+
+        <div class="modal-label">Conta / Banco</div>
+        <input type="text" id="modal-conta" class="modal-input" placeholder="Ex: Itaú, Nubank (opcional)">
         
         <div class="modal-botoes">
             <button class="btn-modal btn-excluir" onclick="acaoExcluir()">Excluir</button>
@@ -144,28 +149,17 @@
         navigator.serviceWorker.register('sw.js').catch(err => console.log("Erro SW:", err));
     }
 
-    // Banco de dados em memória
     let transacoes = [];
     let idEdicaoAtual = null;
-
-    // Configuração dos meses do filtro automaticamente
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     
     function inicializarFiltroMeses() {
         const filtro = document.getElementById('filtro-mes');
         const hoje = new Date();
-        const mesAtual = hoje.getMonth();
-        const anoAtual = hoje.getFullYear();
-        
         let opcoesHTML = '<option value="todos">Todos os Meses</option>';
-        
-        // Gera opções para os últimos 6 meses
         for (let i = 0; i < 6; i++) {
-            let d = new Date(anoAtual, mesAtual - i, 1);
-            let m = d.getMonth();
-            let a = d.getFullYear();
-            let chave = `${m}-${a}`;
-            opcoesHTML += `<option value="${chave}">${nomesMeses[m]}/${a}</option>`;
+            let d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+            opcoesHTML += `<option value="${d.getMonth()}-${d.getFullYear()}">${nomesMeses[d.getMonth()]}/${d.getFullYear()}</option>`;
         }
         filtro.innerHTML = opcoesHTML;
     }
@@ -190,59 +184,60 @@
 
         let valorTexto = numerosEncontrados[0].replace(',', '.');
         const valor = parseFloat(valorTexto);
-        if (isNaN(valor) || valor <= 0) {
-            mostrarAviso("Valor inválido!");
-            return;
-        }
+        if (isNaN(valor) || valor <= 0) return;
 
-        // 1. LIMPA AS PALAVRAS OPERACIONAIS SOLICITADAS
-        let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
-        
-        // Remove termos indesejados da exibição final usando Regex
-        descricao = descricao.replace(/(comprei|ganhei|paguei|recebi|gastei|fiz|no|na|de|com|o|a)/gi, '');
-        descricao = descricao.replace(/\s+/g, ' ').trim(); 
-        
-        if (!descricao) { descricao = "Lançamento Avulso"; }
+        // 1. MAPEIA CONTA/BANCO AUTOMATICAMENTE
+        let contaDetectada = "";
+        const listaBancos = ["itau", "itaú", "bradesco", "santander", "nubank", "caixa", "inter", "c6", "banco"];
+        listaBancos.forEach(banco => {
+            if (frase.includes(banco)) {
+                contaDetectada = banco === "itau" ? "Itaú" : banco;
+            }
+        });
 
-        // 2. DETECTA TIPO POR PALAVRA-CHAVE
-        let tipo = 'saida';
-        if (frase.includes('cartao') || frase.includes('cartão') || frase.includes('credito') || frase.includes('crédito')) {
+        // 2. REGRA DE INTELIGÊNCIA CRUZA PALAVRAS (AÇÃO SEPARA PIX DE ENTRADA/SAÍDA)
+        let tipo = 'saida'; // Padrão
+
+        const eEntrada = frase.includes('recebi') || frase.includes('ganhei') || frase.includes('salario') || frase.includes('salário') || frase.includes('entrada') || frase.includes('+');
+        const eCartao = frase.includes('cartao') || frase.includes('cartão') || frase.includes('credito') || frase.includes('crédito');
+        const eSaidaForcada = frase.includes('gastei') || frase.includes('comprei') || frase.includes('paguei') || frase.includes('fiz') || frase.includes('transferencia') || frase.includes('transferência');
+
+        if (eCartao) {
             tipo = 'cartao';
-        } else if (frase.includes('recebi') || frase.includes('ganhei') || frase.includes('salario') || frase.includes('salário') || frase.includes('pix') || frase.includes('entrada') || frase.includes('+')) {
+        } else if (eEntrada) {
             tipo = 'entrada';
+        } else if (eSaidaForcada || frase.includes('pix')) {
+            // Se tem pix, transferência ou termos de gasto e não deu positivo acima, vai pra Saída
+            tipo = 'saida';
         }
 
-        // Data atual para controle do filtro
-        const dataAtual = new Date();
+        // 3. LIMPEZA DA DESCRIÇÃO (SÓ FICA O MOTIVO)
+        let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
+        // Limpa termos operacionais e os bancos localizados
+        const termosRemover = /(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|caixa|inter|c6|conta|no|na|de|com|o|a)/gi;
+        descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         
-        // Cria o objeto da transação
+        if (!descricao) descricao = "Lançamento Avulso";
+
+        const dataAtual = new Date();
         const novaTransacao = {
             id: Date.now(),
             descricao: descricao,
             valor: valor,
             tipo: tipo,
+            conta: contaDetectada,
             mes: dataAtual.getMonth(),
             ano: dataAtual.getFullYear()
         };
 
         transacoes.unshift(novaTransacao);
-        
-        // Atualiza a tela
         atualizarAplicativo();
-        
         input.value = '';
         mostrarAviso(`Adicionado: R$ ${valor.toFixed(2)}`);
     }
 
     function atualizarAplicativo() {
-        calcularCards();
-        renderizarHistorico();
-    }
-
-    function calcularCards() {
-        let totalEntradas = 0;
-        let totalSaidas = 0;
-        let totalCartao = 0;
+        let totalEntradas = 0, totalSaidas = 0, totalCartao = 0;
 
         transacoes.forEach(t => {
             if (t.tipo === 'entrada') totalEntradas += t.valor;
@@ -259,25 +254,23 @@
         const cardSaldo = document.getElementById('card-saldo');
         cardSaldo.innerText = `R$ ${saldoFinal.toFixed(2).replace('.', ',')}`;
         cardSaldo.style.color = saldoFinal >= 0 ? '#2980b9' : '#e74c3c';
+
+        renderizarHistorico();
     }
 
     function renderizarHistorico() {
         const lista = document.getElementById('lista-historico');
         lista.innerHTML = '';
-
         const filtroMes = document.getElementById('filtro-mes').value;
         const filtroTipo = document.getElementById('filtro-tipo').value;
 
         transacoes.forEach(t => {
-            // Filtro de Mês/Ano
             if (filtroMes !== 'todos') {
                 const [m, a] = filtroMes.split('-');
                 if (t.mes != m || t.ano != a) return;
             }
-            // Filtro de Tipo
             if (filtroTipo !== 'todos' && t.tipo !== filtroTipo) return;
 
-            // Define elementos visuais
             let tagClasse = 'tag-saida', tipoTexto = 'Saída', corTexto = '#e74c3c', sinal = '-';
             if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = '#2ecc71'; sinal = '+'; }
             if (t.tipo === 'cartao') { tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = '#f39c12'; sinal = '-'; }
@@ -286,10 +279,16 @@
             item.className = 'item-transacao';
             item.onclick = () => abrirModal(t.id);
 
+            // Adiciona a tag da conta/banco caso exista
+            let contaHTML = t.conta ? `<span class="tag-conta">${t.conta}</span>` : '';
+
             item.innerHTML = `
                 <div class="detalhes-item">
                     <span class="descricao-texto">${t.descricao}</span>
-                    <span class="tipo-tag ${tagClasse}">${tipoTexto}</span>
+                    <div class="tags-row">
+                        <span class="tipo-tag ${tagClasse}">${tipoTexto}</span>
+                        ${contaHTML}
+                    </div>
                 </div>
                 <span style="font-weight: 600; font-size: 1.05rem; color: ${corTexto}">${sinal} R$ ${t.valor.toFixed(2).replace('.', ',')}</span>
             `;
@@ -297,52 +296,38 @@
         });
     }
 
-    // FUNÇÕES DO MODAL DE EDIÇÃO
     function abrirModal(id) {
         idEdicaoAtual = id;
         const t = transacoes.find(item => item.id === id);
-        
         document.getElementById('modal-desc').value = t.descricao;
         document.getElementById('modal-valor').value = t.valor;
         document.getElementById('modal-tipo').value = t.tipo;
-        
+        document.getElementById('modal-conta').value = t.conta || '';
         document.getElementById('modal-edicao').style.display = 'flex';
     }
 
     function fecharModal() {
         document.getElementById('modal-edicao').style.display = 'none';
-        idEdicaoAtual = null;
     }
 
     function acaoSalvar() {
-        const desc = document.getElementById('modal-desc').value.trim();
-        const val = parseFloat(document.getElementById('modal-valor').value);
-        const tipo = document.getElementById('modal-tipo').value;
-
-        if (!desc || isNaN(val) || val <= 0) {
-            alert("Preencha os campos corretamente!");
-            return;
-        }
-
         const index = transacoes.findIndex(item => item.id === idEdicaoAtual);
         if (index !== -1) {
-            transacoes[index].descricao = desc;
-            transacoes[index].valor = val;
-            transacoes[index].tipo = tipo;
+            transacoes[index].descricao = document.getElementById('modal-desc').value.trim();
+            transacoes[index].valor = parseFloat(document.getElementById('modal-valor').value);
+            transacoes[index].tipo = document.getElementById('modal-tipo').value;
+            transacoes[index].conta = document.getElementById('modal-conta').value.trim();
         }
-
         fecharModal();
         atualizarAplicativo();
-        mostrarAviso("Alterado com sucesso!");
+        mostrarAviso("Salvo!");
     }
 
     function acaoExcluir() {
-        if (confirm("Quer mesmo apagar este lançamento?")) {
-            transacoes = transacoes.filter(item => item.id !== idEdicaoAtual);
-            fecharModal();
-            atualizarAplicativo();
-            mostrarAviso("Lançamento excluído!");
-        }
+        transacoes = transacoes.filter(item => item.id !== idEdicaoAtual);
+        fecharModal();
+        atualizarAplicativo();
+        mostrarAviso("Excluído!");
     }
 
     function mostrarAviso(texto) {
@@ -352,7 +337,6 @@
         setTimeout(() => { alerta.classList.remove('mostrar'); }, 3000);
     }
 
-    // Inicialização
     window.onload = () => {
         inicializarFiltroMeses();
         atualizarAplicativo();
