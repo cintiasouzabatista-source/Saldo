@@ -6,7 +6,7 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
-    <title>Fluxo de Caixa Inteligente</title>
+    <title>Meu Fluxo de Caixa Inteligente</title>
     <style>
         /* Variáveis de Cores (Suporta Modo Claro e Escuro) */
         :root {
@@ -191,7 +191,7 @@
     let saldosOcultos = false;
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     
-    // DICIONÁRIO ATUALIZADO DE CONTAS E CARTÕES
+    // DICIONÁRIO DE CONTAS E CARTÕES
     const BANCOS_CADASTRADOS = {
         "itau": "Itaú", "itaú": "Itaú",
         "bradesco": "Bradesco",
@@ -266,7 +266,6 @@
         let contaDetectada = "";
         let cartaoDetectado = "";
 
-        // Busca de banco/conta por limites exatos
         for (let chave in BANCOS_CADASTRADOS) {
             let regexBanco = new RegExp(`\\b${chave}\\b`, "i");
             if (regexBanco.test(frase)) {
@@ -275,7 +274,6 @@
             }
         }
 
-        // Busca de cartão cadastrado por limites exatos
         for (let chave in CARTOES_CADASTRADOS) {
             let regexCartao = new RegExp(`\\b${chave}\\b`, "i");
             if (regexCartao.test(frase)) {
@@ -284,7 +282,6 @@
             }
         }
 
-        // Definição inteligente do tipo
         let tipo = 'saida'; 
         const eEntrada = /\b(recebi|ganhei|salario|salário|entrada)\b/i.test(frase) || frase.includes('+');
         const eCartao = /\b(cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/i.test(frase);
@@ -298,7 +295,6 @@
             tipo = 'saida';
         }
 
-        // Limpeza precisa da descrição (Remove palavras soltas operacionais sem estragar palavras normais)
         let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
         const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
         
@@ -391,7 +387,7 @@
             if (filtroTipo !== 'todos' && t.tipo !== filtroTipo) return;
 
             let tagClasse = 'tag-saida', tipoTexto = 'Saída', corTexto = 'var(--saida)', sinal = '-';
-            if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; colorTexto = 'var(--entrada)'; sinal = '+'; }
+            if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = 'var(--entrada)'; sinal = '+'; }
             if (t.tipo === 'cartao') { tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = 'var(--cartao)'; sinal = '-'; }
 
             const item = document.createElement('div');
@@ -420,6 +416,8 @@
     function abrirModal(id) {
         idEdicaoAtual = id;
         const t = transacoes.find(item => item.id === id);
+        if (!t) return;
+        
         document.getElementById('modal-desc').value = t.descricao;
         document.getElementById('modal-valor').value = t.valor;
         document.getElementById('modal-tipo').value = t.tipo;
