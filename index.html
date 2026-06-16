@@ -41,24 +41,17 @@
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 100%; }
         
         /* CABEÇALHO DO APP */
-        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; padding: 5px; position: relative; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; padding: 5px; }
         .app-title { font-size: 1.4rem; font-weight: 700; color: var(--azul-saldo); letter-spacing: -0.5px; }
-        .app-actions { display: flex; gap: 10px; align-items: center; }
-        .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; }
+        .app-actions { display: flex; gap: 14px; align-items: center; }
+        .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; }
         .icon-btn:hover { background: var(--borda); }
-
-        /* MENU DE CONFIGURAÇÕES DROP-DOWN */
-        .config-menu { position: absolute; top: 45px; right: 5px; background: var(--bg-container); border: 1px solid var(--borda); border-radius: 8px; box-shadow: 0 4px 10px var(--shadow); display: none; flex-direction: column; z-index: 50; width: 200px; overflow: hidden; }
-        .config-menu button { background: none; border: none; padding: 12px 15px; text-align: left; font-size: 0.88rem; cursor: pointer; color: var(--texto-principal); font-weight: 500; width: 100%; display: flex; align-items: center; gap: 8px; }
-        .config-menu button:hover { background: var(--bg-body); }
-        .config-menu .btn-danger-text { color: var(--saida); }
 
         /* CARDS NO TOPO */
         .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
-        .card { background: var(--bg-container); padding: 12px 5px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); cursor: pointer; }
-        .card:hover { background: var(--borda); }
-        .card h3 { font-size: 0.72rem; color: var(--texto-secundario); margin-bottom: 3px; text-transform: uppercase; pointer-events: none; }
-        .card p { font-size: 0.95rem; font-weight: bold; pointer-events: none; }
+        .card { background: var(--bg-container); padding: 12px 5px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
+        .card h3 { font-size: 0.72rem; color: var(--texto-secundario); margin-bottom: 3px; text-transform: uppercase; }
+        .card p { font-size: 0.95rem; font-weight: bold; }
         .card.saldo-total { grid-column: span 3; padding: 12px; margin-top: 2px; position: relative;}
         .card.saldo-total p { font-size: 1.3rem; }
         
@@ -102,7 +95,7 @@
         .tag-conta { background: #7f8c8d; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
         .tag-cartao-especifico { background: #34495e; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
 
-        /* INTERAÇÃO ESTILO CHAT (PERGUNTA DE BANCO/CARTÃO) */
+        /* INTERAÇÃO ESTILO CHAT */
         .item-transacao.pendente { background: var(--alerta-fundo); border-left: 4px solid var(--alerta-borda); padding-left: 8px; }
         .container-pergunta { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--borda); width: 100%; }
         .texto-pergunta { font-size: 0.8rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: 6px; display: block; }
@@ -132,43 +125,37 @@
         <div class="app-actions">
             <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">👁️</button>
             <button class="icon-btn" id="btn-tema" onclick="alternarTema()" title="Mudar Tema">🌙</button>
-            <button class="icon-btn" id="btn-config" onclick="alternarMenuConfig()" title="Configurações">⚙️</button>
-        </div>
-
-        <div id="dropdown-config" class="config-menu">
-            <button onclick="resetarTransacoes()">🗑️ Limpar Transações</button>
-            <button onclick="resetarAppTotal()" class="btn-danger-text">⚠️ Resetar App Total</button>
         </div>
     </div>
 
     <div class="cards-container">
-        <div class="card" onclick="filtrarPorCard('entrada')">
+        <div class="card">
             <h3>Entradas</h3>
             <p class="cor-entrada">R$ <span class="valor-dinamico" id="card-entradas" data-valor="0.00">0,00</span></p>
         </div>
-        <div class="card" onclick="filtrarPorCard('saida')">
+        <div class="card">
             <h3>Saídas</h3>
             <p class="cor-saida">R$ <span class="valor-dinamico" id="card-saidas" data-valor="0.00">0,00</span></p>
         </div>
-        <div class="card" onclick="filtrarPorCard('cartao')">
+        <div class="card">
             <h3>Cartão</h3>
             <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
         </div>
-        <div class="card saldo-total" onclick="filtrarPorCard('todos')">
+        <div class="card saldo-total">
             <h3>Saldo Atual</h3>
             <p id="card-saldo" class="valor-dinamico" data-valor="0.00" style="color: var(--azul-saldo);">R$ 0,00</p>
-            <div class="previsao-texto" id="card-previsao">Média de gasto no mês: R$ <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">0,00</span></div>
+            <div class="previsao-texto" id="card-previsao">Média de gasto no mês: <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
         </div>
     </div>
 
     <div class="chat-input-area">
         <div id="alerta" class="alerta-temporario">Lançado!</div>
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: fogao 1200 cartao 4x" onkeypress="verificarTecla(event)">
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: uber 45 mercado pago" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
 
     <div class="filtros-container">
-        <select id="filtro-mes" class="filtro-select" onchange="renderizarHistorico()"></select>
+        <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
         <select id="filtro-tipo" class="filtro-select" onchange="renderizarHistorico()">
             <option value="todos">Todos os Tipos</option>
             <option value="entrada">🟢 Entradas</option>
@@ -217,84 +204,45 @@
     let idEdicaoAtual = null;
     let saldosOcultos = false;
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-    const DIA_FECHAMENTO_CARTAO = 5; // Configuração do fechamento mensal padrão do cartão
     
     const BANCOS_CADASTRADOS = {
-        "itau": "Itaú", "itaú": "Itaú", "bradesco": "Bradesco", "santander": "Santander",
-        "nubank": "Nubank", "nu": "Nubank", "caixa": "Caixa", "inter": "Inter",
-        "c6": "C6 Bank", "c6bank": "C6 Bank", "mercado pago": "Mercado Pago", 
-        "mercadopago": "Mercado Pago", "picpay": "PicPay", "pic pay": "PicPay"
+        "itau": "Itaú", "itaú": "Itaú",
+        "bradesco": "Bradesco",
+        "santander": "Santander",
+        "nubank": "Nubank", "nu": "Nubank",
+        "caixa": "Caixa",
+        "inter": "Inter",
+        "c6": "C6 Bank", "c6bank": "C6 Bank",
+        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago",
+        "picpay": "PicPay", "pic": "PicPay"
     };
 
     const CARTOES_CADASTRADOS = {
-        "itau": "Itaú", "itaú": "Itaú", "picpay": "PicPay", "pic pay": "PicPay",
-        "bradesco": "Bradesco", "santander": "Santander", "nubank": "Nubank", 
-        "nu": "Nubank", "inter": "Inter", "c6": "C6 Bank", "c6bank": "C6 Bank",
-        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago", "flash": "Flash"
+        "black": "Black",
+        "visa": "Visa",
+        "master": "Mastercard", "mastercard": "Mastercard",
+        "elo": "Elo",
+        "amex": "Amex",
+        "flash": "Flash",
+        "nubank": "Nubank", "nu": "Nubank",
+        "itau": "Itaú", "itaú": "Itaú",
+        "c6": "C6 Bank", "picpay": "PicPay"
     };
 
-    // AÇÃO DE CLICAR NOS CARDS PARA FILTRAR
-    function filtrarPorCard(tipo) {
-        document.getElementById('filtro-tipo').value = tipo;
-        renderizarHistorico();
-    }
-
-    // CONTROLE DO MENU DE CONFIGURAÇÕES
-    function alternarMenuConfig() {
-        const menu = document.getElementById('dropdown-config');
-        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    }
-
-    window.onclick = function(event) {
-        if (!event.target.matches('#btn-config')) {
-            const dropdown = document.getElementById('dropdown-config');
-            if (dropdown && dropdown.style.display === 'flex') {
-                dropdown.style.display = 'none';
-            }
-        }
-    }
-
-    function resetarTransacoes() {
-        if (confirm("Tem certeza que deseja apagar TODO o histórico de transações?")) {
-            transacoes = [];
-            salvarDadosNoStorage();
-            atualizarAplicativo();
-            mostrarAviso("Histórico limpo!");
-        }
-    }
-
-    function resetarAppTotal() {
-        if (confirm("ATENÇÃO: Deseja redefinir todo o aplicativo?")) {
-            localStorage.clear();
-            transacoes = [];
-            saldosOcultos = false;
-            document.documentElement.removeAttribute('data-theme');
-            document.getElementById('btn-tema').innerText = "🌙";
-            document.getElementById('btn-visibilidade').innerText = "👁️";
-            atualizarAplicativo();
-            mostrarAviso("Aplicativo resetado!");
-        }
-    }
-
-    function salvarDadosNoStorage() {
-        localStorage.setItem('dados_transacoes', JSON.stringify(transacoes));
-    }
-
-    function carregarDadosDoStorage() {
-        const bancoDados = localStorage.getItem('dados_transacoes');
-        if (bancoDados) transacoes = JSON.parse(bancoDados);
-    }
-
     function inicializarFiltroMeses() {
-        const filter = document.getElementById('filtro-mes');
+        const filtro = document.getElementById('filtro-mes');
         const hoje = new Date();
-        let opcoesHTML = '<option value="todos">Todos os Meses</option>';
-        // Criamos 12 meses de projeção para frente para acomodar parcelamentos longos
-        for (let i = -2; i < 12; i++) { 
-            let d = new Date(hoje.getFullYear(), hoje.getMonth() + i, 1);
+        let opcoesHTML = '';
+        
+        // Define o mês atual como padrão inicial selecionado
+        opcoesHTML += `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual (${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()})</option>`;
+        opcoesHTML += '<option value="todos">Todos os Meses</option>';
+        
+        for (let i = 1; i <= 6; i++) {
+            let d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
             opcoesHTML += `<option value="${d.getMonth()}-${d.getFullYear()}">${nomesMeses[d.getMonth()]}/${d.getFullYear()}</option>`;
         }
-        filter.innerHTML = opcoesHTML;
+        filtro.innerHTML = opcoesHTML;
     }
 
     function alternarTema() {
@@ -319,26 +267,12 @@
         if (e.key === 'Enter') processarComando();
     }
 
-    // PROCESSADOR INTELIGENTE CORRIGIDO
     function processarComando() {
         const input = document.getElementById('campo-texto');
         const fraseOriginal = input.value.trim();
         if (!fraseOriginal) return;
 
-        let frase = fraseOriginal.toLowerCase();
-        
-        // 1. Detectar parcelamento de forma isolada (ex: "4x", "x4", "4 x")
-        const regexParcela = /\b(\d+)\s*x\b|\bx\s*(\d+)\b/i;
-        const correspondenciaParcela = frase.match(regexParcela);
-        let parcelasTotais = 1;
-
-        if (correspondenciaParcela) {
-            parcelasTotais = parseInt(correspondenciaParcela[1] || correspondenciaParcela[2]);
-            // Remove o termo do parcelamento para não confundir com o valor numérico
-            frase = frase.replace(correspondenciaParcela[0], '');
-        }
-
-        // 2. Capturar o valor real da transação
+        const frase = fraseOriginal.toLowerCase();
         const regexNumeros = /\d+([.,]\d+)?/g;
         const numerosEncontrados = frase.match(regexNumeros);
 
@@ -347,87 +281,101 @@
             return;
         }
 
-        const valorTexto = numerosEncontrados[0].replace(',', '.');
-        const valorTotalInjetado = parseFloat(valorTexto);
-        if (isNaN(valorTotalInjetado) || valorTotalInjetado <= 0) return;
+        let valorTexto = numerosEncontrados[0].replace(',', '.');
+        const valor = parseFloat(valorTexto);
+        if (isNaN(valor) || valor <= 0) return;
 
-        // 3. Detectar Bancos e Cartões
         let contaDetectada = "";
         let cartaoDetectado = "";
 
         for (let chave in BANCOS_CADASTRADOS) {
-            if (new RegExp(`\\b${chave}\\b`, "i").test(frase)) {
+            let regexBanco = new RegExp(`\\b${chave}\\b`, "i");
+            if (regexBanco.test(frase)) {
                 contaDetectada = BANCOS_CADASTRADOS[chave];
                 break;
             }
         }
 
         for (let chave in CARTOES_CADASTRADOS) {
-            if (new RegExp(`\\b${chave}\\b`, "i").test(frase)) {
+            let regexCartao = new RegExp(`\\b${chave}\\b`, "i");
+            if (regexCartao.test(frase)) {
                 cartaoDetectado = CARTOES_CADASTRADOS[chave];
                 break;
             }
         }
 
-        // 4. Definir Tipo (Regra prioritária do Cartão caso haja parcelas)
         let tipo = 'saida'; 
         const eEntrada = /\b(recebi|ganhei|salario|salário|entrada)\b/i.test(frase) || frase.includes('+');
-        const eCartao = /\b(cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/i.test(frase) || parcelasTotais > 1 || cartaoDetectado !== "";
+        const eCartao = /\b(cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash|x)\b/i.test(frase);
+        const eSaidaForcada = /\b(gastei|comprei|paguei|fiz|transferencia|transferência)\b/i.test(frase);
 
         if (eCartao) {
             tipo = 'cartao';
         } else if (eEntrada) {
             tipo = 'entrada';
+        } else if (eSaidaForcada || /\b(pix)\b/i.test(frase)) {
+            tipo = 'saida';
         }
 
-        // 5. Limpar a descrição do item
-        let descricao = fraseOriginal;
-        if (correspondenciaParcela) descricao = descricao.replace(correspondenciaParcela[0], '');
-        descricao = descricao.replace(numerosEncontrados[0], '');
+        let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
         
-        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|picpay|pic pay|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
+        // Verifica se há especificação de parcelas (ex: 4x ou 4 x)
+        let totalParcelas = 1;
+        const regexParcelas = /(\d+)\s*x/i;
+        const matchParcelas = frase.match(regexParcelas);
+        if (matchParcelas && tipo === 'cartao') {
+            totalParcelas = parseInt(matchParcelas[1]);
+            descricao = descricao.replace(matchParcelas[0], '');
+        }
+
+        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|picpay|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
         descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         if (!descricao) descricao = "Lançamento Avulso";
 
         const dataAtual = new Date();
-        const valorPorParcela = valorTotalInjetado / parcelasTotais;
-
-        // Regra do Fechamento: Se passou do dia de fechamento, joga as parcelas 1 mês para frente
-        let mesDeslocamento = 0;
-        if (tipo === 'cartao' && dataAtual.getDate() >= DIA_FECHAMENTO_CARTAO) {
-            mesDeslocamento = 1;
-        }
-
-        // 6. Gerar parcelas no Histórico
-        const idBase = Date.now();
-        for (let i = 0; i < parcelasTotais; i++) {
-            let dataParcelada = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + mesDeslocamento + i, 1);
-            
+        
+        // Se for parcelado, gera um registro para cada mês correspondente
+        if (totalParcelas > 1 && tipo === 'cartao') {
+            const valorParcela = valor / totalParcelas;
+            for (let p = 1; p <= totalParcelas; p++) {
+                let novaData = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + (p - 1), dataAtual.getDate());
+                const novaTransacao = {
+                    id: Date.now() + p,
+                    descricao: `${descricao} (${p}/${totalParcelas})`,
+                    valor: valorParcela,
+                    tipo: tipo,
+                    conta: contaDetectada,
+                    cartao: cartaoDetectado,
+                    mes: novaData.getMonth(),
+                    ano: novaData.getFullYear(),
+                    dia: novaData.getDate()
+                };
+                transacoes.unshift(novaTransacao);
+            }
+        } else {
             const novaTransacao = {
-                id: idBase + i,
-                descricao: parcelasTotais > 1 ? `${descricao} (${i + 1}/${parcelasTotais})` : descricao,
-                valor: valorPorParcela,
+                id: Date.now(),
+                descricao: descricao,
+                valor: valor,
                 tipo: tipo,
                 conta: contaDetectada,
                 cartao: cartaoDetectado,
-                mes: dataParcelada.getMonth(),
-                ano: dataParcelada.getFullYear(),
-                dia: i === 0 && mesDeslocamento === 0 ? dataAtual.getDate() : 1 // Mantém o dia se cair no mês atual, senão vira vencimento padrão dia 1
+                mes: dataAtual.getMonth(),
+                ano: dataAtual.getFullYear(),
+                dia: dataAtual.getDate()
             };
             transacoes.unshift(novaTransacao);
         }
 
-        salvarDadosNoStorage();
         atualizarAplicativo();
         input.value = '';
-        mostrarAviso(parcelasTotais > 1 ? `Parcelado em ${parcelasTotais}x!` : `Adicionado!`);
+        mostrarAviso(`Adicionado!`);
     }
 
     function responderConta(idTransacao, bancoNome) {
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
             t.conta = bancoNome;
-            salvarDadosNoStorage();
             atualizarAplicativo();
             mostrarAviso("Banco atualizado!");
         }
@@ -437,29 +385,31 @@
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
             t.cartao = cartaoNome;
-            salvarDadosNoStorage();
-            atualizarAplicativo();
-            mostrarAviso("Cartão updated!");
+            atualizarAplicativo(); // Recalcula tudo incluindo os painéis de cima imediatamente!
+            mostrarAviso("Cartão atualizado!");
         }
     }
 
     function atualizarAplicativo() {
         let totalEntradas = 0, totalSaidas = 0, totalCartao = 0;
+        const filtroMes = document.getElementById('filtro-mes').value;
         const hoje = new Date();
-        const mesFiltroAtivo = hoje.getMonth();
-        const anoFiltroAtivo = hoje.getFullYear();
 
-        // Faz o cálculo baseado no mês corrente para atualizar os cards do topo
+        // Faz o cálculo baseado rigorosamente no escopo do filtro ativo de mês
         transacoes.forEach(t => {
-            if (t.mes == mesFiltroAtivo && t.ano == anoFiltroAtivo) {
-                if (t.tipo === 'entrada') totalEntradas += t.valor;
-                if (t.tipo === 'saida') totalSaidas += t.valor;
-                if (t.tipo === 'cartao') totalCartao += t.valor;
+            if (filtroMes !== 'todos') {
+                const [m, a] = filtroMes.split('-');
+                if (t.mes != m || t.ano != a) return;
             }
+            
+            if (t.tipo === 'entrada') totalEntradas += t.valor;
+            if (t.tipo === 'saida') totalSaidas += t.valor;
+            if (t.tipo === 'cartao') totalCartao += t.valor;
         });
 
         const saldoFinal = totalEntradas - totalSaidas - totalCartao;
         const diaAtual = hoje.getDate();
+        
         const mediaDiaria = diaAtual > 0 ? (totalSaidas + totalCartao) / diaAtual : 0;
         const mediaGastoMes = mediaDiaria * 30;
 
@@ -481,10 +431,18 @@
         elementos.forEach(el => {
             const valorBruto = parseFloat(el.getAttribute('data-valor') || 0);
             if (saldosOcultos) {
-                el.innerText = (el.id === 'card-saldo' || el.id === 'previsao-valor') ? " R$ ••••" : "••••";
+                if(el.id === 'card-saldo' || el.id === 'previsao-valor') {
+                     el.innerText = "R$ ••••";
+                } else {
+                     el.innerText = "••••";
+                }
             } else {
                 const valorFormatado = valorBruto.toFixed(2).replace('.', ',');
-                el.innerText = (el.id === 'card-saldo' || el.id === 'previsao-valor') ? `R$ ${valorFormatado}` : valorFormatado;
+                if(el.id === 'card-saldo' || el.id === 'previsao-valor') {
+                    el.innerText = `R$ ${valorFormatado}`;
+                } else {
+                    el.innerText = valorFormatado;
+                }
             }
         });
     }
@@ -506,7 +464,7 @@
             if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = 'var(--entrada)'; sinal = '+'; }
             if (t.tipo === 'cartao') { tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = 'var(--cartao)'; sinal = '-'; }
 
-            const precisaDeConta = ((t.tipo === 'saida' || t.tipo === 'entrada') && !t.conta);
+            const precisaDeConta = (t.tipo === 'saida' && !t.conta);
             const precisaDeCartao = (t.tipo === 'cartao' && !t.cartao);
             const estaPendente = precisaDeConta || precisaDeCartao;
 
@@ -515,6 +473,10 @@
             
             let contaHTML = t.conta ? `<span class="tag-conta">${t.conta}</span>` : '';
             let cartaoHTML = t.cartao ? `<span class="tag-cartao-especifico">💳 ${t.cartao}</span>` : '';
+            
+            // Exibe indicador visual de data da parcela se não for o mês corrente
+            let dataHTML = `<span class="tag-conta" style="background:#7f8c8d;">📅 ${t.dia}/${nomesMeses[t.mes]}</span>`;
+            
             let valorExibição = saldosOcultos ? "•••" : `R$ ${t.valor.toFixed(2).replace('.', ',')}`;
 
             let blocoHTML = `
@@ -523,9 +485,9 @@
                         <span class="descricao-texto">${t.descricao}</span>
                         <div class="tags-row">
                             <span class="tipo-tag ${tagClasse}">${tipoTexto}</span>
+                            ${dataHTML}
                             ${contaHTML}
                             ${cartaoHTML}
-                            <span style="font-size:0.65rem; color:var(--texto-secundario); margin-left:5px;">📅 ${t.dia}/${nomesMeses[t.mes]}</span>
                         </div>
                     </div>
                     <span style="font-weight: 600; font-size: 1.05rem; color: ${corTexto}">${sinal} ${valorExibição}</span>
@@ -533,10 +495,9 @@
             `;
 
             if (precisaDeConta) {
-                const textoPergunta = t.tipo === 'entrada' ? '💬 Onde caiu essa entrada?' : '💬 Qual conta você utilizou?';
                 blocoHTML += `
                     <div class="container-pergunta">
-                        <span class="texto-pergunta">${textoPergunta}</span>
+                        <span class="texto-pergunta">💬 Qual conta você utilizou para essa saída?</span>
                         <div class="botoes-resposta">
                             <button class="btn-resposta" onclick="responderConta(${t.id}, 'Mercado Pago')">Mercado Pago</button>
                             <button class="btn-resposta" onclick="responderConta(${t.id}, 'Nubank')">Nubank</button>
@@ -549,7 +510,7 @@
             } else if (precisaDeCartao) {
                 blocoHTML += `
                     <div class="container-pergunta">
-                        <span class="texto-pergunta">💬 Qual cartão você usou?</span>
+                        <span class="texto-pergunta">💬 Qual cartão você usou para essa compra?</span>
                         <div class="botoes-resposta">
                             <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Nubank')">Nubank</button>
                             <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Itaú')">Itaú</button>
@@ -591,7 +552,6 @@
             transacoes[index].cartao = document.getElementById('modal-cartao-id').value.trim();
         }
         fecharModal();
-        salvarDadosNoStorage();
         atualizarAplicativo();
         mostrarAviso("Salvo!");
     }
@@ -599,7 +559,6 @@
     function acaoExcluir() {
         transacoes = transacoes.filter(item => item.id !== idEdicaoAtual);
         fecharModal();
-        salvarDadosNoStorage();
         atualizarAplicativo();
         mostrarAviso("Excluído!");
     }
@@ -612,7 +571,6 @@
     }
 
     window.onload = () => {
-        carregarDadosDoStorage();
         inicializarFiltroMeses();
         atualizarAplicativo();
     };
