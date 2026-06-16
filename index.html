@@ -236,13 +236,15 @@
     };
 
     const CARTOES_CADASTRADOS = {
-        "black": "Black",
-        "visa": "Visa",
-        "master": "Mastercard", "mastercard": "Mastercard",
-        "elo": "Elo",
-        "amex": "Amex",
-        "flash": "Flash",
-        "nubank": "Nubank"
+        "itau": "Itaú", "itaú": "Itaú",
+        "Pic Pay"
+        "bradesco": "Bradesco",
+        "santander": "Santander",
+        "nubank": "Nubank", "nu": "Nubank",
+        "inter": "Inter",
+        "c6": "C6 Bank", "c6bank": "C6 Bank",
+        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago",
+        "flash": "Flash"
     };
 
     // CONTROLE DO MENU DE CONFIGURAÇÕES
@@ -476,7 +478,7 @@
         });
     }
 
-    function renderizarHistorico() {
+   function renderizarHistorico() {
         const lista = document.getElementById('lista-historico');
         lista.innerHTML = '';
         const filtroMes = document.getElementById('filtro-mes').value;
@@ -493,7 +495,8 @@
             if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = 'var(--entrada)'; sinal = '+'; }
             if (t.tipo === 'cartao') { tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = 'var(--cartao)'; sinal = '-'; }
 
-            const precisaDeConta = (t.tipo === 'saida' && !t.conta);
+            // AGORA COMPARA SE ENTRADAS E SAÍDAS PRECISAM DE CONTA/BANCO
+            const precisaDeConta = ((t.tipo === 'saida' || t.tipo === 'entrada') && !t.conta);
             const precisaDeCartao = (t.tipo === 'cartao' && !t.cartao);
             const estaPendente = precisaDeConta || precisaDeCartao;
 
@@ -519,9 +522,11 @@
             `;
 
             if (precisaDeConta) {
+                // Pergunta adaptada dinamicamente para Entradas ou Saídas
+                const textoPergunta = t.tipo === 'entrada' ? '💬 Onde caiu essa entrada?' : '💬 Qual conta você utilizou para essa saída?';
                 blocoHTML += `
                     <div class="container-pergunta">
-                        <span class="texto-pergunta">💬 Qual conta você utilizou para essa saída?</span>
+                        <span class="texto-pergunta">${textoPergunta}</span>
                         <div class="botoes-resposta">
                             <button class="btn-resposta" onclick="responderConta(${t.id}, 'Mercado Pago')">Mercado Pago</button>
                             <button class="btn-resposta" onclick="responderConta(${t.id}, 'Nubank')">Nubank</button>
@@ -532,14 +537,15 @@
                     </div>
                 `;
             } else if (precisaDeCartao) {
+                // Botões de cartões agora exibem as instituições financeiras reais
                 blocoHTML += `
                     <div class="container-pergunta">
                         <span class="texto-pergunta">💬 Qual cartão você usou para essa compra?</span>
                         <div class="botoes-resposta">
                             <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Nubank')">Nubank</button>
-                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Black')">Black</button>
-                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Visa')">Visa</button>
-                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Mastercard')">Mastercard</button>
+                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Itaú')">Itaú</button>
+                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'C6 Bank')">C6 Bank</button>
+                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Inter')">Inter</button>
                             <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Flash')">Flash</button>
                         </div>
                     </div>
@@ -550,7 +556,6 @@
             lista.appendChild(item);
         });
     }
-
     function abrirModal(id) {
         idEdicaoAtual = id;
         const t = transacoes.find(item => item.id === id);
