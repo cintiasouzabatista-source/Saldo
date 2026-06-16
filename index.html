@@ -20,6 +20,8 @@
             --saida: #e74c3c;
             --cartao: #f39c12;
             --azul-saldo: #2980b9;
+            --alerta-fundo: #fef9e7;
+            --alerta-borda: #f1c40f;
         }
 
         [data-theme="dark"] {
@@ -30,6 +32,8 @@
             --borda: #2d2d2d;
             --shadow: rgba(0,0,0,0.3);
             --azul-saldo: #3498db;
+            --alerta-fundo: #2c2512;
+            --alerta-borda: #d35400;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
@@ -37,18 +41,21 @@
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 100%; }
         
         /* CABEÇALHO DO APP */
-        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; padding: 5px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; padding: 5px; position: relative; }
         .app-title { font-size: 1.4rem; font-weight: 700; color: var(--azul-saldo); letter-spacing: -0.5px; }
-        .app-actions { display: flex; gap: 14px; align-items: center; }
-        .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; }
+        .app-actions { display: flex; gap: 10px; align-items: center; }
+        .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; }
         .icon-btn:hover { background: var(--borda); }
 
-        /* CARDS NO TOPO (CLICÁVEIS) */
+        /* MENU DE CONFIGURAÇÕES DROP-DOWN */
+        .config-menu { position: absolute; top: 45px; right: 5px; background: var(--bg-container); border: 1px solid var(--borda); border-radius: 8px; box-shadow: 0 4px 10px var(--shadow); display: none; flex-direction: column; z-index: 50; width: 200px; overflow: hidden; }
+        .config-menu button { background: none; border: none; padding: 12px 15px; text-align: left; font-size: 0.88rem; cursor: pointer; color: var(--texto-principal); font-weight: 500; width: 100%; display: flex; align-items: center; gap: 8px; }
+        .config-menu button:hover { background: var(--bg-body); }
+        .config-menu .btn-danger-text { color: var(--saida); }
+
+        /* CARDS NO TOPO */
         .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
-        .card { background: var(--bg-container); padding: 12px 5px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); cursor: pointer; user-select: none; }
-        .card:hover { filter: brightness(0.97); }
-        [data-theme="dark"] .card:hover { filter: brightness(1.15); }
-        
+        .card { background: var(--bg-container); padding: 12px 5px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
         .card h3 { font-size: 0.72rem; color: var(--texto-secundario); margin-bottom: 3px; text-transform: uppercase; }
         .card p { font-size: 0.95rem; font-weight: bold; }
         .card.saldo-total { grid-column: span 3; padding: 12px; margin-top: 2px; position: relative;}
@@ -77,10 +84,12 @@
         .lista-titulo { font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 6px; padding-left: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .lista-container { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); flex-grow: 1; overflow-y: auto; padding: 5px 10px; margin-bottom: 10px; border: 1px solid var(--borda); }
         
-        .item-transacao { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid var(--borda); font-size: 0.95rem; align-items: center; cursor: pointer; }
+        /* Bloco básico da transação */
+        .item-transacao { display: flex; flex-direction: column; padding: 12px 5px; border-bottom: 1px solid var(--borda); font-size: 0.95rem; cursor: pointer; }
         .item-transacao:hover { background-color: var(--bg-body); }
         .item-transacao:last-child { border-bottom: none; }
         
+        .linha-principal { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .detalhes-item { display: flex; flex-direction: column; gap: 4px; }
         .descricao-texto { font-weight: 500; color: var(--texto-principal); text-transform: capitalize; }
         
@@ -91,6 +100,14 @@
         .tag-cartao { background: var(--cartao); }
         .tag-conta { background: #7f8c8d; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
         .tag-cartao-especifico { background: #34495e; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+
+        /* INTERAÇÃO ESTILO CHAT (PERGUNTA DE BANCO/CARTÃO) */
+        .item-transacao.pendente { background: var(--alerta-fundo); border-left: 4px solid var(--alerta-borda); padding-left: 8px; }
+        .container-pergunta { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--borda); width: 100%; }
+        .texto-pergunta { font-size: 0.8rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: 6px; display: block; }
+        .botoes-resposta { display: flex; gap: 4px; flex-wrap: wrap; }
+        .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .btn-resposta:hover { background: #2c3e50; color: white; border-color: #2c3e50; }
 
         /* MODAL DE EDIÇÃO */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
@@ -115,27 +132,34 @@
         <div class="app-actions">
             <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">👁️</button>
             <button class="icon-btn" id="btn-tema" onclick="alternarTema()" title="Mudar Tema">🌙</button>
+            <button class="icon-btn" id="btn-config" onclick="alternarMenuConfig()" title="Configurações">⚙️</button>
+        </div>
+
+        <!-- MENU FLUTUANTE DE CONFIGURAÇÕES -->
+        <div id="dropdown-config" class="config-menu">
+            <button onclick="resetarTransacoes()">🗑️ Limpar Transações</button>
+            <button onclick="resetarAppTotal()" class="btn-danger-text">⚠️ Resetar App Total</button>
         </div>
     </div>
 
-    <!-- CARDS NO TOPO CLICÁVEIS -->
+    <!-- CARDS NO TOPO -->
     <div class="cards-container">
-        <div class="card" onclick="filtrarPorCard('entrada')">
+        <div class="card">
             <h3>Entradas</h3>
             <p class="cor-entrada">R$ <span class="valor-dinamico" id="card-entradas" data-valor="0.00">0,00</span></p>
         </div>
-        <div class="card" onclick="filtrarPorCard('saida')">
+        <div class="card">
             <h3>Saídas</h3>
             <p class="cor-saida">R$ <span class="valor-dinamico" id="card-saidas" data-valor="0.00">0,00</span></p>
         </div>
-        <div class="card" onclick="filtrarPorCard('cartao')">
+        <div class="card">
             <h3>Cartão</h3>
             <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
         </div>
-        <div class="card saldo-total" onclick="filtrarPorCard('todos')">
+        <div class="card saldo-total">
             <h3>Saldo Atual</h3>
             <p id="card-saldo" class="valor-dinamico" data-valor="0.00" style="color: var(--azul-saldo);">R$ 0,00</p>
-            <div class="previsao-texto" id="card-previsao">Sobrará no fim do mês: R$ <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">0,00</span></div>
+            <div class="previsao-texto" id="card-previsao">Média de gasto no mês: R$ <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">0,00</span></div>
         </div>
     </div>
 
@@ -208,7 +232,7 @@
         "caixa": "Caixa",
         "inter": "Inter",
         "c6": "C6 Bank", "c6bank": "C6 Bank",
-        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago", "mercado p": "Mercado Pago", "mp": "Mercado Pago"
+        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago"
     };
 
     const CARTOES_CADASTRADOS = {
@@ -217,8 +241,60 @@
         "master": "Mastercard", "mastercard": "Mastercard",
         "elo": "Elo",
         "amex": "Amex",
-        "flash": "Flash"
+        "flash": "Flash",
+        "nubank": "Nubank"
     };
+
+    // CONTROLE DO MENU DE CONFIGURAÇÕES
+    function alternarMenuConfig() {
+        const menu = document.getElementById('dropdown-config');
+        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    // Fecha o menu flutuante caso o usuário clique fora dele
+    window.onclick = function(event) {
+        if (!event.target.matches('#btn-config')) {
+            const dropdown = document.getElementById('dropdown-config');
+            if (dropdown && dropdown.style.display === 'flex') {
+                dropdown.style.display = 'none';
+            }
+        }
+    }
+
+    // OPÇÃO 1: RESETA APENAS O HISTÓRICO
+    function resetarTransacoes() {
+        if (confirm("Tem certeza que deseja apagar TODO o histórico de transações? Essa ação não pode ser desfeita.")) {
+            transacoes = [];
+            salvarDadosNoStorage();
+            atualizarAplicativo();
+            mostrarAviso("Histórico limpo!");
+        }
+    }
+
+    // OPÇÃO 2: RESET TOTAL (VOLTA DE FÁBRICA)
+    function resetarAppTotal() {
+        if (confirm("ATENÇÃO: Isso apagará todas as transações, configurações e preferências do aplicativo. Deseja redefinir tudo?")) {
+            localStorage.clear();
+            transacoes = [];
+            saldosOcultos = false;
+            document.documentElement.removeAttribute('data-theme');
+            document.getElementById('btn-tema').innerText = "🌙";
+            document.getElementById('btn-visibilidade').innerText = "👁️";
+            atualizarAplicativo();
+            mostrarAviso("Aplicativo resetado!");
+        }
+    }
+
+    function salvarDadosNoStorage() {
+        localStorage.setItem('dados_transacoes', JSON.stringify(transacoes));
+    }
+
+    function carregarDadosDoStorage() {
+        const bancoDados = localStorage.getItem('dados_transacoes');
+        if (bancoDados) {
+            transacoes = JSON.parse(bancoDados);
+        }
+    }
 
     function inicializarFiltroMeses() {
         const filtro = document.getElementById('filtro-mes');
@@ -253,12 +329,6 @@
         if (e.key === 'Enter') processarComando();
     }
 
-    function filtrarPorCard(tipo) {
-        const seletorTipo = document.getElementById('filtro-tipo');
-        seletorTipo.value = tipo;
-        renderizarHistorico();
-    }
-
     function processarComando() {
         const input = document.getElementById('campo-texto');
         const fraseOriginal = input.value.trim();
@@ -280,16 +350,17 @@
         let contaDetectada = "";
         let cartaoDetectado = "";
 
-        // 1º DETECTAR ANTES DE LIMPAR O TEXTO (Correção crucial)
         for (let chave in BANCOS_CADASTRADOS) {
-            if (frase.includes(chave)) {
+            let regexBanco = new RegExp(`\\b${chave}\\b`, "i");
+            if (regexBanco.test(frase)) {
                 contaDetectada = BANCOS_CADASTRADOS[chave];
                 break;
             }
         }
 
         for (let chave in CARTOES_CADASTRADOS) {
-            if (frase.includes(chave)) {
+            let regexCartao = new RegExp(`\\b${chave}\\b`, "i");
+            if (regexCartao.test(frase)) {
                 cartaoDetectado = CARTOES_CADASTRADOS[chave];
                 break;
             }
@@ -308,9 +379,8 @@
             tipo = 'saida';
         }
 
-        // 2º AGORA SIM LIMPAR A DESCRIÇÃO COM SEGURANÇA
         let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
-        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|mercado p|mp|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
+        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
         
         descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         if (!descricao) descricao = "Lançamento Avulso";
@@ -321,7 +391,7 @@
             descricao: descricao,
             valor: valor,
             tipo: tipo,
-            conta: contaDetectada, 
+            conta: contaDetectada,
             cartao: cartaoDetectado,
             mes: dataAtual.getMonth(),
             ano: dataAtual.getFullYear(),
@@ -329,9 +399,30 @@
         };
 
         transacoes.unshift(novaTransacao);
+        salvarDadosNoStorage();
         atualizarAplicativo();
         input.value = '';
         mostrarAviso(`Adicionado!`);
+    }
+
+    function responderConta(idTransacao, bancoNome) {
+        const t = transacoes.find(item => item.id === idTransacao);
+        if (t) {
+            t.conta = bancoNome;
+            salvarDadosNoStorage();
+            atualizarAplicativo();
+            mostrarAviso("Banco atualizado!");
+        }
+    }
+
+    function responderCartao(idTransacao, cartaoNome) {
+        const t = transacoes.find(item => item.id === idTransacao);
+        if (t) {
+            t.cartao = cartaoNome;
+            salvarDadosNoStorage();
+            atualizarAplicativo();
+            mostrarAviso("Cartão updated!");
+        }
     }
 
     function atualizarAplicativo() {
@@ -344,13 +435,18 @@
         });
 
         const saldoFinal = totalEntradas - totalSaidas - totalCartao;
-        const previsaoSobrar = saldoFinal;
+
+        const hoje = new Date();
+        const diaAtual = hoje.getDate();
+        
+        const mediaDiaria = diaAtual > 0 ? (totalSaidas + totalCartao) / diaAtual : 0;
+        const mediaGastoMes = mediaDiaria * 30;
 
         document.getElementById('card-entradas').setAttribute('data-valor', totalEntradas.toFixed(2));
         document.getElementById('card-saidas').setAttribute('data-valor', totalSaidas.toFixed(2));
         document.getElementById('card-cartao').setAttribute('data-valor', totalCartao.toFixed(2));
         document.getElementById('card-saldo').setAttribute('data-valor', saldoFinal.toFixed(2));
-        document.getElementById('previsao-valor').setAttribute('data-valor', previsaoSobrar.toFixed(2));
+        document.getElementById('previsao-valor').setAttribute('data-valor', mediaGastoMes.toFixed(2));
 
         const cardSaldo = document.getElementById('card-saldo');
         cardSaldo.style.color = saldoFinal >= 0 ? 'var(--azul-saldo)' : 'var(--saida)';
@@ -397,25 +493,60 @@
             if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = 'var(--entrada)'; sinal = '+'; }
             if (t.tipo === 'cartao') { tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = 'var(--cartao)'; sinal = '-'; }
 
-            const item = document.createElement('div');
-            item.className = 'item-transacao';
-            item.onclick = () => abrirModal(t.id);
+            const precisaDeConta = (t.tipo === 'saida' && !t.conta);
+            const precisaDeCartao = (t.tipo === 'cartao' && !t.cartao);
+            const estaPendente = precisaDeConta || precisaDeCartao;
 
+            const item = document.createElement('div');
+            item.className = `item-transacao ${estaPendente ? 'pendente' : ''}`;
+            
             let contaHTML = t.conta ? `<span class="tag-conta">${t.conta}</span>` : '';
             let cartaoHTML = t.cartao ? `<span class="tag-cartao-especifico">💳 ${t.cartao}</span>` : '';
             let valorExibição = saldosOcultos ? "•••" : `R$ ${t.valor.toFixed(2).replace('.', ',')}`;
 
-            item.innerHTML = `
-                <div class="detalhes-item">
-                    <span class="descricao-texto">${t.descricao}</span>
-                    <div class="tags-row">
-                        <span class="tipo-tag ${tagClasse}">${tipoTexto}</span>
-                        ${contaHTML}
-                        ${cartaoHTML}
+            let blocoHTML = `
+                <div class="linha-principal" onclick="abrirModal(${t.id})">
+                    <div class="detalhes-item">
+                        <span class="descricao-texto">${t.descricao}</span>
+                        <div class="tags-row">
+                            <span class="tipo-tag ${tagClasse}">${tipoTexto}</span>
+                            ${contaHTML}
+                            ${cartaoHTML}
+                        </div>
                     </div>
+                    <span style="font-weight: 600; font-size: 1.05rem; color: ${corTexto}">${sinal} ${valorExibição}</span>
                 </div>
-                <span style="font-weight: 600; font-size: 1.05rem; color: ${corTexto}">${sinal} ${valorExibição}</span>
             `;
+
+            if (precisaDeConta) {
+                blocoHTML += `
+                    <div class="container-pergunta">
+                        <span class="texto-pergunta">💬 Qual conta você utilizou para essa saída?</span>
+                        <div class="botoes-resposta">
+                            <button class="btn-resposta" onclick="responderConta(${t.id}, 'Mercado Pago')">Mercado Pago</button>
+                            <button class="btn-resposta" onclick="responderConta(${t.id}, 'Nubank')">Nubank</button>
+                            <button class="btn-resposta" onclick="responderConta(${t.id}, 'Itaú')">Itaú</button>
+                            <button class="btn-resposta" onclick="responderConta(${t.id}, 'Inter')">Inter</button>
+                            <button class="btn-resposta" onclick="responderConta(${t.id}, 'Bradesco')">Bradesco</button>
+                        </div>
+                    </div>
+                `;
+            } else if (precisaDeCartao) {
+                blocoHTML += `
+                    <div class="container-pergunta">
+                        <span class="texto-pergunta">💬 Qual cartão você usou para essa compra?</span>
+                        <div class="botoes-resposta">
+                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Nubank')">Nubank</button>
+                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Black')">Black</button>
+                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Visa')">Visa</button>
+                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Mastercard')">Mastercard</button>
+                            <button class="btn-resposta" onclick="responderCartao(${t.id}, 'Flash')">Flash</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            item.innerHTML = blocoHTML;
             lista.appendChild(item);
         });
     }
@@ -445,6 +576,7 @@
             transacoes[index].cartao = document.getElementById('modal-cartao-id').value.trim();
         }
         fecharModal();
+        salvarDadosNoStorage();
         atualizarAplicativo();
         mostrarAviso("Salvo!");
     }
@@ -452,6 +584,7 @@
     function acaoExcluir() {
         transacoes = transacoes.filter(item => item.id !== idEdicaoAtual);
         fecharModal();
+        salvarDadosNoStorage();
         atualizarAplicativo();
         mostrarAviso("Excluído!");
     }
@@ -464,6 +597,7 @@
     }
 
     window.onload = () => {
+        carregarDadosDoStorage();
         inicializarFiltroMeses();
         atualizarAplicativo();
     };
