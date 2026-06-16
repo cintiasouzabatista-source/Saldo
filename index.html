@@ -103,7 +103,7 @@
         .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .btn-resposta:hover { background: #2c3e50; color: white; border-color: #2c3e50; }
 
-        /* MODAL DE EDIÇÃO */
+        /* MODAIS / OVERLAYS */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
         .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--borda); }
         .modal-title { font-size: 1.1rem; font-weight: bold; color: var(--texto-principal); margin-bottom: 4px; }
@@ -125,6 +125,7 @@
         <div class="app-actions">
             <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">👁️</button>
             <button class="icon-btn" id="btn-tema" onclick="alternarTema()" title="Mudar Tema">🌙</button>
+            <button class="icon-btn" id="btn-config" onclick="abrirConfiguracoes()" title="Configurações">⚙️</button>
         </div>
     </div>
 
@@ -199,6 +200,21 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="modal-config">
+    <div class="modal-container">
+        <div class="modal-title">⚙️ Configurações do Sistema</div>
+        <p style="font-size: 0.9rem; color: var(--texto-secundario); margin-bottom: 5px;">Gerenciamento global de dados do seu fluxo de caixa.</p>
+        
+        <button class="btn-modal btn-excluir" style="padding: 12px; margin-top: 10px;" onclick="resetarAplicativoTotal()">
+            🗑️ Limpar Todos os Dados (Resetar App)
+        </button>
+        
+        <div class="modal-botoes">
+            <button class="btn-modal btn-cancelar" onclick="fecharConfiguracoes()">Fechar</button>
+        </div>
+    </div>
+</div>
+
 <script>
     let transacoes = [];
     let idEdicaoAtual = null;
@@ -234,7 +250,6 @@
         const hoje = new Date();
         let opcoesHTML = '';
         
-        // Define o mês atual como padrão inicial selecionado
         opcoesHTML += `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual (${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()})</option>`;
         opcoesHTML += '<option value="todos">Todos os Meses</option>';
         
@@ -319,7 +334,6 @@
 
         let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
         
-        // Verifica se há especificação de parcelas (ex: 4x ou 4 x)
         let totalParcelas = 1;
         const regexParcelas = /(\d+)\s*x/i;
         const matchParcelas = frase.match(regexParcelas);
@@ -334,7 +348,6 @@
 
         const dataAtual = new Date();
         
-        // Se for parcelado, gera um registro para cada mês correspondente
         if (totalParcelas > 1 && tipo === 'cartao') {
             const valorParcela = valor / totalParcelas;
             for (let p = 1; p <= totalParcelas; p++) {
@@ -348,7 +361,7 @@
                     cartao: cartaoDetectado,
                     mes: novaData.getMonth(),
                     ano: novaData.getFullYear(),
-                    dia: novaData.getDate()
+                    dia: dataAtual.getDate()
                 };
                 transacoes.unshift(novaTransacao);
             }
@@ -385,8 +398,8 @@
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
             t.cartao = cartaoNome;
-            atualizarAplicativo(); // Recalcula tudo incluindo os painéis de cima imediatamente!
-            mostrarAviso("Cartão atualizado!");
+            atualizarAplicativo();
+            mostrarAviso("Cartão updated!");
         }
     }
 
@@ -395,7 +408,6 @@
         const filtroMes = document.getElementById('filtro-mes').value;
         const hoje = new Date();
 
-        // Faz o cálculo baseado rigorosamente no escopo do filtro ativo de mês
         transacoes.forEach(t => {
             if (filtroMes !== 'todos') {
                 const [m, a] = filtroMes.split('-');
@@ -473,10 +485,7 @@
             
             let contaHTML = t.conta ? `<span class="tag-conta">${t.conta}</span>` : '';
             let cartaoHTML = t.cartao ? `<span class="tag-cartao-especifico">💳 ${t.cartao}</span>` : '';
-            
-            // Exibe indicador visual de data da parcela se não for o mês corrente
             let dataHTML = `<span class="tag-conta" style="background:#7f8c8d;">📅 ${t.dia}/${nomesMeses[t.mes]}</span>`;
-            
             let valorExibição = saldosOcultos ? "•••" : `R$ ${t.valor.toFixed(2).replace('.', ',')}`;
 
             let blocoHTML = `
@@ -527,6 +536,7 @@
         });
     }
 
+    /* CONTROLE DOS MODAIS */
     function abrirModal(id) {
         idEdicaoAtual = id;
         const t = transacoes.find(item => item.id === id);
@@ -540,6 +550,14 @@
 
     function fecharModal() {
         document.getElementById('modal-edicao').style.display = 'none';
+    }
+
+    function abrirConfiguracoes() {
+        document.getElementById('modal-config').style.display = 'flex';
+    }
+
+    function fecharConfiguracoes() {
+        document.getElementById('modal-config').style.display = 'none';
     }
 
     function acaoSalvar() {
@@ -561,6 +579,15 @@
         fecharModal();
         atualizarAplicativo();
         mostrarAviso("Excluído!");
+    }
+
+    function resetarAplicativoTotal() {
+        if (confirm("🚨 Tem certeza absoluta que quer apagar TODOS os lançamentos? Essa ação não pode ser desfeita.")) {
+            transacoes = [];
+            fecharConfiguracoes();
+            atualizarAplicativo();
+            mostrarAviso("App Resetado com sucesso!");
+        }
     }
 
     function mostrarAviso(texto) {
