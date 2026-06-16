@@ -24,21 +24,25 @@
         .cor-saida { color: #e74c3c; }
         .cor-cartao { color: #f39c12; }
 
-        /* ÁREA DE TEXTO ESTILO CHAT (FIXA NO MEIO) */
+        /* CAIXA DE TEXTO */
         .chat-input-area { display: flex; gap: 8px; background: white; padding: 8px 12px; border-radius: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); align-items: center; margin-bottom: 15px; position: relative; }
         .chat-input { flex-grow: 1; border: none; padding: 8px 5px; font-size: 1rem; outline: none; }
         .btn-enviar { background: #2c3e50; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
         
-        /* Alerta temporário flutuante que some */
+        /* Alerta temporário flutuante */
         .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* LISTA COMPLETA ABAIXO COM ROLAGEM */
+        /* LISTA COMPLETA ABAIXO */
         .lista-titulo { font-size: 0.95rem; color: #444; margin-bottom: 8px; padding-left: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .lista-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex-grow: 1; overflow-y: auto; padding: 5px 10px; margin-bottom: 10px; }
         
-        .item-transacao { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #eee; font-size: 0.95rem; align-items: center; }
+        /* Item interativo com efeito de clique para exclusão */
+        .item-transacao { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #eee; font-size: 0.95rem; align-items: center; cursor: pointer; transition: background 0.2s; position: relative; }
+        .item-transacao:hover { background-color: #fdf2f2; }
+        .item-transacao:hover::after { content: "🗑️ Excluir"; position: absolute; right: 10px; background: #e74c3c; color: white; font-size: 0.75rem; font-weight: bold; padding: 3px 8px; border-radius: 4px; }
         .item-transacao:last-child { border-bottom: none; }
+        
         .detalhes-item { display: flex; flex-direction: column; gap: 3px; }
         .descricao-texto { font-weight: 500; color: #222; text-transform: capitalize; }
         
@@ -71,18 +75,16 @@
         </div>
     </div>
 
-    <!-- CAIXA DE TEXTO (DIGITE E ENTREGUE) -->
+    <!-- CAIXA DE TEXTO -->
     <div class="chat-input-area">
         <div id="alerta" class="alerta-temporario">Lançado com sucesso!</div>
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: gastei 45 mercado / ganhei 100 pix" onkeypress="verificarTecla(event)">
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: recebi 500 pix / comprei 40 mercado" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
 
-    <!-- LISTA DE GASTOS ABAIXO (OCUPA O RESTO DA TELA COM ROLAGEM) -->
-    <div class="lista-titulo">Histórico de Gastos e Entradas</div>
-    <div class="lista-container" id="lista-historico">
-        <!-- Itens entram aqui direto -->
-    </div>
+    <!-- LISTA DE GASTOS ABAIXO -->
+    <div class="lista-titulo">Histórico (Toque em um item para excluir)</div>
+    <div class="lista-container" id="lista-historico"></div>
 </div>
 
 <script>
@@ -105,10 +107,9 @@
         const fraseOriginal = input.value.trim();
         
         if (!fraseOriginal) return;
-
         const frase = fraseOriginal.toLowerCase();
         
-        // Extrai o valor numérico automático
+        // Pega valor numérico automático
         const regexNumeros = /\d+([.,]\d+)?/g;
         const numerosEncontrados = frase.match(regexNumeros);
 
@@ -125,77 +126,90 @@
             return;
         }
 
-        // Limpa e isola o texto removendo o número para usar como descrição límpida
+        // Limpa texto tirando o número para virar a descrição
         let descricao = fraseOriginal.replace(numerosEncontrados[0], '').replace(/\s+/g, ' ').trim();
         if (!descricao) { descricao = "Lançamento avulso"; }
 
-        // Identificação automatizada inteligente
         let tipo = 'saida';
         let tagClasse = 'tag-saida';
         let tipoTexto = 'Saída';
         let corTexto = '#e74c3c';
         let sinal = '-';
 
+        // LÓGICA DE INTELIGÊNCIA DE PALAVRAS ATUALIZADA
         if (frase.includes('cartao') || frase.includes('cartão') || frase.includes('credito') || frase.includes('crédito')) {
             tipo = 'cartao';
             totalCartao += valor;
-            tagClasse = 'tag-cartao';
-            tipoTexto = 'Cartão';
-            corTexto = '#f39c12';
-        } else if (frase.includes('ganhei') || frase.includes('recebi') || frase.includes('salario') || frase.includes('salário') || frase.includes('pix') || frase.includes('entrada') || frase.includes('+')) {
+            tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = '#f39c12';
+        } else if (frase.includes('recebi') || frase.includes('ganhei') || frase.includes('salario') || frase.includes('salário') || frase.includes('pix') || frase.includes('entrada') || frase.includes('+')) {
             tipo = 'entrada';
             totalEntradas += valor;
-            tagClasse = 'tag-entrada';
-            tipoTexto = 'Entrada';
-            corTexto = '#2ecc71';
-            sinal = '+';
+            tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = '#2ecc71'; sinal = '+';
         } else {
+            // "gastei", "comprei", "fiz", "paguei" ou qualquer texto padrão cai aqui
+            tipo = 'saida';
             totalSaidas += valor;
         }
 
-        // Criando a linha diretamente na lista abaixo
+        // Cria elemento com dados guardados para exclusão posterior
         const lista = document.getElementById('lista-historico');
         const item = document.createElement('div');
         item.className = 'item-transacao';
         
+        // Guardando os metadados direto na linha para sabermos o que subtrair ao deletar
+        item.dataset.tipo = tipo;
+        item.dataset.valor = valor;
+        
+        // Função de clique para apagar
+        item.onclick = function() {
+            removerItem(this);
+        };
+
         item.innerHTML = `
             <div class="detalhes-item">
                 <span class="descricao-texto">${descricao}</span>
                 <span class="tipo-tag ${tagClasse}">${tipoTexto}</span>
             </div>
-            <span style="font-weight: 600; font-size: 1.05rem; color: ${corTexto}">${sinal} R$ ${valor.toFixed(2)}</span>
+            <span class="valor-exibido" style="font-weight: 600; font-size: 1.05rem; color: ${corTexto}">${sinal} R$ ${valor.toFixed(2)}</span>
         `;
         
-        // Insere sempre no topo da rolagem de baixo
         lista.insertBefore(item, lista.firstChild);
-
-        // Atualiza os painéis numéricos
         atualizarVisual();
-
-        // Limpa a barra para a próxima mensagem e avisa que computou
         input.value = '';
         mostrarAviso(`Adicionado: R$ ${valor.toFixed(2)}`);
     }
 
-    // Alerta que aparece por cima do input e some em 3 segundos
+    // FUNÇÃO QUE REMOVE DO HISTÓRICO E RECALCULA O TOPO
+    function removerItem(elemento) {
+        const tipo = elemento.dataset.tipo;
+        const valor = parseFloat(elemento.dataset.valor);
+
+        if (confirm("Deseja apagar esse lançamento do histórico?")) {
+            if (tipo === 'entrada') totalEntradas -= valor;
+            if (tipo === 'saida') totalSaidas -= valor;
+            if (tipo === 'cartao') totalCartao -= valor;
+
+            elemento.remove();
+            atualizarVisual();
+            mostrarAviso("Lançamento excluído!");
+        }
+    }
+
     function mostrarAviso(texto) {
         const alerta = document.getElementById('alerta');
         alerta.innerText = texto;
         alerta.classList.add('mostrar');
-        
-        setTimeout(() => {
-            alerta.classList.remove('mostrar');
-        }, 3000);
+        setTimeout(() => { alerta.classList.remove('mostrar'); }, 3000);
     }
 
     function atualizarVisual() {
         const saldoFinal = totalEntradas - totalSaidas - totalCartao;
-        document.getElementById('card-entradas').innerText = totalEntradas.toFixed(2);
-        document.getElementById('card-saidas').innerText = totalSaidas.toFixed(2);
-        document.getElementById('card-cartao').innerText = totalCartao.toFixed(2);
+        document.getElementById('card-entradas').innerText = totalEntradas.toFixed(2).replace('.', ',');
+        document.getElementById('card-saidas').innerText = totalSaidas.toFixed(2).replace('.', ',');
+        document.getElementById('card-cartao').innerText = totalCartao.toFixed(2).replace('.', ',');
         
         const cardSaldo = document.getElementById('card-saldo');
-        cardSaldo.innerText = `R$ ${saldoFinal.toFixed(2)}`;
+        cardSaldo.innerText = `R$ ${saldoFinal.toFixed(2).replace('.', ',')}`;
 
         if (saldoFinal >= 0) {
             cardSaldo.style.color = '#2980b9'; // Azul
