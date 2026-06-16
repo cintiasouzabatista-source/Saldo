@@ -208,7 +208,7 @@
         "caixa": "Caixa",
         "inter": "Inter",
         "c6": "C6 Bank", "c6bank": "C6 Bank",
-        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago"
+        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago", "mercado p": "Mercado Pago", "mp": "Mercado Pago"
     };
 
     const CARTOES_CADASTRADOS = {
@@ -253,7 +253,6 @@
         if (e.key === 'Enter') processarComando();
     }
 
-    // NOVA FUNÇÃO: Filtra o histórico ao clicar nos Cards do topo
     function filtrarPorCard(tipo) {
         const seletorTipo = document.getElementById('filtro-tipo');
         seletorTipo.value = tipo;
@@ -281,7 +280,7 @@
         let contaDetectada = "";
         let cartaoDetectado = "";
 
-        // FORÇAR CADASTRO DA CONTA: Corrigido e validado de forma mais abrangente
+        // 1º DETECTAR ANTES DE LIMPAR O TEXTO (Correção crucial)
         for (let chave in BANCOS_CADASTRADOS) {
             if (frase.includes(chave)) {
                 contaDetectada = BANCOS_CADASTRADOS[chave];
@@ -290,8 +289,7 @@
         }
 
         for (let chave in CARTOES_CADASTRADOS) {
-            let regexCartao = new RegExp(`\\b${chave}\\b`, "i");
-            if (regexCartao.test(frase)) {
+            if (frase.includes(chave)) {
                 cartaoDetectado = CARTOES_CADASTRADOS[chave];
                 break;
             }
@@ -310,8 +308,9 @@
             tipo = 'saida';
         }
 
+        // 2º AGORA SIM LIMPAR A DESCRIÇÃO COM SEGURANÇA
         let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
-        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
+        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|mercado p|mp|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
         
         descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         if (!descricao) descricao = "Lançamento Avulso";
@@ -322,7 +321,7 @@
             descricao: descricao,
             valor: valor,
             tipo: tipo,
-            conta: contaDetectada, // Atribui a conta detectada diretamente
+            conta: contaDetectada, 
             cartao: cartaoDetectado,
             mes: dataAtual.getMonth(),
             ano: dataAtual.getFullYear(),
