@@ -32,7 +32,7 @@
             --azul-saldo: #3498db;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.3s, color 0.3s; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
         body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; height: 100vh; }
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 100%; }
         
@@ -51,7 +51,6 @@
         .card.saldo-total { grid-column: span 3; padding: 12px; margin-top: 2px; position: relative;}
         .card.saldo-total p { font-size: 1.3rem; }
         
-        /* Previsão do fim do mês */
         .previsao-texto { font-size: 0.75rem; color: var(--texto-secundario); margin-top: 4px; font-weight: 500; }
 
         .cor-entrada { color: var(--entrada); }
@@ -82,12 +81,13 @@
         .detalhes-item { display: flex; flex-direction: column; gap: 4px; }
         .descricao-texto { font-weight: 500; color: var(--texto-principal); text-transform: capitalize; }
         
-        .tags-row { display: flex; gap: 4px; align-items: center; }
+        .tags-row { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
         .tipo-tag { font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; color: white; font-weight: bold; text-transform: uppercase; }
         .tag-entrada { background: var(--entrada); }
         .tag-saida { background: var(--saida); }
         .tag-cartao { background: var(--cartao); }
         .tag-conta { background: #7f8c8d; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+        .tag-cartao-especifico { background: #34495e; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
 
         /* MODAL DE EDIÇÃO */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
@@ -139,7 +139,7 @@
     <!-- CAIXA DE TEXTO -->
     <div class="chat-input-area">
         <div id="alerta" class="alerta-temporario">Lançado!</div>
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: paguei 150 energia conta itau" onkeypress="verificarTecla(event)">
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: paguei 150 energia conta itau cartao visa" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
 
@@ -179,6 +179,9 @@
 
         <div class="modal-label">Conta / Banco</div>
         <input type="text" id="modal-conta" class="modal-input">
+
+        <div class="modal-label">Cartão Utilizado</div>
+        <input type="text" id="modal-cartao-id" class="modal-input">
         
         <div class="modal-botoes">
             <button class="btn-modal btn-excluir" onclick="acaoExcluir()">Excluir</button>
@@ -194,6 +197,26 @@
     let saldosOcultos = false;
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     
+    // DICIONÁRIO DE CONTAS E CARTÕES CADASTRADOS (Para detecção inteligente)
+    const BANCOS_CADASTRADOS = {
+        "itau": "Itaú", "itaú": "Itaú",
+        "bradesco": "Bradesco",
+        "santander": "Santander",
+        "nubank": "Nubank", "nu": "Nubank",
+        "caixa": "Caixa",
+        "inter": "Inter",
+        "c6": "C6 Bank", "c6bank": "C6 Bank"
+    };
+
+    const CARTOES_CADASTRADOS = {
+        "black": "Black",
+        "visa": "Visa",
+        "master": "Mastercard", "mastercard": "Mastercard",
+        "elo": "Elo",
+        "amex": "Amex",
+        "flash": "Flash"
+    };
+
     function inicializarFiltroMeses() {
         const filtro = document.getElementById('filtro-mes');
         const hoje = new Date();
@@ -205,7 +228,6 @@
         filtro.innerHTML = opcoesHTML;
     }
 
-    // MODOS CLARO / ESCURO DISCRETO
     function alternarTema() {
         const body = document.documentElement;
         const btn = document.getElementById('btn-tema');
@@ -218,7 +240,6 @@
         }
     }
 
-    // OLHO DE VISIBILIDADE / PRIVACIDADE
     function alternarVisibilidade() {
         saldosOcultos = !saldosOcultos;
         document.getElementById('btn-visibilidade').innerText = saldosOcultos ? "🙈" : "👁️";
@@ -247,34 +268,49 @@
         const valor = parseFloat(valorTexto);
         if (isNaN(valor) || valor <= 0) return;
 
-        // IDENTIFICA CONTA
+        // 1. IDENTIFICAÇÃO DE CONTAS E CARTÕES BASEADO NO CADASTRO
         let contaDetectada = "";
-        const listaBancos = ["itau", "itaú", "bradesco", "santander", "nubank", "caixa", "inter", "c6"];
-        listaBancos.forEach(banco => {
-            if (frase.includes(banco)) {
-                contaDetectada = banco === "itau" || banco === "itaú" ? "Itaú" : banco;
-            }
-        });
+        let cartaoDetectado = "";
 
-        // REGRA DE INTELIGÊNCIA CRUZA PALAVRAS
-        let tipo = 'saida';
-        const eEntrada = frase.includes('recebi') || frase.includes('ganhei') || frase.includes('salario') || frase.includes('salário') || frase.includes('entrada') || frase.includes('+');
-        const eCartao = frase.includes('cartao') || frase.includes('cartão') || frase.includes('credito') || frase.includes('crédito');
-        const eSaidaForcada = frase.includes('gastei') || frase.includes('comprei') || frase.includes('paguei') || frase.includes('fiz') || frase.includes('transferencia') || frase.includes('transferência');
+        // Testa bancos cadastrados
+        for (let chave in BANCOS_CADASTRADOS) {
+            let regexBanco = new RegExp(`\\b${chave}\\b`, "i");
+            if (regexBanco.test(frase)) {
+                contaDetectada = BANCOS_CADASTRADOS[chave];
+                break;
+            }
+        }
+
+        // Testa cartões cadastrados
+        for (let chave in CARTOES_CADASTRADOS) {
+            let regexCartao = new RegExp(`\\b${chave}\\b`, "i");
+            if (regexCartao.test(frase)) {
+                cartaoDetectado = CARTOES_CADASTRADOS[chave];
+                break;
+            }
+        }
+
+        // 2. CRUZA REGRAS PARA DEFINIR O TIPO
+        let tipo = 'saida'; // Padrão
+        const eEntrada = /\b(recebi|ganhei|salario|salário|entrada)\b/i.test(frase) || frase.includes('+');
+        const eCartao = /\b(cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/i.test(frase);
+        const eSaidaForcada = /\b(gastei|comprei|paguei|fiz|transferencia|transferência)\b/i.test(frase);
 
         if (eCartao) {
             tipo = 'cartao';
         } else if (eEntrada) {
             tipo = 'entrada';
-        } else if (eSaidaForcada || frase.includes('pix')) {
+        } else if (eSaidaForcada || /\b(pix)\b/i.test(frase)) {
             tipo = 'saida';
         }
 
-        // LIMPEZA DA DESCRIÇÃO
+        // 3. CORREÇÃO DOS CORTES: Filtro usando bordas de palavras (\b) para não estragar as palavras principais!
         let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
-        const termosRemover = /(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|caixa|inter|c6|conta|no|na|de|com|o|a)/gi;
-        descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         
+        // Expressão com limites de palavras (\b) garante que "mercado" permaneça inteiro e limpe termos operacionais isolados.
+        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
+        
+        descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         if (!descricao) descricao = "Lançamento Avulso";
 
         const dataAtual = new Date();
@@ -284,6 +320,7 @@
             valor: valor,
             tipo: tipo,
             conta: contaDetectada,
+            cartao: cartaoDetectado,
             mes: dataAtual.getMonth(),
             ano: dataAtual.getFullYear(),
             dia: dataAtual.getDate()
@@ -306,18 +343,14 @@
 
         const saldoFinal = totalEntradas - totalSaidas - totalCartao;
 
-        // CALCULA PREVISÃO/PROJEÇÃO SIMPLES DO FIM DO MÊS
         const hoje = new Date();
         const diaAtual = hoje.getDate();
         const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
         
-        // Média de gastos diária até aqui
         const mediaDiariaSaidas = diaAtual > 0 ? (totalSaidas + totalCartao) / diaAtual : 0;
-        // Projeta os gastos restantes até o fim do mês
         const gastoProjetadoAteFimMes = mediaDiariaSaidas * (ultimoDia - diaAtual);
         const previsaoSobrar = saldoFinal - gastoProjetadoAteFimMes;
 
-        // Armazena valores brutos nos datasets para formatação inteligente
         document.getElementById('card-entradas').setAttribute('data-valor', totalEntradas.toFixed(2));
         document.getElementById('card-saidas').setAttribute('data-valor', totalSaidas.toFixed(2));
         document.getElementById('card-cartao').setAttribute('data-valor', totalCartao.toFixed(2));
@@ -331,7 +364,6 @@
         renderizarHistorico();
     }
 
-    // FORMATA OU OCULTA COM EM CASO DE PRIVACIDADE ATIVA
     function atualizarVisualValores() {
         const elementos = document.querySelectorAll('.valor-dinamico');
         elementos.forEach(el => {
@@ -375,6 +407,7 @@
             item.onclick = () => abrirModal(t.id);
 
             let contaHTML = t.conta ? `<span class="tag-conta">${t.conta}</span>` : '';
+            let cartaoHTML = t.cartao ? `<span class="tag-cartao-especifico">💳 ${t.cartao}</span>` : '';
             let valorExibição = saldosOcultos ? "•••" : `R$ ${t.valor.toFixed(2).replace('.', ',')}`;
 
             item.innerHTML = `
@@ -383,6 +416,7 @@
                     <div class="tags-row">
                         <span class="tipo-tag ${tagClasse}">${tipoTexto}</span>
                         ${contaHTML}
+                        ${cartaoHTML}
                     </div>
                 </div>
                 <span style="font-weight: 600; font-size: 1.05rem; color: ${corTexto}">${sinal} ${valorExibição}</span>
@@ -398,6 +432,7 @@
         document.getElementById('modal-valor').value = t.valor;
         document.getElementById('modal-tipo').value = t.tipo;
         document.getElementById('modal-conta').value = t.conta || '';
+        document.getElementById('modal-cartao-id').value = t.cartao || '';
         document.getElementById('modal-edicao').style.display = 'flex';
     }
 
@@ -412,6 +447,7 @@
             transacoes[index].valor = parseFloat(document.getElementById('modal-valor').value);
             transacoes[index].tipo = document.getElementById('modal-tipo').value;
             transacoes[index].conta = document.getElementById('modal-conta').value.trim();
+            transacoes[index].cartao = document.getElementById('modal-cartao-id').value.trim();
         }
         fecharModal();
         atualizarAplicativo();
