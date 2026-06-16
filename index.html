@@ -38,8 +38,8 @@
         
         /* CABEÇALHO DO APP */
         .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; padding: 5px; }
-        .app-title { font-size: 1.2rem; font-weight: 700; color: var(--azul-saldo); letter-spacing: -0.5px; }
-        .app-actions { display: flex; gap: 14px; }
+        .app-title { font-size: 1.4rem; font-weight: 700; color: var(--azul-saldo); letter-spacing: -0.5px; }
+        .app-actions { display: flex; gap: 14px; align-items: center; }
         .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; }
         .icon-btn:hover { background: var(--borda); }
 
@@ -106,16 +106,14 @@
 
 <div class="container">
     
-    <!-- CABEÇALHO DO APP COM ÍCONES DISCRETOS -->
     <div class="app-header">
-        <div class="app-title"> Meu Saldo </div>
+        <div class="app-title">Meu Saldo</div>
         <div class="app-actions">
             <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">👁️</button>
             <button class="icon-btn" id="btn-tema" onclick="alternarTema()" title="Mudar Tema">🌙</button>
         </div>
     </div>
 
-    <!-- CARDS NO TOPO -->
     <div class="cards-container">
         <div class="card">
             <h3>Entradas</h3>
@@ -136,14 +134,12 @@
         </div>
     </div>
 
-    <!-- CAIXA DE TEXTO -->
     <div class="chat-input-area">
         <div id="alerta" class="alerta-temporario">Lançado!</div>
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: paguei 150 energia conta itau cartao visa" onkeypress="verificarTecla(event)">
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: camisas brasil 150 mercado pago" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
 
-    <!-- FILTROS -->
     <div class="filtros-container">
         <select id="filtro-mes" class="filtro-select" onchange="renderizarHistorico()"></select>
         <select id="filtro-tipo" class="filtro-select" onchange="renderizarHistorico()">
@@ -154,12 +150,10 @@
         </select>
     </div>
 
-    <!-- LISTA DE GASTOS -->
     <div class="lista-titulo">Histórico de Lançamentos</div>
     <div class="lista-container" id="lista-historico"></div>
 </div>
 
-<!-- MODAL DE EDIÇÃO -->
 <div class="modal-overlay" id="modal-edicao">
     <div class="modal-container">
         <div class="modal-title">Editar Lançamento</div>
@@ -197,7 +191,7 @@
     let saldosOcultos = false;
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     
-    // DICIONÁRIO DE CONTAS E CARTÕES CADASTRADOS (Para detecção inteligente)
+    // DICIONÁRIO ATUALIZADO DE CONTAS E CARTÕES
     const BANCOS_CADASTRADOS = {
         "itau": "Itaú", "itaú": "Itaú",
         "bradesco": "Bradesco",
@@ -205,7 +199,8 @@
         "nubank": "Nubank", "nu": "Nubank",
         "caixa": "Caixa",
         "inter": "Inter",
-        "c6": "C6 Bank", "c6bank": "C6 Bank"
+        "c6": "C6 Bank", "c6bank": "C6 Bank",
+        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago"
     };
 
     const CARTOES_CADASTRADOS = {
@@ -268,11 +263,10 @@
         const valor = parseFloat(valorTexto);
         if (isNaN(valor) || valor <= 0) return;
 
-        // 1. IDENTIFICAÇÃO DE CONTAS E CARTÕES BASEADO NO CADASTRO
         let contaDetectada = "";
         let cartaoDetectado = "";
 
-        // Testa bancos cadastrados
+        // Busca de banco/conta por limites exatos
         for (let chave in BANCOS_CADASTRADOS) {
             let regexBanco = new RegExp(`\\b${chave}\\b`, "i");
             if (regexBanco.test(frase)) {
@@ -281,7 +275,7 @@
             }
         }
 
-        // Testa cartões cadastrados
+        // Busca de cartão cadastrado por limites exatos
         for (let chave in CARTOES_CADASTRADOS) {
             let regexCartao = new RegExp(`\\b${chave}\\b`, "i");
             if (regexCartao.test(frase)) {
@@ -290,8 +284,8 @@
             }
         }
 
-        // 2. CRUZA REGRAS PARA DEFINIR O TIPO
-        let tipo = 'saida'; // Padrão
+        // Definição inteligente do tipo
+        let tipo = 'saida'; 
         const eEntrada = /\b(recebi|ganhei|salario|salário|entrada)\b/i.test(frase) || frase.includes('+');
         const eCartao = /\b(cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/i.test(frase);
         const eSaidaForcada = /\b(gastei|comprei|paguei|fiz|transferencia|transferência)\b/i.test(frase);
@@ -304,11 +298,9 @@
             tipo = 'saida';
         }
 
-        // 3. CORREÇÃO DOS CORTES: Filtro usando bordas de palavras (\b) para não estragar as palavras principais!
+        // Limpeza precisa da descrição (Remove palavras soltas operacionais sem estragar palavras normais)
         let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
-        
-        // Expressão com limites de palavras (\b) garante que "mercado" permaneça inteiro e limpe termos operacionais isolados.
-        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
+        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
         
         descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         if (!descricao) descricao = "Lançamento Avulso";
@@ -399,7 +391,7 @@
             if (filtroTipo !== 'todos' && t.tipo !== filtroTipo) return;
 
             let tagClasse = 'tag-saida', tipoTexto = 'Saída', corTexto = 'var(--saida)', sinal = '-';
-            if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = 'var(--entrada)'; sinal = '+'; }
+            if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; colorTexto = 'var(--entrada)'; sinal = '+'; }
             if (t.tipo === 'cartao') { tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = 'var(--cartao)'; sinal = '-'; }
 
             const item = document.createElement('div');
