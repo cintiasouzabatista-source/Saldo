@@ -3,45 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    
-    <title>Meu Fluxo de Caixa</title>
+    <title>Meu Fluxo de Caixa - Chat</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f6f9; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 500px; }
+        body { background-color: #f0f2f5; padding: 10px; display: flex; flex-direction: column; align-items: center; height: 100vh; }
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 100%; }
         
-        .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
-        .card { background: white; padding: 12px 8px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
-        .card h3 { font-size: 0.8rem; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .card p { font-size: 1rem; font-weight: bold; }
-        .card.saldo-total { grid-column: span 3; padding: 15px; margin-top: 4px; }
-        .card.saldo-total p { font-size: 1.4rem; }
+        /* CARDS NO TOPO FIXED */
+        .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; flex-shrink: 0; }
+        .card { background: white; padding: 10px 5px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; }
+        .card h3 { font-size: 0.75rem; color: #666; margin-bottom: 3px; text-transform: uppercase; }
+        .card p { font-size: 0.95rem; font-weight: bold; }
+        .card.saldo-total { grid-column: span 3; padding: 12px; }
+        .card.saldo-total p { font-size: 1.3rem; }
         
         .cor-entrada { color: #2ecc71; }
         .cor-saida { color: #e74c3c; }
         .cor-cartao { color: #f39c12; }
-        .positivo { color: #2980b9; } 
-        .negativo { color: #e74c3c; } 
-
-        .form-inclusao { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .radio-group { display: flex; justify-content: space-around; margin-bottom: 15px; }
-        .radio-group label { cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; }
-        .input-valor { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; margin-bottom: 10px; }
-        .btn-adicionar { width: 100%; padding: 10px; background: #2c3e50; color: white; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; font-weight: bold; }
         
-        .lista-titulo { font-size: 1rem; color: #444; margin-bottom: 10px; padding-left: 5px; font-weight: 600; }
-        .lista-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); max-height: 230px; overflow-y: auto; padding: 10px; }
-        .item-transacao { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 0.95rem; align-items: center; }
-        .item-transacao:last-child { border-bottom: none; }
-        .tipo-tag { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; color: white; font-weight: bold; }
+        /* ÁREA DO CHAT (ROLAGEM ESTILO WHATSAPP) */
+        .chat-container { flex-grow: 1; background: #e5ddd5; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+        
+        /* Balão de Mensagem */
+        .balao { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.95rem; line-height: 1.4; box-shadow: 0 1px 1px rgba(0,0,0,0.1); position: relative; }
+        .balao.usuario { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 0; }
+        .balao.sistema { background: white; align-self: flex-start; border-top-left-radius: 0; color: #333; }
+        
+        .chat-tag { font-size: 0.7rem; font-weight: bold; padding: 2px 5px; border-radius: 4px; color: white; display: inline-block; margin-top: 5px; text-transform: uppercase; }
         .tag-entrada { background: #2ecc71; }
         .tag-saida { background: #e74c3c; }
         .tag-cartao { background: #f39c12; }
+
+        /* BARRA DE ENTRADA DO CHAT (EMBAIXO) */
+        .chat-input-area { display: flex; gap: 8px; background: white; padding: 10px; border-radius: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex-shrink: 0; align-items: center; }
+        .chat-input { flex-grow: 1; border: none; padding: 8px 5px; font-size: 1rem; outline: none; }
+        .btn-enviar { background: #128c7e; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -62,69 +61,138 @@
         </div>
         <div class="card saldo-total">
             <h3>Saldo Final</h3>
-            <p id="card-saldo" class="positivo">R$ 0,00</p>
+            <p id="card-saldo" style="color: #2980b9;">R$ 0,00</p>
         </div>
     </div>
 
-    <div class="form-inclusao">
-        <div class="radio-group">
-            <label><input type="radio" name="tipo" value="entrada" checked> 🟢 Entrada</label>
-            <label><input type="radio" name="tipo" value="saida"> 🔴 Saída</label>
-            <label><input type="radio" name="tipo" value="cartao"> 💳 Cartão</label>
+    <div class="chat-container" id="janela-chat">
+        <div class="balao sistema">
+            Olá! Pode digitar livremente o que aconteceu. 
+            <br><br>
+            <strong>Exemplos:</strong>
+            <br>• <i>"ganhei 150 de uber"</i>
+            <br>• <i>"gastei 45 no mercado"</i>
+            <br>• <i>"paguei 30 de farmacia no cartao"</i>
         </div>
-        <input type="number" id="valor" class="input-valor" placeholder="Digite o valor (ex: 150.00)" step="0.01" required>
-        <button class="btn-adicionar" onclick="adicionarValor()">Incluir Valor</button>
     </div>
 
-    <div class="lista-titulo">Histórico de Lançamentos</div>
-    <div class="lista-container" id="lista-transacoes"></div>
+    <div class="chat-input-area">
+        <input type="text" id="mensagem-usuario" class="chat-input" placeholder="Digite aqui (Ex: gastei 50 de gas)..." onkeypress="verificarTecla(event)">
+        <button class="btn-enviar" onclick="processarMensagem()">➔</button>
+    </div>
 </div>
 
 <script>
-    // Registro do Service Worker para permitir instalação do App
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log("Erro de SW:", err));
+        navigator.serviceWorker.register('sw.js').catch(err => console.log("Erro SW:", err));
     }
 
     let totalEntradas = 0;
     let totalSaidas = 0;
     let totalCartao = 0;
 
-    function adicionarValor() {
-        const inputValor = document.getElementById('valor');
-        const valor = parseFloat(inputValor.value);
+    function verificarTecla(e) {
+        if (e.key === 'Enter') {
+            processarMensagem();
+        }
+    }
+
+    function processarMensagem() {
+        const input = document.getElementById('mensagem-usuario');
+        const textoOriginal = input.value.trim();
         
-        if (isNaN(valor) || valor <= 0) {
-            alert("Por favor, insira um valor válido.");
+        if (!textoOriginal) return;
+
+        const chat = document.getElementById('janela-chat');
+
+        // 1. Adiciona o balão do usuário no chat
+        const balaoUsuario = document.createElement('div');
+        balaoUsuario.className = 'balao usuario';
+        balaoUsuario.innerText = textoOriginal;
+        chat.appendChild(balaoUsuario);
+
+        // Limpa o campo imediatamente
+        input.value = '';
+
+        // 2. Lógica Inteligente de Interpretação da frase
+        const texto = textoOriginal.toLowerCase();
+        
+        // Tenta capturar qualquer número (com ou sem vírgula/ponto) na frase
+        const regexNumeros = /\d+([.,]\d+)?/g;
+        const numerosEncontrados = texto.match(regexNumeros);
+
+        if (!numerosEncontrados) {
+            enviarRespostaSistema("Não entendi o valor. Escreva o valor em números (ex: 50 ou 45,90).");
+            rolarChat();
             return;
         }
 
-        const tipo = document.querySelector('input[name="tipo"]:checked').value;
-        const lista = document.getElementById('lista-transacoes');
-        const item = document.createElement('div');
-        item.className = 'item-transacao';
-        
-        let tagClasse = '', tipoTexto = '', sinal = '', corTexto = '';
+        // Pega o primeiro número digitado e padroniza para o sistema
+        let valorTexto = numerosEncontrados[0].replace(',', '.');
+        const valor = parseFloat(valorTexto);
 
-        if (tipo === 'entrada') {
-            totalEntradas += valor;
-            tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; sinal = '+'; corTexto = '#2ecc71';
-        } else if (tipo === 'saida') {
-            totalSaidas += valor;
-            tagClasse = 'tag-saida'; tipoTexto = 'Saída'; sinal = '-'; corTexto = '#e74c3c';
-        } else if (tipo === 'cartao') {
-            totalCartao += valor;
-            tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; sinal = '-'; corTexto = '#f39c12';
+        if (isNaN(valor) || valor <= 0) {
+            enviarRespostaSistema("Por favor, digite um valor maior que zero.");
+            rolarChat();
+            return;
         }
 
-        item.innerHTML = `
-            <span><span class="tipo-tag ${tagClasse}">${tipoTexto}</span></span>
-            <span style="font-weight: 600; color: ${corTexto}">${sinal} R$ ${valor.toFixed(2)}</span>
-        `;
-        
-        lista.insertBefore(item, lista.firstChild);
-        atualizarVisual();
-        inputValor.value = '';
+        // Descobre a categoria por palavras-chave
+        let tipo = 'saida'; // Padrão se não achar nada é saída
+        let tagClasse = 'tag-saida';
+        let tipoTexto = 'Saída';
+        let feedbackCor = '#e74c3c';
+
+        // Palavras para CARTÃO
+        if (texto.includes('cartao') || texto.includes('cartão') || texto.includes('credito') || texto.includes('crédito')) {
+            tipo = 'cartao';
+            totalCartao += valor;
+            tagClasse = 'tag-cartao';
+            tipoTexto = 'Cartão';
+            feedbackCor = '#f39c12';
+        }
+        // Palavras para ENTRADA
+        else if (texto.includes('ganhei') || texto.includes('recebi') || texto.includes('salario') || texto.includes('salário') || texto.includes('pix') || texto.includes('entrada') || texto.includes('+')) {
+            tipo = 'entrada';
+            totalEntradas += valor;
+            tagClasse = 'tag-entrada';
+            tipoTexto = 'Entrada';
+            feedbackCor = '#2ecc71';
+        }
+        // Se não for nenhum dos dois, assume SAÍDA padrão
+        else {
+            totalSaidas += valor;
+        }
+
+        // 3. Sistema responde confirmando o entendimento
+        setTimeout(() => {
+            const balaoSistema = document.createElement('div');
+            balaoSistema.className = 'balao sistema';
+            balaoSistema.innerHTML = `
+                Lançado: <strong>R$ ${valor.toFixed(2)}</strong><br>
+                <span class="chat-tag ${tagClasse}">${tipoTexto}</span>
+            `;
+            chat.appendChild(balaoSistema);
+            
+            // Atualiza os cards e rola a tela para baixo
+            atualizarVisual();
+            rolarChat();
+        }, 400);
+
+        rolarChat();
+    }
+
+    function enviarRespostaSistema(texto) {
+        const chat = document.getElementById('janela-chat');
+        const balao = document.createElement('div');
+        balao.className = 'balao sistema';
+        balao.innerText = texto;
+        chat.appendChild(balao);
+    }
+
+    function rolarChat() {
+        const chat = document.getElementById('janela-chat');
+        chat.scrollTop = chat.scrollHeight;
     }
 
     function atualizarVisual() {
@@ -137,9 +205,9 @@
         cardSaldo.innerText = `R$ ${saldoFinal.toFixed(2)}`;
 
         if (saldoFinal >= 0) {
-            cardSaldo.style.color = '#2980b9';
+            cardSaldo.style.color = '#2980b9'; // Azul se positivo
         } else {
-            cardSaldo.style.color = '#e74c3c';
+            cardSaldo.style.color = '#e74c3c'; // Vermelho se negativo
         }
     }
 </script>
