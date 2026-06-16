@@ -8,25 +8,59 @@
     <meta name="theme-color" content="#2c3e50">
     <title>Meu Fluxo de Caixa Inteligente</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f6f9; padding: 15px; display: flex; flex-direction: column; align-items: center; height: 100vh; }
+        /* Variáveis de Cores (Suporta Modo Claro e Escuro) */
+        :root {
+            --bg-body: #f4f6f9;
+            --bg-container: white;
+            --texto-principal: #222;
+            --texto-secundario: #666;
+            --borda: #eee;
+            --shadow: rgba(0,0,0,0.05);
+            --entrada: #2ecc71;
+            --saida: #e74c3c;
+            --cartao: #f39c12;
+            --azul-saldo: #2980b9;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #121212;
+            --bg-container: #1e1e1e;
+            --texto-principal: #f5f6fa;
+            --texto-secundario: #aaa;
+            --borda: #2d2d2d;
+            --shadow: rgba(0,0,0,0.3);
+            --azul-saldo: #3498db;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.3s, color 0.3s; }
+        body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; height: 100vh; }
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 100%; }
         
+        /* CABEÇALHO DO APP */
+        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; padding: 5px; }
+        .app-title { font-size: 1.2rem; font-weight: 700; color: var(--azul-saldo); letter-spacing: -0.5px; }
+        .app-actions { display: flex; gap: 14px; }
+        .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; }
+        .icon-btn:hover { background: var(--borda); }
+
         /* CARDS NO TOPO */
         .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
-        .card { background: white; padding: 12px 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
-        .card h3 { font-size: 0.75rem; color: #666; margin-bottom: 3px; text-transform: uppercase; }
-        .card p { font-size: 1rem; font-weight: bold; }
-        .card.saldo-total { grid-column: span 3; padding: 14px; margin-top: 2px; }
-        .card.saldo-total p { font-size: 1.4rem; }
+        .card { background: var(--bg-container); padding: 12px 5px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
+        .card h3 { font-size: 0.72rem; color: var(--texto-secundario); margin-bottom: 3px; text-transform: uppercase; }
+        .card p { font-size: 0.95rem; font-weight: bold; }
+        .card.saldo-total { grid-column: span 3; padding: 12px; margin-top: 2px; position: relative;}
+        .card.saldo-total p { font-size: 1.3rem; }
         
-        .cor-entrada { color: #2ecc71; }
-        .cor-saida { color: #e74c3c; }
-        .cor-cartao { color: #f39c12; }
+        /* Previsão do fim do mês */
+        .previsao-texto { font-size: 0.75rem; color: var(--texto-secundario); margin-top: 4px; font-weight: 500; }
+
+        .cor-entrada { color: var(--entrada); }
+        .cor-saida { color: var(--saida); }
+        .cor-cartao { color: var(--cartao); }
 
         /* CAIXA DE TEXTO */
-        .chat-input-area { display: flex; gap: 8px; background: white; padding: 8px 12px; border-radius: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); align-items: center; margin-bottom: 15px; position: relative; }
-        .chat-input { flex-grow: 1; border: none; padding: 8px 5px; font-size: 1rem; outline: none; }
+        .chat-input-area { display: flex; gap: 8px; background: var(--bg-container); padding: 8px 12px; border-radius: 25px; box-shadow: 0 2px 5px var(--shadow); align-items: center; margin-bottom: 15px; position: relative; border: 1px solid var(--borda); }
+        .chat-input { flex-grow: 1; border: none; padding: 8px 5px; font-size: 1rem; outline: none; background: transparent; color: var(--texto-principal); }
         .btn-enviar { background: #2c3e50; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
         
         /* Alerta flutuante */
@@ -35,67 +69,77 @@
 
         /* FILTROS */
         .filtros-container { display: flex; gap: 6px; margin-bottom: 10px; }
-        .filtro-select { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #ddd; background: white; font-size: 0.85rem; color: #444; outline: none; font-weight: 500; }
+        .filtro-select { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.85rem; color: var(--texto-secundario); outline: none; font-weight: 500; }
 
         /* LISTA COMPLETA ABAIXO */
-        .lista-titulo { font-size: 0.95rem; color: #444; margin-bottom: 6px; padding-left: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .lista-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex-grow: 1; overflow-y: auto; padding: 5px 10px; margin-bottom: 10px; }
+        .lista-titulo { font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 6px; padding-left: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .lista-container { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); flex-grow: 1; overflow-y: auto; padding: 5px 10px; margin-bottom: 10px; border: 1px solid var(--borda); }
         
-        .item-transacao { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #eee; font-size: 0.95rem; align-items: center; cursor: pointer; transition: background 0.2s; }
-        .item-transacao:hover { background-color: #f5f6fa; }
+        .item-transacao { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid var(--borda); font-size: 0.95rem; align-items: center; cursor: pointer; }
+        .item-transacao:hover { background-color: var(--bg-body); }
         .item-transacao:last-child { border-bottom: none; }
         
         .detalhes-item { display: flex; flex-direction: column; gap: 4px; }
-        .descricao-texto { font-weight: 500; color: #222; text-transform: capitalize; }
+        .descricao-texto { font-weight: 500; color: var(--texto-principal); text-transform: capitalize; }
         
         .tags-row { display: flex; gap: 4px; align-items: center; }
-        .tipo-tag { font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; color: white; font-weight: bold; text-transform: uppercase; }
-        .tag-entrada { background: #2ecc71; }
-        .tag-saida { background: #e74c3c; }
-        .tag-cartao { background: #f39c12; }
-        .tag-conta { background: #7f8c8d; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+        .tipo-tag { font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; color: white; font-weight: bold; text-transform: uppercase; }
+        .tag-entrada { background: var(--entrada); }
+        .tag-saida { background: var(--saida); }
+        .tag-cartao { background: var(--cartao); }
+        .tag-conta { background: #7f8c8d; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
 
         /* MODAL DE EDIÇÃO */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
-        .modal-container { background: white; width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 12px; }
-        .modal-title { font-size: 1.1rem; font-weight: bold; color: #333; margin-bottom: 4px; }
-        .modal-label { font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: -6px; }
-        .modal-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; outline: none; }
-        .modal-select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; outline: none; background: white; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--borda); }
+        .modal-title { font-size: 1.1rem; font-weight: bold; color: var(--texto-principal); margin-bottom: 4px; }
+        .modal-label { font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: -6px; }
+        .modal-input, .modal-select { width: 100%; padding: 10px; border: 1px solid var(--borda); border-radius: 6px; font-size: 1rem; outline: none; background: var(--bg-container); color: var(--texto-principal); }
         .modal-botoes { display: flex; gap: 8px; margin-top: 10px; }
         .btn-modal { flex: 1; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; border: none; cursor: pointer; }
-        .btn-salvar { background: #2ecc71; color: white; }
-        .btn-excluir { background: #e74c3c; color: white; }
-        .btn-cancelar { background: #bdc3c7; color: white; }
+        .btn-salvar { background: var(--entrada); color: white; }
+        .btn-excluir { background: var(--saida); color: white; }
+        .btn-cancelar { background: #bdc3c7; color: #333; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    
+    <!-- CABEÇALHO DO APP COM ÍCONES DISCRETOS -->
+    <div class="app-header">
+        <div class="app-title">PocketFluxo 💳</div>
+        <div class="app-actions">
+            <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">👁️</button>
+            <button class="icon-btn" id="btn-tema" onclick="alternarTema()" title="Mudar Tema">🌙</button>
+        </div>
+    </div>
+
     <!-- CARDS NO TOPO -->
     <div class="cards-container">
         <div class="card">
             <h3>Entradas</h3>
-            <p class="cor-entrada">R$ <span id="card-entradas">0,00</span></p>
+            <p class="cor-entrada">R$ <span class="valor-dinamico" id="card-entradas" data-valor="0.00">0,00</span></p>
         </div>
         <div class="card">
             <h3>Saídas</h3>
-            <p class="cor-saida">R$ <span id="card-saidas">0,00</span></p>
+            <p class="cor-saida">R$ <span class="valor-dinamico" id="card-saidas" data-valor="0.00">0,00</span></p>
         </div>
         <div class="card">
             <h3>Cartão</h3>
-            <p class="cor-cartao">R$ <span id="card-cartao">0,00</span></p>
+            <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
         </div>
         <div class="card saldo-total">
-            <h3>Saldo Final</h3>
-            <p id="card-saldo" style="color: #2980b9;">R$ 0,00</p>
+            <h3>Saldo Atual</h3>
+            <p id="card-saldo" class="valor-dinamico" data-valor="0.00" style="color: var(--azul-saldo);">R$ 0,00</p>
+            <div class="previsao-texto" id="card-previsao">Sobrará no fim do mês: R$ <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">0,00</span></div>
         </div>
     </div>
 
     <!-- CAIXA DE TEXTO -->
     <div class="chat-input-area">
-        <div id="alerta" class="alerta-temporario">Lançado com sucesso!</div>
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: gastei 100 mercado conta itau" onkeypress="verificarTecla(event)">
+        <div id="alerta" class="alerta-temporario">Lançado!</div>
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: paguei 150 energia conta itau" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
 
@@ -134,7 +178,7 @@
         </select>
 
         <div class="modal-label">Conta / Banco</div>
-        <input type="text" id="modal-conta" class="modal-input" placeholder="Ex: Itaú, Nubank (opcional)">
+        <input type="text" id="modal-conta" class="modal-input">
         
         <div class="modal-botoes">
             <button class="btn-modal btn-excluir" onclick="acaoExcluir()">Excluir</button>
@@ -145,12 +189,9 @@
 </div>
 
 <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log("Erro SW:", err));
-    }
-
     let transacoes = [];
     let idEdicaoAtual = null;
+    let saldosOcultos = false;
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     
     function inicializarFiltroMeses() {
@@ -162,6 +203,26 @@
             opcoesHTML += `<option value="${d.getMonth()}-${d.getFullYear()}">${nomesMeses[d.getMonth()]}/${d.getFullYear()}</option>`;
         }
         filtro.innerHTML = opcoesHTML;
+    }
+
+    // MODOS CLARO / ESCURO DISCRETO
+    function alternarTema() {
+        const body = document.documentElement;
+        const btn = document.getElementById('btn-tema');
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            btn.innerText = "🌙";
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            btn.innerText = "☀️";
+        }
+    }
+
+    // OLHO DE VISIBILIDADE / PRIVACIDADE
+    function alternarVisibilidade() {
+        saldosOcultos = !saldosOcultos;
+        document.getElementById('btn-visibilidade').innerText = saldosOcultos ? "🙈" : "👁️";
+        atualizarVisualValores();
     }
 
     function verificarTecla(e) {
@@ -186,18 +247,17 @@
         const valor = parseFloat(valorTexto);
         if (isNaN(valor) || valor <= 0) return;
 
-        // 1. MAPEIA CONTA/BANCO AUTOMATICAMENTE
+        // IDENTIFICA CONTA
         let contaDetectada = "";
-        const listaBancos = ["itau", "itaú", "bradesco", "santander", "nubank", "caixa", "inter", "c6", "banco"];
+        const listaBancos = ["itau", "itaú", "bradesco", "santander", "nubank", "caixa", "inter", "c6"];
         listaBancos.forEach(banco => {
             if (frase.includes(banco)) {
-                contaDetectada = banco === "itau" ? "Itaú" : banco;
+                contaDetectada = banco === "itau" || banco === "itaú" ? "Itaú" : banco;
             }
         });
 
-        // 2. REGRA DE INTELIGÊNCIA CRUZA PALAVRAS (AÇÃO SEPARA PIX DE ENTRADA/SAÍDA)
-        let tipo = 'saida'; // Padrão
-
+        // REGRA DE INTELIGÊNCIA CRUZA PALAVRAS
+        let tipo = 'saida';
         const eEntrada = frase.includes('recebi') || frase.includes('ganhei') || frase.includes('salario') || frase.includes('salário') || frase.includes('entrada') || frase.includes('+');
         const eCartao = frase.includes('cartao') || frase.includes('cartão') || frase.includes('credito') || frase.includes('crédito');
         const eSaidaForcada = frase.includes('gastei') || frase.includes('comprei') || frase.includes('paguei') || frase.includes('fiz') || frase.includes('transferencia') || frase.includes('transferência');
@@ -207,13 +267,11 @@
         } else if (eEntrada) {
             tipo = 'entrada';
         } else if (eSaidaForcada || frase.includes('pix')) {
-            // Se tem pix, transferência ou termos de gasto e não deu positivo acima, vai pra Saída
             tipo = 'saida';
         }
 
-        // 3. LIMPEZA DA DESCRIÇÃO (SÓ FICA O MOTIVO)
+        // LIMPEZA DA DESCRIÇÃO
         let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
-        // Limpa termos operacionais e os bancos localizados
         const termosRemover = /(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|caixa|inter|c6|conta|no|na|de|com|o|a)/gi;
         descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         
@@ -227,13 +285,14 @@
             tipo: tipo,
             conta: contaDetectada,
             mes: dataAtual.getMonth(),
-            ano: dataAtual.getFullYear()
+            ano: dataAtual.getFullYear(),
+            dia: dataAtual.getDate()
         };
 
         transacoes.unshift(novaTransacao);
         atualizarAplicativo();
         input.value = '';
-        mostrarAviso(`Adicionado: R$ ${valor.toFixed(2)}`);
+        mostrarAviso(`Adicionado!`);
     }
 
     function atualizarAplicativo() {
@@ -247,15 +306,51 @@
 
         const saldoFinal = totalEntradas - totalSaidas - totalCartao;
 
-        document.getElementById('card-entradas').innerText = totalEntradas.toFixed(2).replace('.', ',');
-        document.getElementById('card-saidas').innerText = totalSaidas.toFixed(2).replace('.', ',');
-        document.getElementById('card-cartao').innerText = totalCartao.toFixed(2).replace('.', ',');
+        // CALCULA PREVISÃO/PROJEÇÃO SIMPLES DO FIM DO MÊS
+        const hoje = new Date();
+        const diaAtual = hoje.getDate();
+        const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
         
-        const cardSaldo = document.getElementById('card-saldo');
-        cardSaldo.innerText = `R$ ${saldoFinal.toFixed(2).replace('.', ',')}`;
-        cardSaldo.style.color = saldoFinal >= 0 ? '#2980b9' : '#e74c3c';
+        // Média de gastos diária até aqui
+        const mediaDiariaSaidas = diaAtual > 0 ? (totalSaidas + totalCartao) / diaAtual : 0;
+        // Projeta os gastos restantes até o fim do mês
+        const gastoProjetadoAteFimMes = mediaDiariaSaidas * (ultimoDia - diaAtual);
+        const previsaoSobrar = saldoFinal - gastoProjetadoAteFimMes;
 
+        // Armazena valores brutos nos datasets para formatação inteligente
+        document.getElementById('card-entradas').setAttribute('data-valor', totalEntradas.toFixed(2));
+        document.getElementById('card-saidas').setAttribute('data-valor', totalSaidas.toFixed(2));
+        document.getElementById('card-cartao').setAttribute('data-valor', totalCartao.toFixed(2));
+        document.getElementById('card-saldo').setAttribute('data-valor', saldoFinal.toFixed(2));
+        document.getElementById('previsao-valor').setAttribute('data-valor', previsaoSobrar.toFixed(2));
+
+        const cardSaldo = document.getElementById('card-saldo');
+        cardSaldo.style.color = saldoFinal >= 0 ? 'var(--azul-saldo)' : 'var(--saida)';
+
+        atualizarVisualValores();
         renderizarHistorico();
+    }
+
+    // FORMATA OU OCULTA COM EM CASO DE PRIVACIDADE ATIVA
+    function atualizarVisualValores() {
+        const elementos = document.querySelectorAll('.valor-dinamico');
+        elementos.forEach(el => {
+            const valorBruto = parseFloat(el.getAttribute('data-valor') || 0);
+            if (saldosOcultos) {
+                if(el.id === 'card-saldo' || el.id === 'previsao-valor') {
+                     el.innerText = " R$ ••••";
+                } else {
+                     el.innerText = "••••";
+                }
+            } else {
+                const valorFormatado = valorBruto.toFixed(2).replace('.', ',');
+                if(el.id === 'card-saldo' || el.id === 'previsao-valor') {
+                    el.innerText = `R$ ${valorFormatado}`;
+                } else {
+                    el.innerText = valorFormatado;
+                }
+            }
+        });
     }
 
     function renderizarHistorico() {
@@ -271,16 +366,16 @@
             }
             if (filtroTipo !== 'todos' && t.tipo !== filtroTipo) return;
 
-            let tagClasse = 'tag-saida', tipoTexto = 'Saída', corTexto = '#e74c3c', sinal = '-';
-            if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = '#2ecc71'; sinal = '+'; }
-            if (t.tipo === 'cartao') { tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = '#f39c12'; sinal = '-'; }
+            let tagClasse = 'tag-saida', tipoTexto = 'Saída', corTexto = 'var(--saida)', sinal = '-';
+            if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = 'var(--entrada)'; sinal = '+'; }
+            if (t.tipo === 'cartao') { tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = 'var(--cartao)'; sinal = '-'; }
 
             const item = document.createElement('div');
             item.className = 'item-transacao';
             item.onclick = () => abrirModal(t.id);
 
-            // Adiciona a tag da conta/banco caso exista
             let contaHTML = t.conta ? `<span class="tag-conta">${t.conta}</span>` : '';
+            let valorExibição = saldosOcultos ? "•••" : `R$ ${t.valor.toFixed(2).replace('.', ',')}`;
 
             item.innerHTML = `
                 <div class="detalhes-item">
@@ -290,7 +385,7 @@
                         ${contaHTML}
                     </div>
                 </div>
-                <span style="font-weight: 600; font-size: 1.05rem; color: ${corTexto}">${sinal} R$ ${t.valor.toFixed(2).replace('.', ',')}</span>
+                <span style="font-weight: 600; font-size: 1.05rem; color: ${corTexto}">${sinal} ${valorExibição}</span>
             `;
             lista.appendChild(item);
         });
