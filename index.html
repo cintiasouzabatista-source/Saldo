@@ -6,7 +6,7 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
-    <title>Meu Fluxo de Caixa Inteligente</title>
+    <title>Fluxo de Caixa Inteligente</title>
     <style>
         /* Variáveis de Cores (Suporta Modo Claro e Escuro) */
         :root {
@@ -43,9 +43,10 @@
         .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; }
         .icon-btn:hover { background: var(--borda); }
 
-        /* CARDS NO TOPO */
+        /* CARDS NO TOPO (Tornados Clicáveis) */
         .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
-        .card { background: var(--bg-container); padding: 12px 5px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
+        .card { background: var(--bg-container); padding: 12px 5px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); cursor: pointer; user-select: none; }
+        .card:active { transform: scale(0.98); }
         .card h3 { font-size: 0.72rem; color: var(--texto-secundario); margin-bottom: 3px; text-transform: uppercase; }
         .card p { font-size: 0.95rem; font-weight: bold; }
         .card.saldo-total { grid-column: span 3; padding: 12px; margin-top: 2px; position: relative;}
@@ -110,7 +111,6 @@
 
 <div class="container">
     
-    <!-- CABEÇALHO DO APP -->
     <div class="app-header">
         <div class="app-title">Meu Saldo</div>
         <div class="app-actions">
@@ -119,35 +119,32 @@
         </div>
     </div>
 
-    <!-- CARDS NO TOPO -->
     <div class="cards-container">
-        <div class="card">
+        <div class="card" onclick="filtrarPorCard('entrada')">
             <h3>Entradas</h3>
             <p class="cor-entrada">R$ <span class="valor-dinamico" id="card-entradas" data-valor="0.00">0,00</span></p>
         </div>
-        <div class="card">
+        <div class="card" onclick="filtrarPorCard('saida')">
             <h3>Saídas</h3>
             <p class="cor-saida">R$ <span class="valor-dinamico" id="card-saidas" data-valor="0.00">0,00</span></p>
         </div>
-        <div class="card">
+        <div class="card" onclick="filtrarPorCard('cartao')">
             <h3>Cartão</h3>
             <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
         </div>
-        <div class="card saldo-total">
+        <div class="card saldo-total" onclick="filtrarPorCard('todos')">
             <h3>Saldo Atual</h3>
             <p id="card-saldo" class="valor-dinamico" data-valor="0.00" style="color: var(--azul-saldo);">R$ 0,00</p>
-            <div class="previsao-texto" id="card-previsao">Sobrará no fim do mês: R$ <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">0,00</span></div>
+            <div class="previsao-texto" id="card-previsao">Sobrará no fim do mês: <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
         </div>
     </div>
 
-    <!-- CAIXA DE TEXTO -->
     <div class="chat-input-area">
         <div id="alerta" class="alerta-temporario">Lançado!</div>
         <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: camisas brasil 150 mercado pago" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
 
-    <!-- FILTROS -->
     <div class="filtros-container">
         <select id="filtro-mes" class="filtro-select" onchange="resetarLimiteEPesquisar()"></select>
         <select id="filtro-tipo" class="filtro-select" onchange="resetarLimiteEPesquisar()">
@@ -158,12 +155,10 @@
         </select>
     </div>
 
-    <!-- LISTA DE GASTOS -->
     <div class="lista-titulo">Histórico de Lançamentos</div>
     <div class="lista-container" id="lista-historico"></div>
 </div>
 
-<!-- MODAL DE EDIÇÃO E ESCOLA FORÇADA -->
 <div class="modal-overlay" id="modal-edicao">
     <div class="modal-container">
         <div class="modal-title" id="modal-titulo-contexto">Editar Lançamento</div>
@@ -218,7 +213,7 @@
     let idEdicaoAtual = null;
     let saldosOcultos = false;
     let limiteExibicao = 20; 
-    let estaForcandoCadastro = false; // Controle interno para saber se o modal abriu de forma forçada
+    let estaForcandoCadastro = false; 
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     
     // DICIONÁRIO DE CONTAS E CARTÕES
@@ -273,6 +268,19 @@
 
     function verificarTecla(e) {
         if (e.key === 'Enter') processarComando();
+    }
+
+    // AÇÃO DE CLIQUE NOS CARDS (Abre o relatório do mês corrente filtrado)
+    function filtrarPorCard(tipo) {
+        const hoje = new Date();
+        const chaveMesAtual = `${hoje.getMonth()}-${hoje.getFullYear()}`;
+        
+        // Define as caixas de filtro para o mês atual e para o tipo clicado
+        document.getElementById('filtro-mes').value = chaveMesAtual;
+        document.getElementById('filtro-tipo').value = tipo;
+        
+        resetarLimiteEPesquisar();
+        mostrarAviso(`Relatório: ${tipo === 'todos' ? 'Tudo' : tipo.toUpperCase()}`);
     }
 
     function processarComando() {
@@ -331,11 +339,10 @@
         descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         if (!descricao) descricao = "Lançamento Avulso";
 
-        // VALIDAÇÃO FORÇADA: Se não achou conta nem cartão, intercepta e abre o modal!
         if (!contaDetectada && !cartaoDetectado) {
             mostrarAviso("Informe a Conta ou o Cartão!");
             abrirModalForçado(descricao, valor, tipo);
-            input.value = ''; // Limpa o input
+            input.value = ''; 
             return;
         }
 
@@ -475,7 +482,6 @@
         }
     }
 
-    // MODAL DE EDIÇÃO TRADICIONAL (CLICANDO NO HISTÓRICO)
     function abrirModal(id) {
         idEdicaoAtual = id;
         estaForcandoCadastro = false;
@@ -483,7 +489,7 @@
         if (!t) return;
         
         document.getElementById('modal-titulo-contexto').innerText = "Editar Lançamento";
-        document.getElementById('btn-modal-excluir').style.display = 'block'; // Mostra botão excluir
+        document.getElementById('btn-modal-excluir').style.display = 'block'; 
 
         document.getElementById('modal-desc').value = t.descricao;
         document.getElementById('modal-valor').value = t.valor;
@@ -493,13 +499,12 @@
         document.getElementById('modal-edicao').style.display = 'flex';
     }
 
-    // MODAL INTERCEPTADOR (QUANDO FALTA CONTA/CARTÃO)
     function abrirModalForçado(descricao, valor, tipo) {
         idEdicaoAtual = null;
         estaForcandoCadastro = true;
 
         document.getElementById('modal-titulo-contexto').innerText = "Selecione a Conta ou Cartão";
-        document.getElementById('btn-modal-excluir').style.display = 'none'; // Oculta botão excluir já que não foi criado ainda
+        document.getElementById('btn-modal-excluir').style.display = 'none'; 
 
         document.getElementById('modal-desc').value = descricao;
         document.getElementById('modal-valor').value = valor;
@@ -518,14 +523,12 @@
         const contaSelecionada = document.getElementById('modal-conta').value;
         const cartaoSelecionado = document.getElementById('modal-cartao-id').value;
 
-        // Se o modal foi aberto para forçar o cadastro, valida se o usuário escolheu um ou outro
         if (estaForcandoCadastro && !contaSelecionada && !cartaoSelecionado) {
             alert("Por favor, selecione pelo menos uma Conta ou um Cartão antes de salvar!");
             return;
         }
 
         if (estaForcandoCadastro) {
-            // Cria um novo item definitivo usando os dados ajustados do modal
             const dataAtual = new Date();
             const novaTransacao = {
                 id: Date.now(),
@@ -541,7 +544,6 @@
             transacoes.unshift(novaTransacao);
             mostrarAviso("Lançado com sucesso!");
         } else {
-            // Modo de Edição Tradicional
             const index = transacoes.findIndex(item => item.id === idEdicaoAtual);
             if (index !== -1) {
                 transacoes[index].descricao = document.getElementById('modal-desc').value.trim();
