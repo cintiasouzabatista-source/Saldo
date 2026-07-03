@@ -26,8 +26,8 @@
             --alerta-danger-bg: #fce4e4;
             --alerta-danger-borda: #e74c3c;
             --bg-retratil: #f8f9fa;
-            --chat-verde: #25d366;
-            --chat-verde-hover: #20ba5a;
+            --chat-verde: #056162; /* Fixado a cor do modo escuro para ambos */
+            --chat-verde-hover: #044e4f;
         }
 
         [data-theme="dark"] {
@@ -44,8 +44,6 @@
             --alerta-danger-borda: #c0392b;
             --bg-retratil: #282828;
             --reserva-cor: #1abc9c;
-            --chat-verde: #056162;
-            --chat-verde-hover: #044e4f;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
@@ -95,7 +93,11 @@
         .cor-saida { color: var(--saida); }
         .cor-cartao { color: var(--cartao); }
 
+        /* LINHA DIVISÓRIA */
+        .linha-separadora { border: 0; border-top: 1px solid var(--borda); margin: 12px 0; width: 100%; }
+
         /* DESIGN DOS FILTROS */
+        .secao-titulo-filtros { font-size: 0.8rem; color: var(--texto-principal); margin-bottom: 8px; text-transform: uppercase; border-left: 3px solid var(--azul-saldo); padding-left: 6px; font-weight: bold; }
         .filtros-container { display: flex; gap: 8px; margin-bottom: 12px; width: 100%; }
         .filtro-select { flex: 1; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.82rem; color: var(--texto-principal); outline: none; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px var(--shadow); appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 
@@ -129,12 +131,12 @@
         .coluna-vertical-valor { font-size: 0.68rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
         .coluna-vertical-rotulo { font-size: 0.72rem; font-weight: 600; position: absolute; bottom: -22px; color: var(--texto-secundario); text-transform: uppercase; white-space: nowrap; }
 
-        /* RECOLHEDOR DO HISTÓRICO */
-        details.historico-retratil summary { font-size: 0.85rem; font-weight: bold; padding: 10px 14px; color: var(--texto-principal); background-color: var(--bg-retratil); cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--borda); border-radius: 8px; box-shadow: 0 1px 3px var(--shadow); }
-        details.historico-retratil summary::-webkit-details-marker { display: none; }
-        details.historico-retratil summary::after { content: "▼"; font-size: 0.7rem; color: var(--texto-secundario); transition: transform 0.2s; }
-        details.historico-retratil[open] summary::after { transform: rotate(180deg); }
-        .conteudo-retratil { margin-top: 8px; }
+        /* RECOLHEDORES RETRÁTEIS */
+        details.painel-retratil summary { font-size: 0.85rem; font-weight: bold; padding: 10px 14px; color: var(--texto-principal); background-color: var(--bg-retratil); cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--borda); border-radius: 8px; box-shadow: 0 1px 3px var(--shadow); }
+        details.painel-retratil summary::-webkit-details-marker { display: none; }
+        details.painel-retratil summary::after { content: "▼"; font-size: 0.7rem; color: var(--texto-secundario); transition: transform 0.2s; }
+        details.painel-retratil[open] summary::after { transform: rotate(180deg); }
+        .conteudo-retratil { margin-top: 12px; }
 
         /* HISTÓRICO COMPACTADO */
         .item-transacao { display: flex; flex-direction: column; padding: 6px 2px; border-bottom: 1px solid var(--borda); cursor: pointer; }
@@ -234,6 +236,9 @@
         </div>
     </div>
 
+    <!-- LINHA SEPARADORA E ÁREA DE FILTROS -->
+    <hr class="linha-separadora">
+    <div class="secao-titulo-filtros">FILTROS</div>
     <div class="filtros-container">
         <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
         <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
@@ -245,64 +250,70 @@
         </select>
     </div>
 
-    <!-- ABAS INTEGRADAS -->
+    <!-- LINHA SEPARADORA E ABAS INTEGRADAS -->
+    <hr class="linha-separadora">
     <div class="abas-container">
         <button class="aba-btn ativa" id="aba-graf" onclick="mudarAba('graficos')">📊 Gráficos</button>
         <button class="aba-btn" id="aba-hist" onclick="mudarAba('historico')">📝 Histórico</button>
     </div>
 
-    <!-- SEÇÃO GRÁFICOS (ESQUERDA) -->
+    <!-- SEÇÃO GRÁFICOS RECOLHÍVEL -->
     <div class="secao-conteudo" id="secao-graficos" style="display: block;">
-        <div class="grafico-wrapper">
-            <h4>1. DESPESAS X RECEITAS</h4>
-            <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
-                <div class="donut-hole">
-                    <span id="pizza-perc">0%</span>
-                    <span id="pizza-rotulo" style="font-size:0.55rem; font-weight:normal; text-transform:uppercase;">Gasto</span>
+        <details class="painel-retratil" open>
+            <summary>📊 Clique para Recolher / Expandir Painel</summary>
+            <div class="conteudo-retratil">
+                <div class="grafico-wrapper">
+                    <h4>1. DESPESAS X RECEITAS</h4>
+                    <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
+                        <div class="donut-hole">
+                            <span id="pizza-perc">0%</span>
+                            <span id="pizza-rotulo" style="font-size:0.55rem; font-weight:normal; text-transform:uppercase;">Gasto</span>
+                        </div>
+                    </div>
+                    <div class="donut-legenda">
+                        <span style="color:var(--entrada)">● Receitas</span>
+                        <span style="color:var(--saida)">● Despesas</span>
+                    </div>
                 </div>
-            </div>
-            <div class="donut-legenda">
-                <span style="color:var(--entrada)">● Receitas</span>
-                <span style="color:var(--saida)">● Despesas</span>
-            </div>
-        </div>
 
-        <div class="grafico-wrapper">
-            <h4>2. GRÁFICO DESPESAS</h4>
-            <div id="grafico-barras-horizontais"></div>
-        </div>
+                <div class="grafico-wrapper">
+                    <h4>2. GRÁFICO DESPESAS</h4>
+                    <div id="grafico-barras-horizontais"></div>
+                </div>
 
-        <div class="grafico-wrapper">
-            <h4>3. GRÁFICO CONTAS X CARTÕES</h4>
-            <div class="colunas-container">
-                <div class="coluna-vertical-bloco">
-                    <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
-                    <div class="coluna-vertical-barra" id="v-bar-contas" style="background: #7f8c8d;"></div>
-                    <span class="coluna-vertical-rotulo">Contas</span>
-                </div>
-                <div class="coluna-vertical-bloco">
-                    <span class="coluna-vertical-valor valor-dinamico" id="v-val-cartoes" data-valor="0.00">R$ 0,00</span>
-                    <div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div>
-                    <span class="coluna-vertical-rotulo">Cartões</span>
-                </div>
-                <div class="coluna-vertical-bloco">
-                    <span class="coluna-vertical-valor valor-dinamico" id="v-val-reserva" data-valor="0.00">R$ 0,00</span>
-                    <div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div>
-                    <span class="coluna-vertical-rotulo">Reserva</span>
+                <div class="grafico-wrapper">
+                    <h4>3. GRÁFICO CONTAS X CARTÕES</h4>
+                    <div class="colunas-container">
+                        <div class="coluna-vertical-bloco">
+                            <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
+                            <div class="coluna-vertical-barra" id="v-bar-contas" style="background: #7f8c8d;"></div>
+                            <span class="coluna-vertical-rotulo">Contas</span>
+                        </div>
+                        <div class="coluna-vertical-bloco">
+                            <span class="coluna-vertical-valor valor-dinamico" id="v-val-cartoes" data-valor="0.00">R$ 0,00</span>
+                            <div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div>
+                            <span class="coluna-vertical-rotulo">Cartões</span>
+                        </div>
+                        <div class="coluna-vertical-bloco">
+                            <span class="coluna-vertical-valor valor-dinamico" id="v-val-reserva" data-valor="0.00">R$ 0,00</span>
+                            <div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div>
+                            <span class="coluna-vertical-rotulo">Reserva</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </details>
     </div>
 
-    <!-- SEÇÃO HISTÓRICO (DIREITA) -->
+    <!-- SEÇÃO HISTÓRICO RECOLHÍVEL -->
     <div class="secao-conteudo" id="secao-historico">
-        <details class="historico-retratil" open>
-            <summary>📝 Clique para Recolher / Expandir</summary>
+        <details class="painel-retratil" open>
+            <summary>📝 Clique para Recolher / Expandir Histórico</summary>
             <div class="conteudo-retratil" id="lista-transacoes-container"></div>
         </details>
     </div>
 
-    <!-- CHAT NO FINAL ESTILO VERDINHO -->
+    <!-- CHAT NO FINAL ESTILO VERDINHO UNIFICADO -->
     <div class="chat-container-fixo">
         <div class="chat-input-area">
             <div id="alerta" class="alerta-temporario">Lançado!</div>
@@ -472,7 +483,6 @@
         obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
         obterId('previsao-valor').setAttribute('data-valor', (gastos / 30).toFixed(2));
 
-        // Correção de Recálculo Dinâmico ao excluir/gastar:
         const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
         obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
         obterId('reserva-porcentagem-label').innerText = porcentagemReserva;
