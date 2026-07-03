@@ -110,10 +110,12 @@
         .modal-label { font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: -6px; }
         .modal-input, .modal-select { width: 100%; padding: 10px; border: 1px solid var(--borda); border-radius: 6px; font-size: 1rem; outline: none; background: var(--bg-container); color: var(--texto-principal); }
         .modal-botoes { display: flex; gap: 8px; margin-top: 10px; }
-        .btn-modal { flex: 1; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; border: none; cursor: pointer; }
+        .btn-modal { flex: 1; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
         .btn-salvar { background: var(--entrada); color: white; }
         .btn-excluir { background: var(--saida); color: white; }
         .btn-cancelar { background: #bdc3c7; color: #333; }
+        .btn-backup { background: #2980b9; color: white; }
+        .btn-restaurar { background: #16a085; color: white; }
     </style>
 </head>
 <body>
@@ -205,7 +207,18 @@
         <div class="modal-title">⚙️ Configurações do Sistema</div>
         <p style="font-size: 0.9rem; color: var(--texto-secundario); margin-bottom: 5px;">Gerenciamento global de dados do seu fluxo de caixa.</p>
         
-        <button class="btn-modal btn-excluir" style="padding: 12px; margin-top: 10px;" onclick="resetarAplicativoTotal()">
+        <hr style="border: 0; border-top: 1px solid var(--borda); margin: 5px 0;">
+        
+        <div class="modal-label">Backup de Segurança</div>
+        <div style="display: flex; gap: 8px; width: 100%;">
+            <button class="btn-modal btn-backup" onclick="exportarBackup()">📥 Exportar JSON</button>
+            <button class="btn-modal btn-restaurar" onclick="document.getElementById('input-file-backup').click()">📤 Importar JSON</button>
+        </div>
+        <input type="file" id="input-file-backup" accept=".json" style="display: none;" onchange="importarBackup(event)">
+        
+        <hr style="border: 0; border-top: 1px solid var(--borda); margin: 5px 0;">
+
+        <button class="btn-modal btn-excluir" style="padding: 12px;" onclick="resetarAplicativoTotal()">
             🗑️ Limpar Todos os Dados (Resetar App)
         </button>
         
@@ -266,9 +279,21 @@
         if (body.getAttribute('data-theme') === 'dark') {
             body.removeAttribute('data-theme');
             btn.innerText = "🌙";
+            localStorage.setItem('saldo_tema', 'light');
         } else {
             body.setAttribute('data-theme', 'dark');
             btn.innerText = "☀️";
+            localStorage.setItem('saldo_tema', 'dark');
+        }
+    }
+
+    function carregarTemaSalvo() {
+        const temaSalvo = localStorage.getItem('saldo_tema');
+        const body = document.documentElement;
+        const btn = document.getElementById('btn-tema');
+        if (temaSalvo === 'dark') {
+            body.setAttribute('data-theme', 'dark');
+            if(btn) btn.innerText = "☀️";
         }
     }
 
@@ -280,6 +305,17 @@
 
     function verificarTecla(e) {
         if (e.key === 'Enter') processarComando();
+    }
+
+    function salvarDadosNoLocalStorage() {
+        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
+    }
+
+    function carregarDadosDoLocalStorage() {
+        const dados = localStorage.getItem('saldo_transacoes');
+        if (dados) {
+            transacoes = JSON.parse(dados);
+        }
     }
 
     function processarComando() {
@@ -380,6 +416,7 @@
             transacoes.unshift(novaTransacao);
         }
 
+        salvarDadosNoLocalStorage();
         atualizarAplicativo();
         input.value = '';
         mostrarAviso(`Adicionado!`);
@@ -389,6 +426,7 @@
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
             t.conta = bancoNome;
+            salvarDadosNoLocalStorage();
             atualizarAplicativo();
             mostrarAviso("Banco atualizado!");
         }
@@ -398,8 +436,9 @@
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
             t.cartao = cartaoNome;
+            salvarDadosNoLocalStorage();
             atualizarAplicativo();
-            mostrarAviso("Cartão updated!");
+            mostrarAviso("Cartão atualizado!");
         }
     }
 
@@ -570,6 +609,7 @@
             transacoes[index].cartao = document.getElementById('modal-cartao-id').value.trim();
         }
         fecharModal();
+        salvarDadosNoLocalStorage();
         atualizarAplicativo();
         mostrarAviso("Salvo!");
     }
@@ -577,6 +617,7 @@
     function acaoExcluir() {
         transacoes = transacoes.filter(item => item.id !== idEdicaoAtual);
         fecharModal();
+        salvarDadosNoLocalStorage();
         atualizarAplicativo();
         mostrarAviso("Excluído!");
     }
@@ -584,10 +625,73 @@
     function resetarAplicativoTotal() {
         if (confirm("🚨 Tem certeza absoluta que quer apagar TODOS os lançamentos? Essa ação não pode ser desfeita.")) {
             transacoes = [];
+            salvarDadosNoLocalStorage();
             fecharConfiguracoes();
             atualizarAplicativo();
             mostrarAviso("App Resetado com sucesso!");
         }
+    }
+
+    /* FUNÇÕES DE BACKUP (JSON) */
+    function exportarBackup() {
+        if (transacoes.length === 0) {
+            alert("Não há dados cadastrados para exportar.");
+            return;
+        }
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transacoes, null, 2));
+        const downloadAnchor = document.createElement('a');
+        
+        const dataAtual = new Date();
+        const dataFormatada = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth()+1).padStart(2, '0')}-${String(dataAtual.getDate()).padStart(2, '0')}`;
+        
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `backup_saldo_${dataFormatada}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        mostrarAviso("Backup baixado!");
+    }
+
+    function importarBackup(event) {
+        const arquivo = event.target.files[0];
+        if (!arquivo) return;
+
+        const leitor = new FileReader();
+        leitor.onload = function(e) {
+            try {
+                const dadosImportados = JSON.parse(e.target.result);
+                if (Array.isArray(dadosImportados)) {
+                    if (confirm(`Atenção: Isso vai misturar os dados importados (${dadosImportados.length}) com os que já estão na tela. Deseja continuar?`)) {
+                        transacoes = [...transacoes, ...dadosImportados];
+                        
+                        // Remove duplicados pelo ID se houver
+                        const idsUnicos = new Set();
+                        transacoes = transacoes.filter(t => {
+                            if (!idsUnicos.has(t.id)) {
+                                idsUnicos.add(t.id);
+                                return true;
+                            }
+                            return false;
+                        });
+
+                        // Ordena por id decrescente (mais novos primeiro)
+                        transacoes.sort((a, b) => b.id - a.id);
+
+                        salvarDadosNoLocalStorage();
+                        atualizarAplicativo();
+                        fecharConfiguracoes();
+                        mostrarAviso("Dados importados!");
+                    }
+                } else {
+                    alert("Arquivo de formato inválido. Precisa ser um arquivo JSON de transações válido.");
+                }
+            } catch (err) {
+                alert("Erro ao processar o arquivo de backup.");
+            }
+            // Limpa o input para permitir subir o mesmo arquivo se necessário
+            event.target.value = '';
+        };
+        leitor.readAsText(arquivo);
     }
 
     function mostrarAviso(texto) {
@@ -598,6 +702,8 @@
     }
 
     window.onload = () => {
+        carregarTemaSalvo();
+        carregarDadosDoLocalStorage();
         inicializarFiltroMeses();
         atualizarAplicativo();
     };
