@@ -56,13 +56,50 @@
         .card { background: var(--bg-container); padding: 12px 5px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
         .card h3 { font-size: 0.72rem; color: var(--texto-secundario); margin-bottom: 3px; text-transform: uppercase; }
         .card p { font-size: 0.95rem; font-weight: bold; }
-        .card.saldo-total { grid-column: span 3; padding: 12px; margin-top: 2px; position: relative;}
-        .card.saldo-total p { font-size: 1.3rem; }
+        /* CORREÇÃO DO LAYOUT DO CARD DE SALDO */
+        .card.saldo-total { 
+            grid-column: span 3; 
+            padding: 16px; 
+            margin-top: 4px; 
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+        }
+        .card.saldo-total p { font-size: 1.5rem; }
         
-        .previsao-texto { font-size: 0.75rem; color: var(--texto-secundario); margin-top: 4px; font-weight: 500; }
-        
-        /* Novas áreas inteligentes no Card */
-        .reserva-texto { font-size: 0.78rem; color: var(--entrada); margin-top: 4px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .previsao-texto { font-size: 0.82rem; color: var(--texto-secundario); font-weight: 500; }
+        .reserva-texto { font-size: 0.82rem; color: var(--entrada); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+        /* NOVO DESIGN DOS FILTROS (MUITO MAIS CLEAN) */
+        .filtros-container { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 15px; 
+            width: 100%;
+        }
+        .filtro-select { 
+            flex: 1; 
+            padding: 10px 14px; 
+            border-radius: 20px; 
+            border: 1px solid var(--borda); 
+            background: var(--bg-container); 
+            font-size: 0.88rem; 
+            color: var(--texto-principal); 
+            outline: none; 
+            font-weight: 600; 
+            cursor: pointer;
+            box-shadow: 0 1px 3px var(--shadow);
+            appearance: none; /* Remove a setinha feia padrão */
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
+        }
+        .filtro-select:hover {
+            border-color: var(--azul-saldo);
+        }
         .config-reserva-inline { cursor: pointer; font-size: 0.75rem; color: var(--texto-secundario); opacity: 0.7; }
         .config-reserva-inline:hover { opacity: 1; }
         
@@ -159,25 +196,22 @@
             <h3>Cartão</h3>
             <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
         </div>
-        <div class="card.saldo-total card">
+       <!-- CORRIGIDO: class modificada para "card saldo-total" -->
+        <div class="card saldo-total">
             <h3>Saldo Atual</h3>
             <p id="card-saldo" class="valor-dinamico" data-valor="0.00" style="color: var(--azul-saldo);">R$ 0,00</p>
             
-            <!-- TEXTO DE GASTO MÉDIO REFORMULADO (BASE FIXA 30 DIAS) -->
             <div class="previsao-texto" id="card-previsao">Gasto médio por dia: <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
             
-            <!-- ÁREA DE RESERVA INTEGRADA -->
             <div class="reserva-texto" id="card-reserva" style="display:none;">
                 💰 Você pode guardar: <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span> 
                 <span class="config-reserva-inline" onclick="abrirConfigReserva()" title="Mudar porcentagem">⚙️(<span id="reserva-porcentagem-label">10</span>%)</span>
             </div>
 
-            <!-- ALERTA DE ORÇAMENTO COMPROMETIDO (GASTOS > 80%) -->
             <div class="alerta-comprometido" id="card-alerta-comprometido">
                 ⚠️ Atenção: Seus gastos atingiram mais de 80% das suas entradas! Orçamento Comprometido.
             </div>
-        </div>
-    </div>
+        </div>    </div>
 
     <div class="chat-input-area">
         <div id="alerta" class="alerta-temporario">Lançado!</div>
