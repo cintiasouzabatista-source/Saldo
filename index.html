@@ -42,7 +42,9 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
         body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; }
+        
+        /* Adicionado padding-bottom para permitir rolar até o fim sem travar nos gráficos */
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; padding-bottom: 50px; }
         
         /* CABEÇALHO DO APP */
         .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px; padding: 5px; }
@@ -72,10 +74,15 @@
         .card.saldo-total p { font-size: 1.6rem; font-weight: 800; }
         
         /* LINHA SUBTIL DE DETALHES */
-        .info-subtil-container { display: flex; justify-content: center; gap: 12px; width: 100%; margin-top: 4px; border-top: 1px solid var(--borda); padding-top: 6px; flex-wrap: wrap; }
-        .previsao-texto, .reserva-texto { font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
+        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; margin-top: 4px; border-top: 1px solid var(--borda); padding-top: 6px; }
+        .linha-subtil-valores { display: flex; justify-content: center; gap: 12px; width: 100%; flex-wrap: wrap; }
+        .previsao-texto, .reserva-texto, .saldo-restante-texto { font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
         
-        .reserva-texto { color: var(--texto-secundario); }
+        /* Destaques em negrito solicitados */
+        .previsao-texto strong, .reserva-texto strong, .saldo-restante-texto strong { font-weight: 700; color: var(--texto-principal); }
+        .saldo-restante-texto { color: #16a085; }
+        [data-theme="dark"] .saldo-restante-texto { color: #1abc9c; }
+
         .config-reserva-inline { cursor: pointer; font-size: 0.7rem; opacity: 0.6; }
         .config-reserva-inline:hover { opacity: 1; }
 
@@ -104,13 +111,17 @@
         [data-theme="dark"] .aba-btn.ativa { background: var(--azul-saldo); }
 
         /* SEÇÕES DA EXIBIÇÃO */
-        .secao-conteudo { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); padding: 10px; border: 1px solid var(--borda); max-height: 450px; overflow-y: auto; display: none; }
+        .secao-conteudo { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); padding: 10px; border: 1px solid var(--borda); max-height: 520px; overflow-y: auto; display: none; }
         
-        /* LAYOUT DO GRÁFICO */
+        /* LAYOUT DO GRÁFICO ROSTCA */
         .grafico-wrapper { margin-bottom: 20px; }
         .grafico-wrapper h4 { font-size: 0.8rem; color: var(--texto-principal); margin-bottom: 10px; text-transform: uppercase; border-left: 3px solid #2c3e50; padding-left: 6px; }
-        .donut-chart { width: 110px; height: 110px; border-radius: 50%; margin: 10px auto; display: flex; align-items: center; justify-content: center; position: relative; }
-        .donut-hole { width: 70px; height: 70px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; color: var(--texto-secundario); }
+        
+        /* Rosca interativa com cursor de clique */
+        .donut-chart { width: 120px; height: 120px; border-radius: 50%; margin: 10px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; }
+        .donut-hole { width: 80px; height: 80px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; color: var(--texto-secundario); text-align: center; padding: 4px; }
+        .donut-hole span:first-child { font-size: 0.8rem; color: var(--texto-principal); }
+        
         .donut-legenda { display: flex; justify-content: center; gap: 15px; font-size: 0.75rem; font-weight: 600; }
         .barra-horizontal-linha { margin-bottom: 8px; }
         .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; margin-bottom: 2px; }
@@ -200,10 +211,16 @@
             <p id="card-saldo" class="valor-dinamico" data-valor="0.00" style="color: var(--texto-principal);">R$ 0,00</p>
             
             <div class="info-subtil-container">
-                <div class="previsao-texto" id="card-previsao">Média/Dia: <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
-                <div class="reserva-texto" id="card-reserva">
-                    Guardar (<span id="reserva-porcentagem-label">10</span>%): <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span> 
-                    <span class="config-reserva-inline" onclick="abrirConfigReserva()" title="Mudar porcentagem">⚙️</span>
+                <div class="linha-subtil-valores">
+                    <div class="previsao-texto" id="card-previsao"><strong>Média/Dia:</strong> <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
+                    <div class="reserva-texto" id="card-reserva">
+                        <strong>Guardar</strong> (<span id="reserva-porcentagem-label">10</span>%): <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span> 
+                        <span class="config-reserva-inline" onclick="abrirConfigReserva()" title="Mudar porcentagem">⚙️</span>
+                    </div>
+                </div>
+                <!-- Exibição do Saldo se Guardar o Dinheiro solicitado -->
+                <div class="saldo-restante-texto" id="card-saldo-restante">
+                    <strong>Saldo se Guardar:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
                 </div>
             </div>
 
@@ -246,9 +263,12 @@
     <!-- SEÇÃO GRÁFICOS -->
     <div class="secao-conteudo" id="secao-graficos">
         <div class="grafico-wrapper">
-            <h4>1. Despesas x Receitas</h4>
-            <div class="donut-chart" id="grafico-pizza-elemento">
-                <div class="donut-hole"><span id="pizza-perc">0%</span><span style="font-size:0.55rem; font-weight:normal; text-transform:uppercase;">Gasto</span></div>
+            <h4>1. Despesas x Receitas (Clique para mudar visualização)</h4>
+            <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
+                <div class="donut-hole">
+                    <span id="pizza-perc">0%</span>
+                    <span id="pizza-rotulo" style="font-size:0.55rem; font-weight:normal; text-transform:uppercase;">Gasto</span>
+                </div>
             </div>
             <div class="donut-legenda">
                 <span style="color:var(--entrada)">● Receitas</span>
@@ -257,7 +277,7 @@
         </div>
 
         <div class="grafico-wrapper">
-            <h4>2. Maiores Despesas</h4>
+            <h4>2. Maiores Despesas (% do total gasto)</h4>
             <div id="grafico-barras-horizontais"></div>
         </div>
 
@@ -338,6 +358,7 @@
 
 <script>
     let transacoes = [], idEdicaoAtual = null, saldosOcultos = false, porcentagemReserva = 10, abaAtiva = 'historico';
+    let modoGraficoRosca = 0; // 0: % Gasto, 1: Valor Gasto, 2: Valor Receitas
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
     const MAPA_ENTIDADES = {
@@ -420,6 +441,11 @@
         }
     }
 
+    function alternarModoRosca() {
+        modoGraficoRosca = (modoGraficoRosca + 1) % 3;
+        atualizarAplicativo();
+    }
+
     function atualizarAplicativo() {
         let ent = 0, sai = 0, car = 0, fMes = obterId('filtro-mes').value;
         transacoes.forEach(t => {
@@ -438,6 +464,10 @@
         obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
         obterId('reserva-porcentagem-label').innerText = porcentagemReserva;
 
+        // Novo cálculo solicitado: Saldo restante se guardar o dinheiro da meta
+        const saldoSeGuardar = saldo - valReserva;
+        obterId('saldo-restante-valor').setAttribute('data-valor', saldoSeGuardar.toFixed(2));
+
         obterId('card-alerta-comprometido').style.display = ent > 0 && (gastos / ent) >= 0.8 ? 'block' : 'none';
         
         const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -446,7 +476,7 @@
         document.querySelectorAll('.valor-dinamico').forEach(el => {
             const attrVal = el.getAttribute('data-valor') || "0";
             const v = parseFloat(parseFloat(attrVal).toFixed(2)).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-            el.innerText = saldosOcultos ? (['card-saldo','previsao-valor','reserva-valor','v-val-contas','v-val-cartoes'].includes(el.id) ? "R$ ••••" : "••••") : (['card-saldo','previsao-valor','reserva-valor','v-val-contas','v-val-cartoes'].includes(el.id) ? `R$ ${v}` : v);
+            el.innerText = saldosOcultos ? (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes'].includes(el.id) ? "R$ ••••" : "••••") : (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes'].includes(el.id) ? `R$ ${v}` : v);
         });
 
         renderizarHistorico();
@@ -500,7 +530,22 @@
         const fMes = obterId('filtro-mes').value;
         const totalFluxo = receitas + totalGastos;
         const percGasto = totalFluxo > 0 ? Math.round((totalGastos / totalFluxo) * 100) : 0;
-        obterId('pizza-perc').innerText = `${percGasto}%`;
+        
+        // Lógica de clique no gráfico de rosca solicitado
+        if (saldosOcultos) {
+            obterId('pizza-perc').innerText = "••••";
+            obterId('pizza-rotulo').innerText = "Oculto";
+        } else if (modoGraficoRosca === 0) {
+            obterId('pizza-perc').innerText = `${percGasto}%`;
+            obterId('pizza-rotulo').innerText = "Gasto";
+        } else if (modoGraficoRosca === 1) {
+            obterId('pizza-perc').innerText = `R$ ${totalGastos.toFixed(0)}`;
+            obterId('pizza-rotulo').innerText = "Total Despesas";
+        } else {
+            obterId('pizza-perc').innerText = `R$ ${receitas.toFixed(0)}`;
+            obterId('pizza-rotulo').innerText = "Total Receitas";
+        }
+        
         obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
 
         const boxBarras = obterId('grafico-barras-horizontais');
@@ -518,11 +563,14 @@
         } else {
             despesasOrdenadas.forEach(d => {
                 let pBarra = (d.valor / maiorGastoUnico) * 100;
+                // Cálculo da porcentagem individual baseada no total de gastos do mês solicitado
+                let pDoTotal = totalGastos > 0 ? Math.round((d.valor / totalGastos) * 100) : 0;
+                
                 let linha = document.createElement('div');
                 linha.className = 'barra-horizontal-linha';
                 linha.innerHTML = `
                     <div class="barra-horizontal-info">
-                        <span style="text-transform:capitalize;">${d.descricao}</span>
+                        <span style="text-transform:capitalize;">${d.descricao} <small style="color:var(--texto-secundario); font-weight:normal;">(${pDoTotal}%)</small></span>
                         <span>R$ ${d.valor.toFixed(2).replace('.', ',')}</span>
                     </div>
                     <div class="barra-horizontal-bg">
