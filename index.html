@@ -17,7 +17,7 @@
             --borda: #eee;
             --shadow: rgba(0,0,0,0.05);
             --entrada: #2ecc71;
-            --entrada-viva: #00e676; /* Verde ultra vivo para a reserva */
+            --entrada-viva: #00e676;
             --saida: #e74c3c;
             --cartao: #f39c12;
             --azul-saldo: #2980b9;
@@ -72,7 +72,7 @@
         
         .previsao-texto { font-size: 0.82rem; color: var(--texto-secundario); font-weight: 500; }
         
-        /* NOVA COR VIVA E TEXTO EXPANDIDO PARA A RESERVA */
+        /* RESERVA E SALDO RESTANTE LÍQUIDO */
         .reserva-texto { font-size: 0.82rem; color: #00c853; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px; flex-wrap: wrap; text-shadow: 0px 0px 1px rgba(0,200,83,0.1); }
         [data-theme="dark"] .reserva-texto { color: #00e676; }
         .saldo-restante-label { font-weight: 500; opacity: 0.85; font-size: 0.78rem; display: inline-block; margin-left: 2px; }
@@ -129,29 +129,32 @@
         .coluna-vertical-valor { font-size: 0.72rem; font-weight: bold; position: absolute; top: -18px; white-space: nowrap; }
         .coluna-vertical-rotulo { font-size: 0.78rem; font-weight: 600; margin-top: 6px; color: var(--texto-secundario); text-transform: uppercase; }
 
-        /* ITENS DO HISTÓRICO */
-        .item-transacao { display: flex; flex-direction: column; padding: 12px 5px; border-bottom: 1px solid var(--borda); font-size: 0.95rem; cursor: pointer; }
+        /* ITENS DO HISTÓRICO - COMPACTADOS E COM VALORES MENORES */
+        .item-transacao { display: flex; flex-direction: column; padding: 8px 4px; border-bottom: 1px solid var(--borda); cursor: pointer; }
         .item-transacao:hover { background-color: var(--bg-body); }
         .item-transacao:last-child { border-bottom: none; }
         
         .linha-principal { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .detalhes-item { display: flex; flex-direction: column; gap: 4px; }
-        .descricao-texto { font-weight: 500; color: var(--texto-principal); text-transform: capitalize; }
+        .detalhes-item { display: flex; flex-direction: column; gap: 2px; }
+        .descricao-texto { font-size: 0.85rem; font-weight: 500; color: var(--texto-principal); text-transform: capitalize; }
         
-        .tags-row { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
-        .tipo-tag { font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; color: white; font-weight: bold; text-transform: uppercase; }
+        .tags-row { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; margin-top: 1px; }
+        .tipo-tag { font-size: 0.58rem; padding: 1px 4px; border-radius: 3px; color: white; font-weight: bold; text-transform: uppercase; }
         .tag-entrada { background: var(--entrada); }
         .tag-saida { background: var(--saida); }
         .tag-cartao { background: var(--cartao); }
-        .tag-conta { background: #7f8c8d; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
-        .tag-cartao-especifico { background: #34495e; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
-        .tag-fixa { background: #9b59b6; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+        .tag-conta { background: #7f8c8d; color: white; font-size: 0.58rem; padding: 1px 4px; border-radius: 3px; font-weight: bold; text-transform: uppercase; }
+        .tag-cartao-especifico { background: #34495e; color: white; font-size: 0.58rem; padding: 1px 4px; border-radius: 3px; font-weight: bold; text-transform: uppercase; }
+        .tag-fixa { background: #9b59b6; color: white; font-size: 0.58rem; padding: 1px 4px; border-radius: 3px; font-weight: bold; text-transform: uppercase; }
 
-        .item-transacao.pendente { background: var(--alerta-fundo); border-left: 4px solid var(--alerta-borda); padding-left: 8px; }
-        .container-pergunta { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--borda); width: 100%; }
-        .texto-pergunta { font-size: 0.8rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: 6px; display: block; }
+        /* TAMANHO REDUZIDO DO VALOR NO HISTÓRICO */
+        .valor-historico { font-weight: 600; font-size: 0.88rem; letter-spacing: -0.2px; }
+
+        .item-transacao.pendente { background: var(--alerta-fundo); border-left: 3px solid var(--alerta-borda); padding-left: 6px; }
+        .container-pergunta { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--borda); width: 100%; }
+        .texto-pergunta { font-size: 0.78rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: 4px; display: block; }
         .botoes-resposta { display: flex; gap: 4px; flex-wrap: wrap; }
-        .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 3px 8px; border-radius: 10px; font-size: 0.72rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .btn-resposta:hover { background: #2c3e50; color: white; border-color: #2c3e50; }
         .btn-resposta.btn-fixa-sim { border-color: #9b59b6; color: #9b59b6; }
         .btn-resposta.btn-fixa-sim:hover { background: #9b59b6; color: white; }
@@ -203,7 +206,6 @@
             
             <div class="previsao-texto" id="card-previsao">Gasto médio por dia: <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
             
-            <!-- EXIBIÇÃO DA RESERVA E DO SALDO RESTANTE ESTIMADO -->
             <div class="reserva-texto" id="card-reserva" style="display:none;">
                 💰 Guardar: <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span> 
                 <span class="config-reserva-inline" onclick="abrirConfigReserva()" title="Mudar porcentagem">⚙️(<span id="reserva-porcentagem-label">10</span>%)</span>
@@ -340,7 +342,7 @@
     </div>
 </div>
 
-<!-- SCRIPT COMPACTO COM MOTOR DE GRÁFICOS NATIVO -->
+<!-- SCRIPTS -->
 <script>
     let transacoes = [], idEdicaoAtual = null, saldosOcultos = false, porcentagemReserva = 10, abaAtiva = 'historico';
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
@@ -432,7 +434,6 @@
         obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
         obterId('previsao-valor').setAttribute('data-valor', (gastos / 30).toFixed(2));
 
-        // CÁLCULO E EXIBIÇÃO DA RESERVA + SALDO RESTANTE LÍQUIDO
         obterId('card-reserva').style.display = saldo > 0 ? 'flex' : 'none';
         if (saldo > 0) {
             const valReserva = saldo * (porcentagemReserva / 100);
@@ -485,7 +486,8 @@
                             ${t.fixa ? `<span class="tag-fixa">📌 Fixa</span>` : ''}
                         </div>
                     </div>
-                    <span style="font-weight:600; font-size:1.05rem; color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} ${saldosOcultos ? '•••' : 'R$ '+t.valor.toFixed(2).replace('.',',')}</span>
+                    <!-- CLASSE valor-historico RESPONSÁVEL PELO TAMANHO MENOR -->
+                    <span class="valor-historico" style="color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} ${saldosOcultos ? '•••' : 'R$ '+t.valor.toFixed(2).replace('.',',')}</span>
                 </div>
                 ${pen ? `<div class="container-pergunta"><span class="texto-pergunta">💬 ${!t.conta && t.tipo!=='cartao' ? 'Qual conta utilizou?' : !t.cartao ? 'Qual cartão utilizou?' : 'É uma conta fixa mensal?'}</span><div class="botoes-resposta">
                     ${!t.conta && t.tipo!=='cartao' ? ['Mercado Pago','Nubank','Itaú','Inter','PicPay'].map(b => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'conta','${b}')">${b}</button>`).join('') :
@@ -497,24 +499,21 @@
         });
     }
 
-    // MOTOR DE GRÁFICOS NATIVO (CSS DINÂMICO)
     function renderizarGraficos(receitas, totalGastos, saídas, cartões) {
         const fMes = obterId('filtro-mes').value;
         
-        // G1: Pizza / Donut (Receitas x Despesas)
         const totalFluxo = receitas + totalGastos;
         const percGasto = totalFluxo > 0 ? Math.round((totalGastos / totalFluxo) * 100) : 0;
         obterId('pizza-perc').innerText = `${percGasto}%`;
         obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
 
-        // G2: Barras Horizontais (Despesas filtradas por valor - Maior para Menor)
         const boxBarras = obterId('grafico-barras-horizontais');
         boxBarras.innerHTML = '';
         
         let despesasOrdenadas = transacoes.filter(t => {
             if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return false;
             return t.tipo === 'saida' || t.tipo === 'cartao';
-        }).sort((a,b) => b.valor - a.valor).slice(0, 5); // Pega as 5 maiores
+        }).sort((a,b) => b.valor - a.valor).slice(0, 5);
 
         const maiorGastoUnico = despesasOrdenadas.length > 0 ? despesasOrdenadas[0].valor : 1;
 
@@ -538,7 +537,6 @@
             });
         }
 
-        // G3: Barras Verticais (Contas x Cartões - Proporcional)
         const maxEixoV = Math.max(saídas, cartões, 1);
         obterId('v-val-contas').setAttribute('data-valor', saídas.toFixed(2));
         obterId('v-val-cartoes').setAttribute('data-valor', cartões.toFixed(2));
