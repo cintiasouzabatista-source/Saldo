@@ -172,7 +172,6 @@
         </select>
     </div>
 
-    <!-- TÍTULO INTERATIVO QUE RECOLHE/EXPANDE A LISTA -->
     <div class="lista-titulo" onclick="toggleHistorico()">
         <span>Histórico de Lançamentos</span>
         <span id="seta-historico">►</span>
@@ -274,7 +273,6 @@
         "bradesco": "Bradesco"
     };
 
-    // FUNÇÃO QUE ENTRA EM AÇÃO AO CLICAR NO TÍTULO DO HISTÓRICO
     function toggleHistorico() {
         const lista = document.getElementById('lista-historico');
         const seta = document.getElementById('seta-historico');
@@ -413,13 +411,15 @@
         if (!descricao) descricao = "Lançamento Avulso";
 
         const dataAtual = new Date();
-        
+        const grupoParcelasId = totalParcelas > 1 ? Date.now() : null; // Vincula as parcelas do mesmo grupo
+
         if (totalParcelas > 1 && tipo === 'cartao') {
             const valorParcela = valor / totalParcelas;
             for (let p = 1; p <= totalParcelas; p++) {
                 let novaData = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + (p - 1), dataAtual.getDate());
                 const novaTransacao = {
                     id: Date.now() + p,
+                    grupoParcelas: grupoParcelasId, // Identificador de vinculo
                     descricao: `${descricao} (${p}/${totalParcelas})`,
                     valor: valorParcela,
                     tipo: tipo,
@@ -436,6 +436,7 @@
         } else {
             const novaTransacao = {
                 id: Date.now(),
+                grupoParcelas: null,
                 descricao: descricao,
                 valor: valor,
                 tipo: tipo,
@@ -453,7 +454,6 @@
         salvarDadosNoLocalStorage();
         atualizarAplicativo();
         
-        // Abrir a lista automaticamente ao adicionar um novo item para dar feedback visual
         const lista = document.getElementById('lista-historico');
         const seta = document.getElementById('seta-historico');
         lista.style.display = 'block';
@@ -466,7 +466,14 @@
     function responderConta(idTransacao, bancoNome) {
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
-            t.conta = bancoNome;
+            // Se fizer parte de um grupo de parcelas, replica para todas
+            if (t.grupoParcelas) {
+                transacoes.forEach(item => {
+                    if (item.grupoParcelas === t.grupoParcelas) item.conta = bancoNome;
+                });
+            } else {
+                t.conta = bancoNome;
+            }
             salvarDadosNoLocalStorage();
             atualizarAplicativo();
             mostrarAviso("Banco atualizado!");
@@ -476,18 +483,34 @@
     function responderCartao(idTransacao, cartaoNome) {
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
-            t.cartao = cartaoNome;
+            if (t.grupoParcelas) {
+                transacoes.forEach(item => {
+                    if (item.grupoParcelas === t.grupoParcelas) item.cartao = cartaoNome;
+                });
+            } else {
+                t.cartao = cartaoNome;
+            }
             salvarDadosNoLocalStorage();
             atualizarAplicativo();
-            mostrarAviso("Cartão updated!");
+            mostrarAviso("Cartão atualizado!");
         }
     }
 
     function responderFixa(idTransacao, ehFixa) {
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
-            t.fixa = ehFixa;
-            t.perguntaFixaRespondida = true;
+            // MELHORIA: Se for parcelado, replica a resposta de Fixa/Variável para todas as parcelas automágicamente!
+            if (t.grupoParcelas) {
+                transacoes.forEach(item => {
+                    if (item.grupoParcelas === t.grupoParcelas) {
+                        item.fixa = ehFixa;
+                        item.perguntaFixaRespondida = true;
+                    }
+                });
+            } else {
+                t.fixa = ehFixa;
+                t.perguntaFixaRespondida = true;
+            }
             salvarDadosNoLocalStorage();
             atualizarAplicativo();
             mostrarAviso(ehFixa ? "Marcada como Fixa!" : "Lançamento salvo!");
