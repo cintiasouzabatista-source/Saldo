@@ -22,6 +22,8 @@
             --azul-saldo: #2980b9;
             --alerta-fundo: #fef9e7;
             --alerta-borda: #f1c40f;
+            --alerta-danger-bg: #fce4e4;
+            --alerta-danger-borda: #e74c3c;
         }
 
         [data-theme="dark"] {
@@ -34,6 +36,8 @@
             --azul-saldo: #3498db;
             --alerta-fundo: #2c2512;
             --alerta-borda: #d35400;
+            --alerta-danger-bg: #2c1616;
+            --alerta-danger-borda: #c0392b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
@@ -56,6 +60,13 @@
         .card.saldo-total p { font-size: 1.3rem; }
         
         .previsao-texto { font-size: 0.75rem; color: var(--texto-secundario); margin-top: 4px; font-weight: 500; }
+        
+        /* Novas áreas inteligentes no Card */
+        .reserva-texto { font-size: 0.78rem; color: var(--entrada); margin-top: 4px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .config-reserva-inline { cursor: pointer; font-size: 0.75rem; color: var(--texto-secundario); opacity: 0.7; }
+        .config-reserva-inline:hover { opacity: 1; }
+        
+        .alerta-comprometido { background: var(--alerta-danger-bg); border: 1px solid var(--alerta-danger-borda); color: var(--saida); padding: 6px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; margin-top: 6px; text-align: center; display: none; }
 
         .cor-entrada { color: var(--entrada); }
         .cor-saida { color: var(--saida); }
@@ -151,7 +162,19 @@
         <div class="card saldo-total">
             <h3>Saldo Atual</h3>
             <p id="card-saldo" class="valor-dinamico" data-valor="0.00" style="color: var(--azul-saldo);">R$ 0,00</p>
+            
             <div class="previsao-texto" id="card-previsao">Média de gasto no mês: <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
+            
+            <!-- ÁREA DE SUGESTÃO DE RESERVA FINANCEIRA -->
+            <div class="reserva-texto" id="card-reserva" style="display:none;">
+                💰 Você pode guardar: <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span> 
+                <span class="config-reserva-inline" onclick="abrirConfigReserva()" title="Mudar porcentagem">⚙️(<span id="reserva-porcentagem-label">10</span>%)</span>
+            </div>
+
+            <!-- ALERTA DINÂMICO DE ORÇAMENTO COMPROMETIDO -->
+            <div class="alerta-comprometido" id="card-alerta-comprometido">
+                ⚠️ Atenção: Seus gastos atingiram mais de 80% das suas entradas! Orçamento Comprometido.
+            </div>
         </div>
     </div>
 
@@ -179,33 +202,27 @@
     <div class="lista-container" id="lista-historico"></div>
 </div>
 
+<!-- MODAL EDICAO -->
 <div class="modal-overlay" id="modal-edicao">
     <div class="modal-container">
         <div class="modal-title">Editar Lançamento</div>
-        
         <div class="modal-label">Descrição</div>
         <input type="text" id="modal-desc" class="modal-input">
-        
         <div class="modal-label">Valor (R$)</div>
         <input type="number" id="modal-valor" class="modal-input" step="0.01">
-        
         <div class="modal-label">Tipo</div>
         <select id="modal-tipo" class="modal-select">
             <option value="entrada">Entrada (+)</option>
             <option value="saida">Saída (-)</option>
             <option value="cartao">Cartão (-)</option>
         </select>
-
         <div class="modal-label">Conta / Banco</div>
         <input type="text" id="modal-conta" class="modal-input">
-
         <div class="modal-label">Cartão Utilizado</div>
         <input type="text" id="modal-cartao-id" class="modal-input">
-
         <div class="modal-label" style="display: flex; align-items: center; gap: 8px; margin-top: 5px; cursor: pointer;">
             <input type="checkbox" id="modal-fixa" style="width: 16px; height: 16px;"> É uma Conta Fixa?
         </div>
-        
         <div class="modal-botoes">
             <button class="btn-modal btn-excluir" onclick="acaoExcluir()">Excluir</button>
             <button class="btn-modal btn-cancelar" onclick="fecharModal()">Voltar</button>
@@ -214,26 +231,33 @@
     </div>
 </div>
 
+<!-- MODAL CONFIGURAÇÃO DA PORCENTAGEM DE RESERVA -->
+<div class="modal-overlay" id="modal-reserva">
+    <div class="modal-container">
+        <div class="modal-title">💰 Definir Meta de Reserva</div>
+        <div class="modal-label">Qual porcentagem do saldo positivo você quer guardar?</div>
+        <input type="number" id="modal-reserva-pct" class="modal-input" min="1" max="100" value="10">
+        <div class="modal-botoes">
+            <button class="btn-modal btn-cancelar" onclick="fecharConfigReserva()">Cancelar</button>
+            <button class="btn-modal btn-salvar" onclick="salvarConfigReserva()">Definir</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIG GLOBAL -->
 <div class="modal-overlay" id="modal-config">
     <div class="modal-container">
         <div class="modal-title">⚙️ Configurações do Sistema</div>
         <p style="font-size: 0.9rem; color: var(--texto-secundario); margin-bottom: 5px;">Gerenciamento global de dados do seu fluxo de caixa.</p>
-        
         <hr style="border: 0; border-top: 1px solid var(--borda); margin: 5px 0;">
-        
         <div class="modal-label">Backup de Segurança</div>
         <div style="display: flex; gap: 8px; width: 100%;">
             <button class="btn-modal btn-backup" onclick="exportarBackup()">📥 Exportar JSON</button>
             <button class="btn-modal btn-restaurar" onclick="document.getElementById('input-file-backup').click()">📤 Importar JSON</button>
         </div>
         <input type="file" id="input-file-backup" accept=".json" style="display: none;" onchange="importarBackup(event)">
-        
         <hr style="border: 0; border-top: 1px solid var(--borda); margin: 5px 0;">
-
-        <button class="btn-modal btn-excluir" style="padding: 12px;" onclick="resetarAplicativoTotal()">
-            🗑️ Limpar Todos os Dados (Resetar App)
-        </button>
-        
+        <button class="btn-modal btn-excluir" style="padding: 12px;" onclick="resetarAplicativoTotal()">🗑️ Limpar Todos os Dados (Resetar App)</button>
         <div class="modal-botoes">
             <button class="btn-modal btn-cancelar" onclick="fecharConfiguracoes()">Fechar</button>
         </div>
@@ -244,39 +268,27 @@
     let transacoes = [];
     let idEdicaoAtual = null;
     let saldosOcultos = false;
+    let porcentagemReserva = 10; // Padrão de 10%
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     
     const BANCOS_CADASTRADOS = {
-        "itau": "Itaú", "itaú": "Itaú",
-        "bradesco": "Bradesco",
-        "santander": "Santander",
-        "nubank": "Nubank", "nu": "Nubank",
-        "caixa": "Caixa",
-        "inter": "Inter",
-        "c6": "C6 Bank", "c6bank": "C6 Bank",
-        "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago", "mp": "Mercado Pago",
+        "itau": "Itaú", "itaú": "Itaú", "bradesco": "Bradesco", "santander": "Santander",
+        "nubank": "Nubank", "nu": "Nubank", "caixa": "Caixa", "inter": "Inter",
+        "c6": "C6 Bank", "c6bank": "C6 Bank", "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago", "mp": "Mercado Pago",
         "picpay": "PicPay", "pic": "PicPay"
     };
 
     const CARTOES_CADASTRADOS = {
-        "black": "Black",
-        "visa": "Visa",
-        "master": "Mastercard", "mastercard": "Mastercard",
-        "elo": "Elo",
-        "amex": "Amex",
-        "flash": "Flash",
-        "nubank": "Nubank", "nu": "Nubank",
-        "itau": "Itaú", "itaú": "Itaú",
-        "c6": "C6 Bank", "picpay": "PicPay",
+        "black": "Black", "visa": "Visa", "master": "Mastercard", "mastercard": "Mastercard",
+        "elo": "Elo", "amex": "Amex", "flash": "Flash", "nubank": "Nubank", "nu": "Nubank",
+        "itau": "Itaú", "itaú": "Itaú", "c6": "C6 Bank", "picpay": "PicPay",
         "mercado pago": "Mercado Pago", "mercadopago": "Mercado Pago", "mp": "Mercado Pago",
-        "inter": "Inter",
-        "bradesco": "Bradesco"
+        "inter": "Inter", "bradesco": "Bradesco"
     };
 
     function toggleHistorico() {
         const lista = document.getElementById('lista-historico');
         const seta = document.getElementById('seta-historico');
-        
         if (lista.style.display === 'none' || lista.style.display === '') {
             lista.style.display = 'block';
             seta.innerText = '▼';
@@ -290,10 +302,8 @@
         const filtro = document.getElementById('filtro-mes');
         const hoje = new Date();
         let opcoesHTML = '';
-        
         opcoesHTML += `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual (${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()})</option>`;
         opcoesHTML += '<option value="todos">Todos os Meses</option>';
-        
         for (let i = 1; i <= 6; i++) {
             let d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
             opcoesHTML += `<option value="${d.getMonth()}-${d.getFullYear()}">${nomesMeses[d.getMonth()]}/${d.getFullYear()}</option>`;
@@ -323,6 +333,28 @@
             body.setAttribute('data-theme', 'dark');
             if(btn) btn.innerText = "☀️";
         }
+        const reservaSalva = localStorage.getItem('saldo_reserva_pct');
+        if (reservaSalva) {
+            porcentagemReserva = parseInt(reservaSalva);
+        }
+    }
+
+    function abrirConfigReserva() {
+        document.getElementById('modal-reserva-pct').value = porcentagemReserva;
+        document.getElementById('modal-reserva').style.display = 'flex';
+    }
+    function fecharConfigReserva() {
+        document.getElementById('modal-reserva').style.display = 'none';
+    }
+    function salvarConfigReserva() {
+        const pct = parseInt(document.getElementById('modal-reserva-pct').value);
+        if (pct >= 1 && pct <= 100) {
+            porcentagemReserva = pct;
+            localStorage.setItem('saldo_reserva_pct', pct);
+            fecharConfigReserva();
+            atualizarAplicativo();
+            mostrarAviso(`Porcentagem alterada para ${pct}%`);
+        }
     }
 
     function alternarVisibilidade() {
@@ -341,9 +373,7 @@
 
     function carregarDadosDoLocalStorage() {
         const dados = localStorage.getItem('saldo_transacoes');
-        if (dados) {
-            transacoes = JSON.parse(dados);
-        }
+        if (dados) transacoes = JSON.parse(dados);
     }
 
     function processarComando() {
@@ -369,18 +399,12 @@
 
         for (let chave in BANCOS_CADASTRADOS) {
             let regexBanco = new RegExp(`\\b${chave}\\b`, "i");
-            if (regexBanco.test(frase)) {
-                contaDetectada = BANCOS_CADASTRADOS[chave];
-                break;
-            }
+            if (regexBanco.test(frase)) { contaDetectada = BANCOS_CADASTRADOS[chave]; break; }
         }
 
         for (let chave in CARTOES_CADASTRADOS) {
             let regexCartao = new RegExp(`\\b${chave}\\b`, "i");
-            if (regexCartao.test(frase)) {
-                cartaoDetectado = CARTOES_CADASTRADOS[chave];
-                break;
-            }
+            if (regexCartao.test(frase)) { cartaoDetectado = CARTOES_CADASTRADOS[chave]; break; }
         }
 
         let tipo = 'saida'; 
@@ -388,16 +412,11 @@
         const eCartao = /\b(cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash|x|mp)\b/i.test(frase);
         const eSaidaForcada = /\b(gastei|comprei|paguei|fiz|transferencia|transferência)\b/i.test(frase);
 
-        if (eCartao) {
-            tipo = 'cartao';
-        } else if (eEntrada) {
-            tipo = 'entrada';
-        } else if (eSaidaForcada || /\b(pix)\b/i.test(frase)) {
-            tipo = 'saida';
-        }
+        if (eCartao) tipo = 'cartao';
+        else if (eEntrada) tipo = 'entrada';
+        else if (eSaidaForcada || /\b(pix)\b/i.test(frase)) tipo = 'saida';
 
         let descricao = fraseOriginal.replace(numerosEncontrados[0], '');
-        
         let totalParcelas = 1;
         const regexParcelas = /(\d+)\s*x/i;
         const matchParcelas = frase.match(regexParcelas);
@@ -411,7 +430,7 @@
         if (!descricao) descricao = "Lançamento Avulso";
 
         const dataAtual = new Date();
-        const grupoParcelasId = totalParcelas > 1 ? Date.now() : null; // Vincula as parcelas do mesmo grupo
+        const grupoParcelasId = totalParcelas > 1 ? Date.now() : null;
 
         if (totalParcelas > 1 && tipo === 'cartao') {
             const valorParcela = valor / totalParcelas;
@@ -419,7 +438,7 @@
                 let novaData = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + (p - 1), dataAtual.getDate());
                 const novaTransacao = {
                     id: Date.now() + p,
-                    grupoParcelas: grupoParcelasId, // Identificador de vinculo
+                    grupoParcelas: grupoParcelasId,
                     descricao: `${descricao} (${p}/${totalParcelas})`,
                     valor: valorParcela,
                     tipo: tipo,
@@ -466,14 +485,9 @@
     function responderConta(idTransacao, bancoNome) {
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
-            // Se fizer parte de um grupo de parcelas, replica para todas
             if (t.grupoParcelas) {
-                transacoes.forEach(item => {
-                    if (item.grupoParcelas === t.grupoParcelas) item.conta = bancoNome;
-                });
-            } else {
-                t.conta = bancoNome;
-            }
+                transacoes.forEach(item => { if (item.grupoParcelas === t.grupoParcelas) item.conta = bancoNome; });
+            } else { t.conta = bancoNome; }
             salvarDadosNoLocalStorage();
             atualizarAplicativo();
             mostrarAviso("Banco atualizado!");
@@ -484,12 +498,8 @@
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
             if (t.grupoParcelas) {
-                transacoes.forEach(item => {
-                    if (item.grupoParcelas === t.grupoParcelas) item.cartao = cartaoNome;
-                });
-            } else {
-                t.cartao = cartaoNome;
-            }
+                transacoes.forEach(item => { if (item.grupoParcelas === t.grupoParcelas) item.cartao = cartaoNome; });
+            } else { t.cartao = cartaoNome; }
             salvarDadosNoLocalStorage();
             atualizarAplicativo();
             mostrarAviso("Cartão atualizado!");
@@ -499,18 +509,11 @@
     function responderFixa(idTransacao, ehFixa) {
         const t = transacoes.find(item => item.id === idTransacao);
         if (t) {
-            // MELHORIA: Se for parcelado, replica a resposta de Fixa/Variável para todas as parcelas automágicamente!
             if (t.grupoParcelas) {
                 transacoes.forEach(item => {
-                    if (item.grupoParcelas === t.grupoParcelas) {
-                        item.fixa = ehFixa;
-                        item.perguntaFixaRespondida = true;
-                    }
+                    if (item.grupoParcelas === t.grupoParcelas) { item.fixa = ehFixa; item.perguntaFixaRespondida = true; }
                 });
-            } else {
-                t.fixa = ehFixa;
-                t.perguntaFixaRespondida = true;
-            }
+            } else { t.fixa = ehFixa; t.perguntaFixaRespondida = true; }
             salvarDadosNoLocalStorage();
             atualizarAplicativo();
             mostrarAviso(ehFixa ? "Marcada como Fixa!" : "Lançamento salvo!");
@@ -527,7 +530,6 @@
                 const [m, a] = filtroMes.split('-');
                 if (t.mes != m || t.ano != a) return;
             }
-            
             if (t.tipo === 'entrada') totalEntradas += t.valor;
             if (t.tipo === 'saida') totalSaidas += t.valor;
             if (t.tipo === 'cartao') totalCartao += t.valor;
@@ -536,14 +538,40 @@
         const saldoFinal = totalEntradas - totalSaidas - totalCartao;
         const diaAtual = hoje.getDate();
         
-        const mediaDiaria = diaAtual > 0 ? (totalSaidas + totalCartao) / diaAtual : 0;
-        const mediaGastoMes = mediaDiaria * 30;
+        // CORREÇÃO INTELIGENTE DA MÉDIA: Impede distorções absurdas nos primeiros dias do mês
+        const totalGastos = totalSaidas + totalCartao;
+        let mediaGastoMes = 0;
+        if (diaAtual <= 3) {
+            // Nos primeiros 3 dias, faz uma projeção ponderada mais conservadora
+            mediaGastoMes = totalGastos * (1 + (30 - diaAtual) * 0.04);
+        } else {
+            mediaGastoMes = (totalGastos / diaAtual) * 30;
+        }
 
         document.getElementById('card-entradas').setAttribute('data-valor', totalEntradas.toFixed(2));
         document.getElementById('card-saidas').setAttribute('data-valor', totalSaidas.toFixed(2));
         document.getElementById('card-cartao').setAttribute('data-valor', totalCartao.toFixed(2));
         document.getElementById('card-saldo').setAttribute('data-valor', saldoFinal.toFixed(2));
         document.getElementById('previsao-valor').setAttribute('data-valor', mediaGastoMes.toFixed(2));
+
+        // CONTROLE DA SUGESTÃO DE RESERVA SE SALDO FOR POSITIVO
+        const areaReserva = document.getElementById('card-reserva');
+        if (saldoFinal > 0) {
+            const valorParaGuardar = saldoFinal * (porcentagemReserva / 100);
+            document.getElementById('reserva-valor').setAttribute('data-valor', valorParaGuardar.toFixed(2));
+            document.getElementById('reserva-porcentagem-label').innerText = porcentagemReserva;
+            areaReserva.style.display = 'flex';
+        } else {
+            areaReserva.style.display = 'none';
+        }
+
+        // CONTROLE DE ALERTA DE ORÇAMENTO COMPROMETIDO (GASTOS > 80% DA ENTRADA)
+        const alertaComprometido = document.getElementById('card-alerta-comprometido');
+        if (totalEntradas > 0 && (totalGastos / totalEntradas) >= 0.80) {
+            alertaComprometido.style.display = 'block';
+        } else {
+            alertaComprometido.style.display = 'none';
+        }
 
         const cardSaldo = document.getElementById('card-saldo');
         cardSaldo.style.color = saldoFinal >= 0 ? 'var(--azul-saldo)' : 'var(--saida)';
@@ -557,18 +585,12 @@
         elementos.forEach(el => {
             const valorBruto = parseFloat(el.getAttribute('data-valor') || 0);
             if (saldosOcultos) {
-                if(el.id === 'card-saldo' || el.id === 'previsao-valor') {
-                     el.innerText = "R$ ••••";
-                } else {
-                     el.innerText = "••••";
-                }
+                if(['card-saldo', 'previsao-valor', 'reserva-valor'].includes(el.id)) el.innerText = "R$ ••••";
+                else el.innerText = "••••";
             } else {
                 const valorFormatado = valorBruto.toFixed(2).replace('.', ',');
-                if(el.id === 'card-saldo' || el.id === 'previsao-valor') {
-                    el.innerText = `R$ ${valorFormatado}`;
-                } else {
-                    el.innerText = valorFormatado;
-                }
+                if(['card-saldo', 'previsao-valor', 'reserva-valor'].includes(el.id)) el.innerText = `R$ ${valorFormatado}`;
+                else el.innerText = valorFormatado;
             }
         });
     }
@@ -584,7 +606,6 @@
                 const [m, a] = filtroMes.split('-');
                 if (t.mes != m || t.ano != a) return;
             }
-            
             if (filtroTipo !== 'todos') {
                 if (filtroTipo === 'fixa' && !t.fixa) return;
                 if (filtroTipo !== 'fixa' && t.tipo !== filtroTipo) return;
@@ -597,7 +618,6 @@
             const precisaDeConta = ((t.tipo === 'saida' || t.tipo === 'entrada') && !t.conta);
             const precisaDeCartao = (t.tipo === 'cartao' && !t.cartao);
             const precisaDeFixa = ((t.tipo === 'saida' || t.tipo === 'cartao') && t.perguntaFixaRespondida === false);
-            
             const estaPendente = precisaDeConta || precisaDeCartao || precisaDeFixa;
 
             const item = document.createElement('div');
@@ -615,10 +635,7 @@
                         <span class="descricao-texto">${t.descricao}</span>
                         <div class="tags-row">
                             <span class="tipo-tag ${tagClasse}">${tipoTexto}</span>
-                            ${dataHTML}
-                            ${contaHTML}
-                            ${cartaoHTML}
-                            ${fixaHTML}
+                            ${dataHTML} ${contaHTML} ${cartaoHTML} ${fixaHTML}
                         </div>
                     </div>
                     <span style="font-weight: 600; font-size: 1.05rem; color: ${t.tipo === 'entrada' ? 'var(--entrada)' : corTexto}">${sinal} ${valorExibição}</span>
@@ -672,7 +689,6 @@
         });
     }
 
-    /* CONTROLE DOS MODAIS */
     function abrirModal(id) {
         idEdicaoAtual = id;
         const t = transacoes.find(item => item.id === id);
@@ -685,17 +701,9 @@
         document.getElementById('modal-edicao').style.display = 'flex';
     }
 
-    function fecharModal() {
-        document.getElementById('modal-edicao').style.display = 'none';
-    }
-
-    function abrirConfiguracoes() {
-        document.getElementById('modal-config').style.display = 'flex';
-    }
-
-    function fecharConfiguracoes() {
-        document.getElementById('modal-config').style.display = 'none';
-    }
+    function fecharModal() { document.getElementById('modal-edicao').style.display = 'none'; }
+    function abrirConfiguracoes() { document.getElementById('modal-config').style.display = 'flex'; }
+    function fecharConfiguracoes() { document.getElementById('modal-config').style.display = 'none'; }
 
     function acaoSalvar() {
         const index = transacoes.findIndex(item => item.id === idEdicaoAtual);
@@ -708,101 +716,56 @@
             transacoes[index].fixa = document.getElementById('modal-fixa').checked;
             transacoes[index].perguntaFixaRespondida = true;
         }
-        fecharModal();
-        salvarDadosNoLocalStorage();
-        atualizarAplicativo();
-        mostrarAviso("Salvo!");
+        fecharModal(); salvarDadosNoLocalStorage(); atualizarAplicativo(); mostrarAviso("Salvo!");
     }
 
     function acaoExcluir() {
         transacoes = transacoes.filter(item => item.id !== idEdicaoAtual);
-        fecharModal();
-        salvarDadosNoLocalStorage();
-        atualizarAplicativo();
-        mostrarAviso("Excluído!");
+        fecharModal(); salvarDadosNoLocalStorage(); atualizarAplicativo(); mostrarAviso("Excluído!");
     }
 
     function resetarAplicativoTotal() {
-        if (confirm("🚨 Tem certeza absoluta que quer apagar TODOS os lançamentos? Essa ação não pode ser desfeita.")) {
-            transacoes = [];
-            salvarDadosNoLocalStorage();
-            fecharConfiguracoes();
-            atualizarAplicativo();
-            mostrarAviso("App Resetado com sucesso!");
+        if (confirm("🚨 Tem certeza que deseja resetar tudo?")) {
+            transacoes = []; salvarDadosNoLocalStorage(); fecharConfiguracoes(); atualizarAplicativo(); mostrarAviso("Resetado!");
         }
     }
 
-    /* FUNÇÕES DE BACKUP (JSON) */
     function exportarBackup() {
-        if (transacoes.length === 0) {
-            alert("Não há dados cadastrados para exportar.");
-            return;
-        }
+        if (transacoes.length === 0) return alert("Não há dados.");
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transacoes, null, 2));
-        const downloadAnchor = document.createElement('a');
-        
-        const dataAtual = new Date();
-        const dataFormatada = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth()+1).padStart(2, '0')}-${String(dataAtual.getDate()).padStart(2, '0')}`;
-        
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `backup_saldo_${dataFormatada}.json`);
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
-        mostrarAviso("Backup baixado!");
+        const dl = document.createElement('a');
+        dl.setAttribute("href", dataStr);
+        dl.setAttribute("download", `backup_saldo.json`);
+        dl.click();
     }
 
     function importarBackup(event) {
         const arquivo = event.target.files[0];
         if (!arquivo) return;
-
         const leitor = new FileReader();
         leitor.onload = function(e) {
             try {
-                const dadosImportados = JSON.parse(e.target.result);
-                if (Array.isArray(dadosImportados)) {
-                    if (confirm(`Atenção: Isso vai misturar os dados importados (${dadosImportados.length}) com os que já estão na tela. Deseja continuar?`)) {
-                        transacoes = [...transacoes, ...dadosImportados];
-                        
-                        const idsUnicos = new Set();
-                        transacoes = transacoes.filter(t => {
-                            if (!idsUnicos.has(t.id)) {
-                                idsUnicos.add(t.id);
-                                return true;
-                            }
-                            return false;
-                        });
-
-                        transacoes.sort((a, b) => b.id - a.id);
-
-                        salvarDadosNoLocalStorage();
-                        atualizarAplicativo();
-                        fecharConfiguracoes();
-                        mostrarAviso("Dados importados!");
-                    }
-                } else {
-                    alert("Arquivo de formato inválido.");
+                const dados = JSON.parse(e.target.result);
+                if (Array.isArray(dados)) {
+                    transacoes = [...transacoes, ...dados];
+                    const ids = new Set();
+                    transacoes = transacoes.filter(t => !ids.has(t.id) && ids.add(t.id));
+                    transacoes.sort((a,b) => b.id - a.id);
+                    salvarDadosNoLocalStorage(); atualizarAplicativo(); fecharConfiguracoes(); mostrarAviso("Importado!");
                 }
-            } catch (err) {
-                alert("Erro ao processar o arquivo de backup.");
-            }
-            event.target.value = '';
+            } catch (err) { alert("Erro ao importar."); }
         };
         leitor.readAsText(arquivo);
     }
 
     function mostrarAviso(texto) {
         const alerta = document.getElementById('alerta');
-        alerta.innerText = texto;
-        alerta.classList.add('mostrar');
+        alerta.innerText = texto; alerta.classList.add('mostrar');
         setTimeout(() => { alerta.classList.remove('mostrar'); }, 3000);
     }
 
     window.onload = () => {
-        carregarTemaSalvo();
-        carregarDadosDoLocalStorage();
-        inicializarFiltroMeses();
-        atualizarAplicativo();
+        carregarTemaSalvo(); carregarDadosDoLocalStorage(); inicializarFiltroMeses(); atualizarAplicativo();
     };
 </script>
 </body>
