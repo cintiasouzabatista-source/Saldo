@@ -24,6 +24,7 @@
             --alerta-borda: #f1c40f;
             --alerta-danger-bg: #fce4e4;
             --alerta-danger-borda: #e74c3c;
+            --bg-retratil: #f8f9fa;
         }
 
         [data-theme="dark"] {
@@ -38,12 +39,11 @@
             --alerta-borda: #d35400;
             --alerta-danger-bg: #2c1616;
             --alerta-danger-borda: #c0392b;
+            --bg-retratil: #282828;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
         body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
-        /* Adicionado padding-bottom para permitir rolar até o fim sem travar nos gráficos */
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; padding-bottom: 50px; }
         
         /* CABEÇALHO DO APP */
@@ -74,14 +74,18 @@
         .card.saldo-total p { font-size: 1.6rem; font-weight: 800; }
         
         /* LINHA SUBTIL DE DETALHES */
-        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; margin-top: 4px; border-top: 1px solid var(--borda); padding-top: 6px; }
+        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; margin-top: 4px; border-top: 1px solid var(--borda); padding-top: 8px; }
         .linha-subtil-valores { display: flex; justify-content: center; gap: 12px; width: 100%; flex-wrap: wrap; }
-        .previsao-texto, .reserva-texto, .saldo-restante-texto { font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
+        .previsao-texto, .reserva-texto { font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
         
-        /* Destaques em negrito solicitados */
-        .previsao-texto strong, .reserva-texto strong, .saldo-restante-texto strong { font-weight: 700; color: var(--texto-principal); }
-        .saldo-restante-texto { color: #16a085; }
+        .previsao-texto strong, .reserva-texto strong { font-weight: 700; color: var(--texto-principal); }
+
+        /* Saldo restante mais destacado e maior */
+        .saldo-restante-texto { font-size: 0.85rem; color: #16a085; font-weight: bold; margin-top: 2px; }
+        .saldo-restante-texto strong { font-weight: 800; color: #16a085; }
+        .saldo-restante-texto span { font-weight: 800; }
         [data-theme="dark"] .saldo-restante-texto { color: #1abc9c; }
+        [data-theme="dark"] .saldo-restante-texto strong { color: #1abc9c; }
 
         .config-reserva-inline { cursor: pointer; font-size: 0.7rem; opacity: 0.6; }
         .config-reserva-inline:hover { opacity: 1; }
@@ -113,11 +117,10 @@
         /* SEÇÕES DA EXIBIÇÃO */
         .secao-conteudo { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); padding: 10px; border: 1px solid var(--borda); max-height: 520px; overflow-y: auto; display: none; }
         
-        /* LAYOUT DO GRÁFICO ROSTCA */
+        /* LAYOUT DOS GRÁFICOS */
         .grafico-wrapper { margin-bottom: 20px; }
         .grafico-wrapper h4 { font-size: 0.8rem; color: var(--texto-principal); margin-bottom: 10px; text-transform: uppercase; border-left: 3px solid #2c3e50; padding-left: 6px; }
         
-        /* Rosca interativa com cursor de clique */
         .donut-chart { width: 120px; height: 120px; border-radius: 50%; margin: 10px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; }
         .donut-hole { width: 80px; height: 80px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; color: var(--texto-secundario); text-align: center; padding: 4px; }
         .donut-hole span:first-child { font-size: 0.8rem; color: var(--texto-principal); }
@@ -135,12 +138,12 @@
         .coluna-vertical-valor { font-size: 0.72rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
         .coluna-vertical-rotulo { font-size: 0.75rem; font-weight: 600; position: absolute; bottom: -22px; color: var(--texto-secundario); text-transform: uppercase; white-space: nowrap; }
 
-        /* RECOLHEDOR DO HISTÓRICO */
-        details.historico-retratil summary { font-size: 0.82rem; font-weight: 700; padding: 6px; color: var(--texto-secundario); cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); }
+        /* RECOLHEDOR DO HISTÓRICO - ESTILIZADO E MAIS VISÍVEL */
+        details.historico-retratil summary { font-size: 0.85rem; font-weight: bold; padding: 10px 14px; color: var(--texto-principal); background-color: var(--bg-retratil); cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--borda); border-radius: 8px; box-shadow: 0 1px 3px var(--shadow); }
         details.historico-retratil summary::-webkit-details-marker { display: none; }
-        details.historico-retratil summary::after { content: "▼"; font-size: 0.65rem; transition: transform 0.2s; }
+        details.historico-retratil summary::after { content: "▼"; font-size: 0.7rem; color: var(--texto-secundario); transition: transform 0.2s; }
         details.historico-retratil[open] summary::after { transform: rotate(180deg); }
-        .conteudo-retratil { margin-top: 4px; }
+        .conteudo-retratil { margin-top: 8px; }
 
         /* HISTÓRICO COMPACTADO */
         .item-transacao { display: flex; flex-direction: column; padding: 6px 2px; border-bottom: 1px solid var(--borda); cursor: pointer; }
@@ -218,7 +221,6 @@
                         <span class="config-reserva-inline" onclick="abrirConfigReserva()" title="Mudar porcentagem">⚙️</span>
                     </div>
                 </div>
-                <!-- Exibição do Saldo se Guardar o Dinheiro solicitado -->
                 <div class="saldo-restante-texto" id="card-saldo-restante">
                     <strong>Saldo se Guardar:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
                 </div>
@@ -255,7 +257,7 @@
     <!-- SEÇÃO HISTÓRICO -->
     <div class="secao-conteudo" id="secao-historico" style="display: block;">
         <details class="historico-retratil" open>
-            <summary>Clique para Recolher / Expandir</summary>
+            <summary>📝 Clique para Recolher / Expandir</summary>
             <div class="conteudo-retratil" id="lista-transacoes-container"></div>
         </details>
     </div>
@@ -263,7 +265,7 @@
     <!-- SEÇÃO GRÁFICOS -->
     <div class="secao-conteudo" id="secao-graficos">
         <div class="grafico-wrapper">
-            <h4>1. Despesas x Receitas (Clique para mudar visualização)</h4>
+            <h4>1. DESPESAS X RECEITAS</h4>
             <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
                 <div class="donut-hole">
                     <span id="pizza-perc">0%</span>
@@ -277,12 +279,12 @@
         </div>
 
         <div class="grafico-wrapper">
-            <h4>2. Maiores Despesas (% do total gasto)</h4>
+            <h4>2. GRÁFICO DESPESAS</h4>
             <div id="grafico-barras-horizontais"></div>
         </div>
 
         <div class="grafico-wrapper">
-            <h4>3. Contas Correntes x Cartões</h4>
+            <h4>3. GRÁFICO CONTAS X CARTÕES</h4>
             <div class="colunas-container">
                 <div class="coluna-vertical-bloco">
                     <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
@@ -358,7 +360,7 @@
 
 <script>
     let transacoes = [], idEdicaoAtual = null, saldosOcultos = false, porcentagemReserva = 10, abaAtiva = 'historico';
-    let modoGraficoRosca = 0; // 0: % Gasto, 1: Valor Gasto, 2: Valor Receitas
+    let modoGraficoRosca = 0; 
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
     const MAPA_ENTIDADES = {
@@ -464,7 +466,6 @@
         obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
         obterId('reserva-porcentagem-label').innerText = porcentagemReserva;
 
-        // Novo cálculo solicitado: Saldo restante se guardar o dinheiro da meta
         const saldoSeGuardar = saldo - valReserva;
         obterId('saldo-restante-valor').setAttribute('data-valor', saldoSeGuardar.toFixed(2));
 
@@ -531,7 +532,6 @@
         const totalFluxo = receitas + totalGastos;
         const percGasto = totalFluxo > 0 ? Math.round((totalGastos / totalFluxo) * 100) : 0;
         
-        // Lógica de clique no gráfico de rosca solicitado
         if (saldosOcultos) {
             obterId('pizza-perc').innerText = "••••";
             obterId('pizza-rotulo').innerText = "Oculto";
@@ -563,7 +563,6 @@
         } else {
             despesasOrdenadas.forEach(d => {
                 let pBarra = (d.valor / maiorGastoUnico) * 100;
-                // Cálculo da porcentagem individual baseada no total de gastos do mês solicitado
                 let pDoTotal = totalGastos > 0 ? Math.round((d.valor / totalGastos) * 100) : 0;
                 
                 let linha = document.createElement('div');
