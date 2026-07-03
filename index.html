@@ -71,14 +71,13 @@
         .card.saldo-total h3 { font-size: 0.75rem; letter-spacing: 0.5px; }
         .card.saldo-total p { font-size: 1.6rem; font-weight: 800; }
         
-        /* LINHA SUBTIL DE DETALHES (PREVISÃO E RESERVA JUNTOS) */
+        /* LINHA SUBTIL DE DETALHES */
         .info-subtil-container { display: flex; justify-content: center; gap: 12px; width: 100%; margin-top: 4px; border-top: 1px solid var(--borda); padding-top: 6px; flex-wrap: wrap; }
         .previsao-texto, .reserva-texto { font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
         
         .reserva-texto { color: var(--texto-secundario); }
         .config-reserva-inline { cursor: pointer; font-size: 0.7rem; opacity: 0.6; }
         .config-reserva-inline:hover { opacity: 1; }
-        .saldo-restante-label { opacity: 0.8; font-size: 0.72rem; }
 
         .alerta-comprometido { background: var(--alerta-danger-bg); border: 1px solid var(--alerta-danger-borda); color: var(--saida); padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: bold; margin-top: 4px; width: 100%; text-align: center; display: none; }
 
@@ -107,7 +106,7 @@
         /* SEÇÕES DA EXIBIÇÃO */
         .secao-conteudo { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); padding: 10px; border: 1px solid var(--borda); max-height: 450px; overflow-y: auto; display: none; }
         
-        /* CORREÇÃO DO LAYOUT DO GRÁFICO (EVITAR ENCAVALAMENTO) */
+        /* LAYOUT DO GRÁFICO */
         .grafico-wrapper { margin-bottom: 20px; }
         .grafico-wrapper h4 { font-size: 0.8rem; color: var(--texto-principal); margin-bottom: 10px; text-transform: uppercase; border-left: 3px solid #2c3e50; padding-left: 6px; }
         .donut-chart { width: 110px; height: 110px; border-radius: 50%; margin: 10px auto; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -118,14 +117,14 @@
         .barra-horizontal-bg { background: var(--bg-body); height: 10px; border-radius: 6px; width: 100%; overflow: hidden; border: 1px solid var(--borda); }
         .barra-horizontal-preenchimento { height: 100%; border-radius: 6px; width: 0%; transition: width 0.5s ease; }
         
-        /* AJUSTE FIXO DO GRÁFICO VERTICAL */
+        /* GRÁFICO VERTICAL */
         .colunas-container { display: flex; justify-content: center; gap: 50px; height: 100px; align-items: flex-end; padding-top: 25px; margin-bottom: 25px; border-bottom: 2px solid var(--borda); position: relative; }
         .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 60px; position: relative; }
         .coluna-vertical-barra { width: 28px; border-top-left-radius: 4px; border-top-right-radius: 4px; height: 2px; min-height: 2px; transition: height 0.5s ease; }
         .coluna-vertical-valor { font-size: 0.72rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
         .coluna-vertical-rotulo { font-size: 0.75rem; font-weight: 600; position: absolute; bottom: -22px; color: var(--texto-secundario); text-transform: uppercase; white-space: nowrap; }
 
-        /* RECOLHEDOR DO HISTÓRICO CONSTRUÍDO NATIVAMENTE */
+        /* RECOLHEDOR DO HISTÓRICO */
         details.historico-retratil summary { font-size: 0.82rem; font-weight: 700; padding: 6px; color: var(--texto-secundario); cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); }
         details.historico-retratil summary::-webkit-details-marker { display: none; }
         details.historico-retratil summary::after { content: "▼"; font-size: 0.65rem; transition: transform 0.2s; }
@@ -202,7 +201,6 @@
             
             <div class="info-subtil-container">
                 <div class="previsao-texto" id="card-previsao">Média/Dia: <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
-                <!-- ÁREA DE RESERVA CORRIGIDA (AGORA ESTÁ SEMPRE PRESENTE MAS SÓ ATIVA SE VALOR FOR POSITIVO) -->
                 <div class="reserva-texto" id="card-reserva">
                     Guardar (<span id="reserva-porcentagem-label">10</span>%): <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span> 
                     <span class="config-reserva-inline" onclick="abrirConfigReserva()" title="Mudar porcentagem">⚙️</span>
@@ -237,7 +235,7 @@
         <button class="aba-btn" id="aba-graf" onclick="mudarAba('graficos')">📊 Gráficos</button>
     </div>
 
-    <!-- SEÇÃO HISTÓRICO COM RECOLHEDOR IMPLEMENTADO -->
+    <!-- SEÇÃO HISTÓRICO -->
     <div class="secao-conteudo" id="secao-historico" style="display: block;">
         <details class="historico-retratil" open>
             <summary>Clique para Recolher / Expandir</summary>
@@ -356,10 +354,9 @@
         obterId('aba-hist').className = `aba-btn ${aba === 'historico' ? 'ativa' : ''}`;
         obterId('aba-graf').className = `aba-btn ${aba === 'graficos' ? 'ativa' : ''}`;
         obterId('secao-historico').style.display = aba === 'historico' ? 'block' : 'none';
-        obterId('secao-graficos').style.display = aba === 'graficos' ? 'none'; // Reseta o display padrão
+        obterId('secao-graficos').style.display = aba === 'graficos' ? 'block' : 'none'; 
         if (aba === 'graficos') {
-            obterId('secao-graficos').style.display = 'block';
-            atualizarAplicativo(); // Força redimensionamento correto
+            atualizarAplicativo(); 
         }
     }
 
@@ -375,7 +372,11 @@
 
     function alternarTema() {
         const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
-        escuro ? document.documentElement.removeAttribute('data-theme') : document.documentElement.setAttribute('data-theme', 'dark');
+        if (escuro) {
+            document.documentElement.removeAttribute('data-theme');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
         obterId('btn-tema').innerText = escuro ? "🌙" : "☀️";
         localStorage.setItem('saldo_tema', escuro ? 'light' : 'dark');
     }
@@ -433,7 +434,6 @@
         obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
         obterId('previsao-valor').setAttribute('data-valor', (gastos / 30).toFixed(2));
 
-        // MOSTRAR A RESERVA SEMPRE, MAS COM VALOR ZERO SE NEGATIVO
         const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
         obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
         obterId('reserva-porcentagem-label').innerText = porcentagemReserva;
@@ -444,7 +444,8 @@
         obterId('card-saldo').style.color = saldo >= 0 ? (escuro ? '#3498db' : '#2c3e50') : 'var(--saida)';
 
         document.querySelectorAll('.valor-dinamico').forEach(el => {
-            const v = parseFloat(el.getAttribute('data-valor') || 0).toFixed(2).replace('.', ',');
+            const attrVal = el.getAttribute('data-valor') || "0";
+            const v = parseFloat(parseFloat(attrVal).toFixed(2)).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             el.innerText = saldosOcultos ? (['card-saldo','previsao-valor','reserva-valor','v-val-contas','v-val-cartoes'].includes(el.id) ? "R$ ••••" : "••••") : (['card-saldo','previsao-valor','reserva-valor','v-val-contas','v-val-cartoes'].includes(el.id) ? `R$ ${v}` : v);
         });
 
@@ -532,12 +533,10 @@
             });
         }
 
-        // LÓGICA PROTEGIDA PARA O GRÁFICO VERTICAL NUNCA QUEBRAR ABAIXO DA LINHA
         const maxEixoV = Math.max(saídas, cartões, 100);
         obterId('v-val-contas').setAttribute('data-valor', saídas.toFixed(2));
         obterId('v-val-cartoes').setAttribute('data-valor', cartões.toFixed(2));
         
-        // Assegura altura proporcional baseada estritamente no container sem valores negativos distorcerem o CSS
         obterId('v-bar-contas').style.height = `${Math.max((saídas / maxEixoV) * 100, 5)}%`;
         obterId('v-bar-cartoes').style.height = `${Math.max((cartões / maxEixoV) * 100, 5)}%`;
     }
@@ -548,24 +547,36 @@
         obterId('modal-conta').value = t.conta || ''; obterId('modal-cartao-id').value = t.cartao || ''; obterId('modal-fixa').checked = t.fixa;
         toggleModal('modal-edicao', true);
     }
-    const fecharModal = () => toggleModal('modal-edicao', false);
-    const abrirConfigReserva = () => { obterId('modal-reserva-pct').value = porcentagemReserva; toggleModal('modal-reserva', true); };
-    const fecharConfigReserva = () => toggleModal('modal-reserva', false);
-    const abrirConfiguracoes = () => toggleModal('modal-config', true);
-    const fecharConfiguracoes = () => toggleModal('modal-config', false);
-    const alternarVisibilidade = () => { saldosOcultos = !saldosOcultos; obterId('btn-visibilidade').innerText = saldosOcultos ? "🙈" : "👁️"; atualizarAplicativo(); };
-    const verificarTecla = e => { if (e.key === 'Enter') processarComando(); };
+    
+    function fecharModal() { toggleModal('modal-edicao', false); }
+    function abrirConfigReserva() { obterId('modal-reserva-pct').value = porcentagemReserva; toggleModal('modal-reserva', true); }
+    function fecharConfigReserva() { toggleModal('modal-reserva', false); }
+    function abrirConfiguracoes() { toggleModal('modal-config', true); }
+    function fecharConfiguracoes() { toggleModal('modal-config', false); }
+    function alternarVisibilidade() { saldosOcultos = !saldosOcultos; obterId('btn-visibilidade').innerText = saldosOcultos ? "🙈" : "👁️"; atualizarAplicativo(); }
+    function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
 
     function salvarConfigReserva() {
         const p = parseInt(obterId('modal-reserva-pct').value);
-        if (p >= 1 && p <= 100) { porcentagemReserva = p; localStorage.setItem('saldo_reserva_pct', p); fecharConfigReserva(); atualizarAplicativo(); mostrarAviso(`Meta: ${p}%`); }
+        if (p >= 1 && p <= 100) { 
+            porcentagemReserva = p; 
+            localStorage.setItem('saldo_reserva_pct', p); 
+            fecharConfigReserva(); 
+            atualizarAplicativo(); 
+            mostrarAviso(`Meta: ${p}%`); 
+        }
     }
 
     function acaoSalvar() {
         const t = transacoes.find(i => i.id === idEdicaoAtual);
         if (t) {
-            t.descricao = obterId('modal-desc').value.trim(); t.valor = parseFloat(obterId('modal-valor').value); t.tipo = obterId('modal-tipo').value;
-            t.conta = obterId('modal-conta').value.trim(); t.cartao = obterId('modal-cartao-id').value.trim(); t.fixa = obterId('modal-fixa').checked; t.perguntaFixaRespondida = true;
+            t.descricao = obterId('modal-desc').value.trim(); 
+            t.valor = parseFloat(obterId('modal-valor').value); 
+            t.tipo = obterId('modal-tipo').value;
+            t.conta = obterId('modal-conta').value.trim(); 
+            t.cartao = obterId('modal-cartao-id').value.trim(); 
+            t.fixa = obterId('modal-fixa').checked; 
+            t.perguntaFixaRespondida = true;
         }
         fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Salvo!");
     }
@@ -580,7 +591,7 @@
             try {
                 const d = JSON.parse(ev.target.result);
                 if (Array.isArray(d)) { transacoes = [...transacoes, ...d]; const ids = new Set(); transacoes = transacoes.filter(t => !ids.has(t.id) && ids.add(t.id)); transacoes.sort((a,b) => b.id - a.id); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); fecharConfiguracoes(); mostrarAviso("Importado!"); }
-            } catch { alert("Erro ao importar."); }
+            } catch (err) { alert("Erro ao importar."); }
         }; r.readAsText(f);
     }
 
