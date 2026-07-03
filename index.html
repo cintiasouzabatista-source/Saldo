@@ -75,8 +75,9 @@
         .filtro-select { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.85rem; color: var(--texto-secundario); outline: none; font-weight: 500; }
 
         /* LISTA COMPLETA ABAIXO */
-        .lista-titulo { font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 6px; padding-left: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .lista-container { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); flex-grow: 1; overflow-y: auto; padding: 5px 10px; margin-bottom: 10px; border: 1px solid var(--borda); }
+        .lista-titulo { font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 6px; padding: 8px 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: var(--bg-container); border-radius: 6px; border: 1px solid var(--borda); user-select: none; }
+        .lista-titulo:hover { background-color: var(--borda); }
+        .lista-container { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); flex-grow: 1; overflow-y: auto; padding: 5px 10px; margin-top: 5px; margin-bottom: 10px; border: 1px solid var(--borda); display: none; }
         
         /* Bloco básico da transação */
         .item-transacao { display: flex; flex-direction: column; padding: 12px 5px; border-bottom: 1px solid var(--borda); font-size: 0.95rem; cursor: pointer; }
@@ -171,7 +172,11 @@
         </select>
     </div>
 
-    <div class="lista-titulo">Histórico de Lançamentos</div>
+    <!-- TÍTULO INTERATIVO QUE RECOLHE/EXPANDE A LISTA -->
+    <div class="lista-titulo" onclick="toggleHistorico()">
+        <span>Histórico de Lançamentos</span>
+        <span id="seta-historico">►</span>
+    </div>
     <div class="lista-container" id="lista-historico"></div>
 </div>
 
@@ -268,6 +273,20 @@
         "inter": "Inter",
         "bradesco": "Bradesco"
     };
+
+    // FUNÇÃO QUE ENTRA EM AÇÃO AO CLICAR NO TÍTULO DO HISTÓRICO
+    function toggleHistorico() {
+        const lista = document.getElementById('lista-historico');
+        const seta = document.getElementById('seta-historico');
+        
+        if (lista.style.display === 'none' || lista.style.display === '') {
+            lista.style.display = 'block';
+            seta.innerText = '▼';
+        } else {
+            lista.style.display = 'none';
+            seta.innerText = '►';
+        }
+    }
 
     function inicializarFiltroMeses() {
         const filtro = document.getElementById('filtro-mes');
@@ -367,7 +386,6 @@
         }
 
         let tipo = 'saida'; 
-        // CORREÇÃO: "saldo" ou "recebi" agora entram nativamente como ENTRADA (+)
         const eEntrada = /\b(recebi|ganhei|salario|salário|entrada|saldo)\b/i.test(frase) || frase.includes('+');
         const eCartao = /\b(cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash|x|mp)\b/i.test(frase);
         const eSaidaForcada = /\b(gastei|comprei|paguei|fiz|transferencia|transferência)\b/i.test(frase);
@@ -407,8 +425,8 @@
                     tipo: tipo,
                     conta: contaDetectada,
                     cartao: cartaoDetectado,
-                    fixa: false, // Inicializa como não fixa por padrão
-                    perguntaFixaRespondida: false, // Controle de fluxo do chat
+                    fixa: false,
+                    perguntaFixaRespondida: false,
                     mes: novaData.getMonth(),
                     ano: novaData.getFullYear(),
                     dia: dataAtual.getDate()
@@ -423,8 +441,8 @@
                 tipo: tipo,
                 conta: contaDetectada,
                 cartao: cartaoDetectado,
-                fixa: false, // Inicializa como não fixa por padrão
-                perguntaFixaRespondida: false, // Controle de fluxo do chat
+                fixa: false,
+                perguntaFixaRespondida: false,
                 mes: dataAtual.getMonth(),
                 ano: dataAtual.getFullYear(),
                 dia: dataAtual.getDate()
@@ -434,6 +452,13 @@
 
         salvarDadosNoLocalStorage();
         atualizarAplicativo();
+        
+        // Abrir a lista automaticamente ao adicionar um novo item para dar feedback visual
+        const lista = document.getElementById('lista-historico');
+        const seta = document.getElementById('seta-historico');
+        lista.style.display = 'block';
+        seta.innerText = '▼';
+
         input.value = '';
         mostrarAviso(`Adicionado!`);
     }
@@ -537,14 +562,13 @@
                 if (t.mes != m || t.ano != a) return;
             }
             
-            // Controle de filtros de exibição
             if (filtroTipo !== 'todos') {
                 if (filtroTipo === 'fixa' && !t.fixa) return;
                 if (filtroTipo !== 'fixa' && t.tipo !== filtroTipo) return;
             }
 
             let tagClasse = 'tag-saida', tipoTexto = 'Saída', corTexto = 'var(--saida)', sinal = '-';
-            if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; colorTexto = 'var(--entrada)'; sinal = '+'; }
+            if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = 'var(--entrada)'; sinal = '+'; }
             if (t.tipo === 'cartao') { tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = 'var(--cartao)'; sinal = '-'; }
 
             const precisaDeConta = ((t.tipo === 'saida' || t.tipo === 'entrada') && !t.conta);
@@ -578,7 +602,6 @@
                 </div>
             `;
 
-            // FLUXO DE PERGUNTAS DO CHAT INTELIGENTE
             if (precisaDeConta) {
                 const perguntaTexto = t.tipo === 'entrada' ? 'Qual conta recebeu essa entrada?' : 'Qual conta você utilizou para essa saída?';
                 blocoHTML += `
@@ -610,7 +633,6 @@
                     </div>
                 `;
             } else if (precisaDeFixa) {
-                // Nova pergunta adicionada dinamicamente para contas fixas
                 blocoHTML += `
                     <div class="container-pergunta">
                         <span class="texto-pergunta">💬 Esse gasto é uma Conta Fixa mensal?</span>
@@ -661,7 +683,7 @@
             transacoes[index].conta = document.getElementById('modal-conta').value.trim();
             transacoes[index].cartao = document.getElementById('modal-cartao-id').value.trim();
             transacoes[index].fixa = document.getElementById('modal-fixa').checked;
-            transacoes[index].perguntaFixaRespondida = true; // Se salvou via modal, define como respondida
+            transacoes[index].perguntaFixaRespondida = true;
         }
         fecharModal();
         salvarDadosNoLocalStorage();
