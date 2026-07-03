@@ -19,6 +19,7 @@
             --entrada: #2ecc71;
             --saida: #e74c3c;
             --cartao: #f39c12;
+            --reserva-cor: #16a085;
             --azul-saldo: #2c3e50;
             --alerta-fundo: #fef9e7;
             --alerta-borda: #f1c40f;
@@ -40,6 +41,7 @@
             --alerta-danger-bg: #2c1616;
             --alerta-danger-borda: #c0392b;
             --bg-retratil: #282828;
+            --reserva-cor: #1abc9c;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
@@ -81,11 +83,9 @@
         .previsao-texto strong, .reserva-texto strong { font-weight: 700; color: var(--texto-principal); }
 
         /* Saldo restante mais destacado e maior */
-        .saldo-restante-texto { font-size: 0.85rem; color: #16a085; font-weight: bold; margin-top: 2px; }
-        .saldo-restante-texto strong { font-weight: 800; color: #16a085; }
+        .saldo-restante-texto { font-size: 0.85rem; color: var(--reserva-cor); font-weight: bold; margin-top: 2px; }
+        .saldo-restante-texto strong { font-weight: 800; color: var(--reserva-cor); }
         .saldo-restante-texto span { font-weight: 800; }
-        [data-theme="dark"] .saldo-restante-texto { color: #1abc9c; }
-        [data-theme="dark"] .saldo-restante-texto strong { color: #1abc9c; }
 
         .config-reserva-inline { cursor: pointer; font-size: 0.7rem; opacity: 0.6; }
         .config-reserva-inline:hover { opacity: 1; }
@@ -108,7 +108,7 @@
         .filtros-container { display: flex; gap: 8px; margin-bottom: 12px; width: 100%; }
         .filtro-select { flex: 1; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.82rem; color: var(--texto-principal); outline: none; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px var(--shadow); appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 
-        /* ABAS INTEGRADAS */
+        /* ABAS INTEGRADAS - INVERTIDAS: GRAFICOS ESQUERDA, HISTORICO DIREITA */
         .abas-container { display: flex; background: var(--bg-container); border-radius: 6px; padding: 3px; border: 1px solid var(--borda); margin-bottom: 8px; gap: 4px; }
         .aba-btn { flex: 1; background: none; border: none; padding: 6px; font-size: 0.8rem; font-weight: bold; color: var(--texto-secundario); cursor: pointer; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .aba-btn.ativa { background: #2c3e50; color: white; }
@@ -131,12 +131,12 @@
         .barra-horizontal-bg { background: var(--bg-body); height: 10px; border-radius: 6px; width: 100%; overflow: hidden; border: 1px solid var(--borda); }
         .barra-horizontal-preenchimento { height: 100%; border-radius: 6px; width: 0%; transition: width 0.5s ease; }
         
-        /* GRÁFICO VERTICAL */
-        .colunas-container { display: flex; justify-content: center; gap: 50px; height: 100px; align-items: flex-end; padding-top: 25px; margin-bottom: 25px; border-bottom: 2px solid var(--borda); position: relative; }
-        .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 60px; position: relative; }
+        /* GRÁFICO VERTICAL COM 3 COLUNAS */
+        .colunas-container { display: flex; justify-content: center; gap: 24px; height: 100px; align-items: flex-end; padding-top: 25px; margin-bottom: 25px; border-bottom: 2px solid var(--borda); position: relative; }
+        .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 65px; position: relative; }
         .coluna-vertical-barra { width: 28px; border-top-left-radius: 4px; border-top-right-radius: 4px; height: 2px; min-height: 2px; transition: height 0.5s ease; }
-        .coluna-vertical-valor { font-size: 0.72rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
-        .coluna-vertical-rotulo { font-size: 0.75rem; font-weight: 600; position: absolute; bottom: -22px; color: var(--texto-secundario); text-transform: uppercase; white-space: nowrap; }
+        .coluna-vertical-valor { font-size: 0.68rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
+        .coluna-vertical-rotulo { font-size: 0.72rem; font-weight: 600; position: absolute; bottom: -22px; color: var(--texto-secundario); text-transform: uppercase; white-space: nowrap; }
 
         /* RECOLHEDOR DO HISTÓRICO - ESTILIZADO E MAIS VISÍVEL */
         details.historico-retratil summary { font-size: 0.85rem; font-weight: bold; padding: 10px 14px; color: var(--texto-principal); background-color: var(--bg-retratil); cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--borda); border-radius: 8px; box-shadow: 0 1px 3px var(--shadow); }
@@ -249,21 +249,14 @@
         </select>
     </div>
 
+    <!-- ABAS INTEGRADAS INVERTIDAS: GRAFICOS NA ESQUERDA, HISTÓRICO NA DIREITA -->
     <div class="abas-container">
-        <button class="aba-btn ativa" id="aba-hist" onclick="mudarAba('historico')">📝 Histórico</button>
-        <button class="aba-btn" id="aba-graf" onclick="mudarAba('graficos')">📊 Gráficos</button>
+        <button class="aba-btn ativa" id="aba-graf" onclick="mudarAba('graficos')">📊 Gráficos</button>
+        <button class="aba-btn" id="aba-hist" onclick="mudarAba('historico')">📝 Histórico</button>
     </div>
 
-    <!-- SEÇÃO HISTÓRICO -->
-    <div class="secao-conteudo" id="secao-historico" style="display: block;">
-        <details class="historico-retratil" open>
-            <summary>📝 Clique para Recolher / Expandir</summary>
-            <div class="conteudo-retratil" id="lista-transacoes-container"></div>
-        </details>
-    </div>
-
-    <!-- SEÇÃO GRÁFICOS -->
-    <div class="secao-conteudo" id="secao-graficos">
+    <!-- SEÇÃO GRÁFICOS (ABRE PRIMEIRO POR PADRÃO AGORA) -->
+    <div class="secao-conteudo" id="secao-graficos" style="display: block;">
         <div class="grafico-wrapper">
             <h4>1. DESPESAS X RECEITAS</h4>
             <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
@@ -296,9 +289,24 @@
                     <div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div>
                     <span class="coluna-vertical-rotulo">Cartões</span>
                 </div>
+                <!-- NOVA COLUNA VIRTUAL DA CONTA RESERVA -->
+                <div class="coluna-vertical-bloco">
+                    <span class="coluna-vertical-valor valor-dinamico" id="v-val-reserva" data-valor="0.00">R$ 0,00</span>
+                    <div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div>
+                    <span class="coluna-vertical-rotulo">Reserva</span>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- SEÇÃO HISTÓRICO -->
+    <div class="secao-conteudo" id="secao-historico">
+        <details class="historico-retratil" open>
+            <summary>📝 Clique para Recolher / Expandir</summary>
+            <div class="conteudo-retratil" id="lista-transacoes-container"></div>
+        </details>
+    </div>
+
 </div>
 
 <!-- MODAIS -->
@@ -359,7 +367,7 @@
 </div>
 
 <script>
-    let transacoes = [], idEdicaoAtual = null, saldosOcultos = false, porcentagemReserva = 10, abaAtiva = 'historico';
+    let transacoes = [], idEdicaoAtual = null, saldosOcultos = false, porcentagemReserva = 10, abaAtiva = 'graficos';
     let modoGraficoRosca = 0; 
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
@@ -374,13 +382,11 @@
 
     function mudarAba(aba) {
         abaAtiva = aba;
-        obterId('aba-hist').className = `aba-btn ${aba === 'historico' ? 'ativa' : ''}`;
         obterId('aba-graf').className = `aba-btn ${aba === 'graficos' ? 'ativa' : ''}`;
-        obterId('secao-historico').style.display = aba === 'historico' ? 'block' : 'none';
-        obterId('secao-graficos').style.display = aba === 'graficos' ? 'block' : 'none'; 
-        if (aba === 'graficos') {
-            atualizarAplicativo(); 
-        }
+        obterId('aba-hist').className = `aba-btn ${aba === 'historico' ? 'ativa' : ''}`;
+        obterId('secao-graficos').style.display = aba === 'graficos' ? 'block' : 'none';
+        obterId('secao-historico').style.display = aba === 'historico' ? 'block' : 'none'; 
+        atualizarAplicativo(); 
     }
 
     function inicializarFiltroMeses() {
@@ -477,11 +483,11 @@
         document.querySelectorAll('.valor-dinamico').forEach(el => {
             const attrVal = el.getAttribute('data-valor') || "0";
             const v = parseFloat(parseFloat(attrVal).toFixed(2)).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-            el.innerText = saldosOcultos ? (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes'].includes(el.id) ? "R$ ••••" : "••••") : (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes'].includes(el.id) ? `R$ ${v}` : v);
+            el.innerText = saldosOcultos ? (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes','v-val-reserva'].includes(el.id) ? "R$ ••••" : "••••") : (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes','v-val-reserva'].includes(el.id) ? `R$ ${v}` : v);
         });
 
         renderizarHistorico();
-        renderizarGraficos(ent, gastos, sai, car);
+        renderizarGraficos(ent, gastos, sai, car, valReserva);
     }
 
     function renderizarHistorico() {
@@ -527,7 +533,7 @@
         });
     }
 
-    function renderizarGraficos(receitas, totalGastos, saídas, cartões) {
+    function renderizarGraficos(receitas, totalGastos, saídas, cartões, valorReserva) {
         const fMes = obterId('filtro-mes').value;
         const totalFluxo = receitas + totalGastos;
         const percGasto = totalFluxo > 0 ? Math.round((totalGastos / totalFluxo) * 100) : 0;
@@ -580,12 +586,15 @@
             });
         }
 
-        const maxEixoV = Math.max(saídas, cartões, 100);
+        // Atualização das colunas incluindo a Reserva Automatizada
+        const maxEixoV = Math.max(saídas, cartões, valorReserva, 100);
         obterId('v-val-contas').setAttribute('data-valor', saídas.toFixed(2));
         obterId('v-val-cartoes').setAttribute('data-valor', cartões.toFixed(2));
+        obterId('v-val-reserva').setAttribute('data-valor', valorReserva.toFixed(2));
         
         obterId('v-bar-contas').style.height = `${Math.max((saídas / maxEixoV) * 100, 5)}%`;
         obterId('v-bar-cartoes').style.height = `${Math.max((cartões / maxEixoV) * 100, 5)}%`;
+        obterId('v-bar-reserva').style.height = `${Math.max((valorReserva / maxEixoV) * 100, 5)}%`;
     }
 
     function abrirModal(id) {
