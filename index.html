@@ -26,6 +26,8 @@
             --alerta-danger-bg: #fce4e4;
             --alerta-danger-borda: #e74c3c;
             --bg-retratil: #f8f9fa;
+            --chat-verde: #25d366;
+            --chat-verde-hover: #20ba5a;
         }
 
         [data-theme="dark"] {
@@ -42,11 +44,13 @@
             --alerta-danger-borda: #c0392b;
             --bg-retratil: #282828;
             --reserva-cor: #1abc9c;
+            --chat-verde: #056162;
+            --chat-verde-hover: #044e4f;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
         body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; padding-bottom: 50px; }
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; padding-bottom: 80px; }
         
         /* CABEÇALHO DO APP */
         .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px; padding: 5px; }
@@ -61,7 +65,7 @@
         .card h3 { font-size: 0.7rem; color: var(--texto-secundario); margin-bottom: 2px; text-transform: uppercase; }
         .card p { font-size: 0.9rem; font-weight: bold; }
         
-        /* CARD SALDO ATUAL DESPOLUÍDO */
+        /* CARD SALDO ATUAL */
         .card.saldo-total { 
             grid-column: span 3; 
             padding: 14px; 
@@ -75,18 +79,13 @@
         .card.saldo-total h3 { font-size: 0.75rem; letter-spacing: 0.5px; }
         .card.saldo-total p { font-size: 1.6rem; font-weight: 800; }
         
-        /* LINHA SUBTIL DE DETALHES */
+        /* DETALHES DA RESERVA */
         .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; margin-top: 4px; border-top: 1px solid var(--borda); padding-top: 8px; }
         .linha-subtil-valores { display: flex; justify-content: center; gap: 12px; width: 100%; flex-wrap: wrap; }
         .previsao-texto, .reserva-texto { font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
-        
         .previsao-texto strong, .reserva-texto strong { font-weight: 700; color: var(--texto-principal); }
 
-        /* Saldo restante mais destacado e maior */
         .saldo-restante-texto { font-size: 0.85rem; color: var(--reserva-cor); font-weight: bold; margin-top: 2px; }
-        .saldo-restante-texto strong { font-weight: 800; color: var(--reserva-cor); }
-        .saldo-restante-texto span { font-weight: 800; }
-
         .config-reserva-inline { cursor: pointer; font-size: 0.7rem; opacity: 0.6; }
         .config-reserva-inline:hover { opacity: 1; }
 
@@ -96,28 +95,20 @@
         .cor-saida { color: var(--saida); }
         .cor-cartao { color: var(--cartao); }
 
-        /* CAIXA DE TEXTO */
-        .chat-input-area { display: flex; gap: 8px; background: var(--bg-container); padding: 6px 12px; border-radius: 25px; box-shadow: 0 2px 5px var(--shadow); align-items: center; margin-bottom: 12px; position: relative; border: 1px solid var(--borda); }
-        .chat-input { flex-grow: 1; border: none; padding: 6px 5px; font-size: 0.95rem; outline: none; background: transparent; color: var(--texto-principal); }
-        .btn-enviar { background: #2c3e50; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-        
-        .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10; }
-        .alerta-temporario.mostrar { opacity: 1; }
-
         /* DESIGN DOS FILTROS */
         .filtros-container { display: flex; gap: 8px; margin-bottom: 12px; width: 100%; }
         .filtro-select { flex: 1; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.82rem; color: var(--texto-principal); outline: none; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px var(--shadow); appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 
-        /* ABAS INTEGRADAS - INVERTIDAS: GRAFICOS ESQUERDA, HISTORICO DIREITA */
+        /* ABAS INTEGRADAS */
         .abas-container { display: flex; background: var(--bg-container); border-radius: 6px; padding: 3px; border: 1px solid var(--borda); margin-bottom: 8px; gap: 4px; }
         .aba-btn { flex: 1; background: none; border: none; padding: 6px; font-size: 0.8rem; font-weight: bold; color: var(--texto-secundario); cursor: pointer; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .aba-btn.ativa { background: #2c3e50; color: white; }
         [data-theme="dark"] .aba-btn.ativa { background: var(--azul-saldo); }
 
         /* SEÇÕES DA EXIBIÇÃO */
-        .secao-conteudo { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); padding: 10px; border: 1px solid var(--borda); max-height: 520px; overflow-y: auto; display: none; }
+        .secao-conteudo { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); padding: 10px; border: 1px solid var(--borda); max-height: 480px; overflow-y: auto; display: none; margin-bottom: 15px; }
         
-        /* LAYOUT DOS GRÁFICOS */
+        /* GRÁFICOS */
         .grafico-wrapper { margin-bottom: 20px; }
         .grafico-wrapper h4 { font-size: 0.8rem; color: var(--texto-principal); margin-bottom: 10px; text-transform: uppercase; border-left: 3px solid #2c3e50; padding-left: 6px; }
         
@@ -131,14 +122,14 @@
         .barra-horizontal-bg { background: var(--bg-body); height: 10px; border-radius: 6px; width: 100%; overflow: hidden; border: 1px solid var(--borda); }
         .barra-horizontal-preenchimento { height: 100%; border-radius: 6px; width: 0%; transition: width 0.5s ease; }
         
-        /* GRÁFICO VERTICAL COM 3 COLUNAS */
+        /* GRÁFICO VERTICAL TRÊS COLUNAS */
         .colunas-container { display: flex; justify-content: center; gap: 24px; height: 100px; align-items: flex-end; padding-top: 25px; margin-bottom: 25px; border-bottom: 2px solid var(--borda); position: relative; }
         .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 65px; position: relative; }
         .coluna-vertical-barra { width: 28px; border-top-left-radius: 4px; border-top-right-radius: 4px; height: 2px; min-height: 2px; transition: height 0.5s ease; }
         .coluna-vertical-valor { font-size: 0.68rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
         .coluna-vertical-rotulo { font-size: 0.72rem; font-weight: 600; position: absolute; bottom: -22px; color: var(--texto-secundario); text-transform: uppercase; white-space: nowrap; }
 
-        /* RECOLHEDOR DO HISTÓRICO - ESTILIZADO E MAIS VISÍVEL */
+        /* RECOLHEDOR DO HISTÓRICO */
         details.historico-retratil summary { font-size: 0.85rem; font-weight: bold; padding: 10px 14px; color: var(--texto-principal); background-color: var(--bg-retratil); cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--borda); border-radius: 8px; box-shadow: 0 1px 3px var(--shadow); }
         details.historico-retratil summary::-webkit-details-marker { display: none; }
         details.historico-retratil summary::after { content: "▼"; font-size: 0.7rem; color: var(--texto-secundario); transition: transform 0.2s; }
@@ -160,7 +151,6 @@
         .tag-conta { background: #7f8c8d; color: white; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; font-weight: bold; }
         .tag-cartao-especifico { background: #34495e; color: white; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; font-weight: bold; }
         .tag-fixa { background: #9b59b6; color: white; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; font-weight: bold; }
-
         .valor-historico { font-weight: 700; font-size: 0.78rem !important; letter-spacing: -0.2px; }
 
         .item-transacao.pendente { background: var(--alerta-fundo); border-left: 3px solid var(--alerta-borda); padding-left: 4px; }
@@ -169,6 +159,17 @@
         .botoes-resposta { display: flex; gap: 4px; flex-wrap: wrap; }
         .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 2px 6px; border-radius: 8px; font-size: 0.7rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); }
         .btn-resposta:hover { background: #2c3e50; color: white; }
+
+        /* NOVA ÁREA DE CHAT ESTILO WHATSAPP (EMBAIXO DE TUDO) */
+        .chat-container-fixo { width: 100%; max-width: 500px; padding: 5px 0; margin-top: auto; }
+        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 8px 14px; border-radius: 25px; box-shadow: 0 3px 6px rgba(0,0,0,0.15); align-items: center; position: relative; }
+        .chat-input { flex-grow: 1; border: none; padding: 6px 5px; font-size: 0.95rem; outline: none; background: transparent; color: white; font-weight: 500; }
+        .chat-input::placeholder { color: rgba(255, 255, 255, 0.75); }
+        .btn-enviar { background: white; color: var(--chat-verde); border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .btn-enviar:hover { background: #f4f6f9; }
+        
+        .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10; }
+        .alerta-temporario.mostrar { opacity: 1; }
 
         /* MODAIS */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
@@ -196,6 +197,7 @@
         </div>
     </div>
 
+    <!-- CARDS DE RESUMO DO TOPO -->
     <div class="cards-container">
         <div class="card">
             <h3>Entradas</h3>
@@ -232,12 +234,6 @@
         </div>
     </div>
 
-    <div class="chat-input-area">
-        <div id="alerta" class="alerta-temporario">Lançado!</div>
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: uber 45 mercado pago ou saldo 10" onkeypress="verificarTecla(event)">
-        <button class="btn-enviar" onclick="processarComando()">➔</button>
-    </div>
-
     <div class="filtros-container">
         <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
         <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
@@ -249,13 +245,13 @@
         </select>
     </div>
 
-    <!-- ABAS INTEGRADAS INVERTIDAS: GRAFICOS NA ESQUERDA, HISTÓRICO NA DIREITA -->
+    <!-- ABAS INTEGRADAS -->
     <div class="abas-container">
         <button class="aba-btn ativa" id="aba-graf" onclick="mudarAba('graficos')">📊 Gráficos</button>
         <button class="aba-btn" id="aba-hist" onclick="mudarAba('historico')">📝 Histórico</button>
     </div>
 
-    <!-- SEÇÃO GRÁFICOS (ABRE PRIMEIRO POR PADRÃO AGORA) -->
+    <!-- SEÇÃO GRÁFICOS (ESQUERDA) -->
     <div class="secao-conteudo" id="secao-graficos" style="display: block;">
         <div class="grafico-wrapper">
             <h4>1. DESPESAS X RECEITAS</h4>
@@ -289,7 +285,6 @@
                     <div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div>
                     <span class="coluna-vertical-rotulo">Cartões</span>
                 </div>
-                <!-- NOVA COLUNA VIRTUAL DA CONTA RESERVA -->
                 <div class="coluna-vertical-bloco">
                     <span class="coluna-vertical-valor valor-dinamico" id="v-val-reserva" data-valor="0.00">R$ 0,00</span>
                     <div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div>
@@ -299,12 +294,21 @@
         </div>
     </div>
 
-    <!-- SEÇÃO HISTÓRICO -->
+    <!-- SEÇÃO HISTÓRICO (DIREITA) -->
     <div class="secao-conteudo" id="secao-historico">
         <details class="historico-retratil" open>
             <summary>📝 Clique para Recolher / Expandir</summary>
             <div class="conteudo-retratil" id="lista-transacoes-container"></div>
         </details>
+    </div>
+
+    <!-- CHAT NO FINAL ESTILO VERDINHO -->
+    <div class="chat-container-fixo">
+        <div class="chat-input-area">
+            <div id="alerta" class="alerta-temporario">Lançado!</div>
+            <input type="text" id="campo-texto" class="chat-input" placeholder="Conversar ou lançar (Ex: uber 45 nubank)..." onkeypress="verificarTecla(event)">
+            <button class="btn-enviar" onclick="processarComando()">➔</button>
+        </div>
     </div>
 
 </div>
@@ -468,6 +472,7 @@
         obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
         obterId('previsao-valor').setAttribute('data-valor', (gastos / 30).toFixed(2));
 
+        // Correção de Recálculo Dinâmico ao excluir/gastar:
         const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
         obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
         obterId('reserva-porcentagem-label').innerText = porcentagemReserva;
@@ -586,7 +591,6 @@
             });
         }
 
-        // Atualização das colunas incluindo a Reserva Automatizada
         const maxEixoV = Math.max(saídas, cartões, valorReserva, 100);
         obterId('v-val-contas').setAttribute('data-valor', saídas.toFixed(2));
         obterId('v-val-cartoes').setAttribute('data-valor', cartões.toFixed(2));
