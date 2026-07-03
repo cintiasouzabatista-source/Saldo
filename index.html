@@ -94,6 +94,7 @@
         .tag-cartao { background: var(--cartao); }
         .tag-conta { background: #7f8c8d; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
         .tag-cartao-especifico { background: #34495e; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+        .tag-fixa { background: #9b59b6; color: white; font-size: 0.62rem; padding: 1px 5px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
 
         /* INTERAÇÃO ESTILO CHAT */
         .item-transacao.pendente { background: var(--alerta-fundo); border-left: 4px solid var(--alerta-borda); padding-left: 8px; }
@@ -102,6 +103,8 @@
         .botoes-resposta { display: flex; gap: 4px; flex-wrap: wrap; }
         .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .btn-resposta:hover { background: #2c3e50; color: white; border-color: #2c3e50; }
+        .btn-resposta.btn-fixa-sim { border-color: #9b59b6; color: #9b59b6; }
+        .btn-resposta.btn-fixa-sim:hover { background: #9b59b6; color: white; }
 
         /* MODAIS / OVERLAYS */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
@@ -153,7 +156,7 @@
 
     <div class="chat-input-area">
         <div id="alerta" class="alerta-temporario">Lançado!</div>
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: uber 45 mercado pago" onkeypress="verificarTecla(event)">
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: uber 45 mercado pago ou saldo 100" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
 
@@ -164,6 +167,7 @@
             <option value="entrada">🟢 Entradas</option>
             <option value="saida">🔴 Saídas</option>
             <option value="cartao">💳 Cartão</option>
+            <option value="fixa">📌 Contas Fixas</option>
         </select>
     </div>
 
@@ -193,6 +197,10 @@
 
         <div class="modal-label">Cartão Utilizado</div>
         <input type="text" id="modal-cartao-id" class="modal-input">
+
+        <div class="modal-label" style="display: flex; align-items: center; gap: 8px; margin-top: 5px; cursor: pointer;">
+            <input type="checkbox" id="modal-fixa" style="width: 16px; height: 16px;"> É uma Conta Fixa?
+        </div>
         
         <div class="modal-botoes">
             <button class="btn-modal btn-excluir" onclick="acaoExcluir()">Excluir</button>
@@ -359,7 +367,8 @@
         }
 
         let tipo = 'saida'; 
-        const eEntrada = /\b(recebi|ganhei|salario|salário|entrada)\b/i.test(frase) || frase.includes('+');
+        // CORREÇÃO: "saldo" ou "recebi" agora entram nativamente como ENTRADA (+)
+        const eEntrada = /\b(recebi|ganhei|salario|salário|entrada|saldo)\b/i.test(frase) || frase.includes('+');
         const eCartao = /\b(cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash|x|mp)\b/i.test(frase);
         const eSaidaForcada = /\b(gastei|comprei|paguei|fiz|transferencia|transferência)\b/i.test(frase);
 
@@ -381,7 +390,7 @@
             descricao = descricao.replace(matchParcelas[0], '');
         }
 
-        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|mp|picpay|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash)\b/gi;
+        const termosRemover = /\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|transferência|pix|itau|itaú|bradesco|santander|nubank|nu|caixa|inter|c6|c6bank|mercado pago|mercadopago|mp|picpay|conta|no|na|de|com|o|a|cartao|cartão|credito|crédito|black|visa|master|mastercard|elo|amex|flash|saldo)\b/gi;
         descricao = descricao.replace(termosRemover, '').replace(/\s+/g, ' ').trim(); 
         if (!descricao) descricao = "Lançamento Avulso";
 
@@ -398,6 +407,8 @@
                     tipo: tipo,
                     conta: contaDetectada,
                     cartao: cartaoDetectado,
+                    fixa: false, // Inicializa como não fixa por padrão
+                    perguntaFixaRespondida: false, // Controle de fluxo do chat
                     mes: novaData.getMonth(),
                     ano: novaData.getFullYear(),
                     dia: dataAtual.getDate()
@@ -412,6 +423,8 @@
                 tipo: tipo,
                 conta: contaDetectada,
                 cartao: cartaoDetectado,
+                fixa: false, // Inicializa como não fixa por padrão
+                perguntaFixaRespondida: false, // Controle de fluxo do chat
                 mes: dataAtual.getMonth(),
                 ano: dataAtual.getFullYear(),
                 dia: dataAtual.getDate()
@@ -441,7 +454,18 @@
             t.cartao = cartaoNome;
             salvarDadosNoLocalStorage();
             atualizarAplicativo();
-            mostrarAviso("Cartão atualizado!");
+            mostrarAviso("Cartão updated!");
+        }
+    }
+
+    function responderFixa(idTransacao, ehFixa) {
+        const t = transacoes.find(item => item.id === idTransacao);
+        if (t) {
+            t.fixa = ehFixa;
+            t.perguntaFixaRespondida = true;
+            salvarDadosNoLocalStorage();
+            atualizarAplicativo();
+            mostrarAviso(ehFixa ? "Marcada como Fixa!" : "Lançamento salvo!");
         }
     }
 
@@ -512,22 +536,29 @@
                 const [m, a] = filtroMes.split('-');
                 if (t.mes != m || t.ano != a) return;
             }
-            if (filtroTipo !== 'todos' && t.tipo !== filtroTipo) return;
+            
+            // Controle de filtros de exibição
+            if (filtroTipo !== 'todos') {
+                if (filtroTipo === 'fixa' && !t.fixa) return;
+                if (filtroTipo !== 'fixa' && t.tipo !== filtroTipo) return;
+            }
 
             let tagClasse = 'tag-saida', tipoTexto = 'Saída', corTexto = 'var(--saida)', sinal = '-';
-            if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; corTexto = 'var(--entrada)'; sinal = '+'; }
+            if (t.tipo === 'entrada') { tagClasse = 'tag-entrada'; tipoTexto = 'Entrada'; colorTexto = 'var(--entrada)'; sinal = '+'; }
             if (t.tipo === 'cartao') { tagClasse = 'tag-cartao'; tipoTexto = 'Cartão'; corTexto = 'var(--cartao)'; sinal = '-'; }
 
-            // AGORA AS ENTRADAS TAMBÉM EXIGEM CONTA CASO NÃO ESTEJA PREENCHIDA
             const precisaDeConta = ((t.tipo === 'saida' || t.tipo === 'entrada') && !t.conta);
             const precisaDeCartao = (t.tipo === 'cartao' && !t.cartao);
-            const estaPendente = precisaDeConta || precisaDeCartao;
+            const precisaDeFixa = ((t.tipo === 'saida' || t.tipo === 'cartao') && t.perguntaFixaRespondida === false);
+            
+            const estaPendente = precisaDeConta || precisaDeCartao || precisaDeFixa;
 
             const item = document.createElement('div');
             item.className = `item-transacao ${estaPendente ? 'pendente' : ''}`;
             
             let contaHTML = t.conta ? `<span class="tag-conta">${t.conta}</span>` : '';
             let cartaoHTML = t.cartao ? `<span class="tag-cartao-especifico">💳 ${t.cartao}</span>` : '';
+            let fixaHTML = t.fixa ? `<span class="tag-fixa">📌 Fixa</span>` : '';
             let dataHTML = `<span class="tag-conta" style="background:#7f8c8d;">📅 ${t.dia}/${nomesMeses[t.mes]}</span>`;
             let valorExibição = saldosOcultos ? "•••" : `R$ ${t.valor.toFixed(2).replace('.', ',')}`;
 
@@ -540,12 +571,14 @@
                             ${dataHTML}
                             ${contaHTML}
                             ${cartaoHTML}
+                            ${fixaHTML}
                         </div>
                     </div>
-                    <span style="font-weight: 600; font-size: 1.05rem; color: ${corTexto}">${sinal} ${valorExibição}</span>
+                    <span style="font-weight: 600; font-size: 1.05rem; color: ${t.tipo === 'entrada' ? 'var(--entrada)' : corTexto}">${sinal} ${valorExibição}</span>
                 </div>
             `;
 
+            // FLUXO DE PERGUNTAS DO CHAT INTELIGENTE
             if (precisaDeConta) {
                 const perguntaTexto = t.tipo === 'entrada' ? 'Qual conta recebeu essa entrada?' : 'Qual conta você utilizou para essa saída?';
                 blocoHTML += `
@@ -576,6 +609,17 @@
                         </div>
                     </div>
                 `;
+            } else if (precisaDeFixa) {
+                // Nova pergunta adicionada dinamicamente para contas fixas
+                blocoHTML += `
+                    <div class="container-pergunta">
+                        <span class="texto-pergunta">💬 Esse gasto é uma Conta Fixa mensal?</span>
+                        <div class="botoes-resposta">
+                            <button class="btn-resposta btn-fixa-sim" onclick="responderFixa(${t.id}, true)">📌 Sim, é Fixa</button>
+                            <button class="btn-resposta" onclick="responderFixa(${t.id}, false)">Não, Gasto Variável</button>
+                        </div>
+                    </div>
+                `;
             }
 
             item.innerHTML = blocoHTML;
@@ -592,6 +636,7 @@
         document.getElementById('modal-tipo').value = t.tipo;
         document.getElementById('modal-conta').value = t.conta || '';
         document.getElementById('modal-cartao-id').value = t.cartao || '';
+        document.getElementById('modal-fixa').checked = t.fixa || false;
         document.getElementById('modal-edicao').style.display = 'flex';
     }
 
@@ -615,6 +660,8 @@
             transacoes[index].tipo = document.getElementById('modal-tipo').value;
             transacoes[index].conta = document.getElementById('modal-conta').value.trim();
             transacoes[index].cartao = document.getElementById('modal-cartao-id').value.trim();
+            transacoes[index].fixa = document.getElementById('modal-fixa').checked;
+            transacoes[index].perguntaFixaRespondida = true; // Se salvou via modal, define como respondida
         }
         fecharModal();
         salvarDadosNoLocalStorage();
