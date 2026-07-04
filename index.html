@@ -98,7 +98,6 @@
         .donut-chart { width: 180px; height: 180px; border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
         .donut-hole { width: 120px; height: 120px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; color: var(--texto-secundario); text-align: center; }
         .donut-hole span:first-child { font-size: 1.2rem; color: var(--texto-principal); font-weight: 800; }
-        .donut-hole span:first-child { font-size: 1.2rem; color: var(--texto-principal); font-weight: 800; }
         .donut-legenda { display: flex; justify-content: center; gap: 20px; font-size: 0.9rem; font-weight: 600; margin-top: 10px; }
         
         .barra-horizontal-linha { margin-bottom: 12px; }
@@ -149,12 +148,10 @@
 </head>
 <body>
 
-<!-- TELA DINÂMICA DE AUTENTICAÇÃO / CADASTRO AO FIM -->
 <div class="modal-overlay" id="tela-auth" style="display: none;">
     <div class="modal-container" id="container-fluxo-auth"></div>
 </div>
 
-<!-- TELA TOTAL DE BLOQUEIO POR FALTA DE PLANO -->
 <div class="modal-overlay" id="tela-bloqueio-plano" style="display: none; z-index: 200;">
     <div class="modal-container" style="text-align: center; gap: 16px;">
         <div style="font-size: 3rem;">⏳</div>
@@ -169,7 +166,6 @@
     </div>
 </div>
 
-<!-- MODAL PARA EDITAR OU EXCLUIR TRANSAÇÃO -->
 <div class="modal-overlay" id="modal-edicao" style="display: none;">
     <div class="modal-container">
         <div class="modal-title">📝 Editar Registro</div>
@@ -178,6 +174,19 @@
         <input type="text" id="edit-descricao" class="modal-input" style="text-align:left;">
         <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Valor (R$)</label>
         <input type="number" id="edit-valor" step="0.01" class="modal-input" style="text-align:left;">
+        
+        <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Tipo</label>
+        <select id="edit-tipo" class="modal-input" style="text-align:left;">
+            <option value="entrada">🟢 Entrada</option>
+            <option value="saida">🔴 Saída (Conta Dinâmica)</option>
+            <option value="cartao">💳 Cartão de Crédito</option>
+        </select>
+        
+        <div style="display:flex; align-items:center; gap:8px; margin: 5px 0;">
+            <input type="checkbox" id="edit-fixa">
+            <label for="edit-fixa" style="font-size:0.9rem; font-weight:bold; color:var(--texto-secundario);">Esta é uma Conta Fixa</label>
+        </div>
+
         <button class="btn-modal btn-salvar" onclick="salvarEdicaoTransacao()">Salvar Alterações</button>
         <button class="btn-modal btn-deletar" onclick="excluirTransacao()">🗑️ Excluir Registro</button>
         <button class="btn-modal btn-cancelar" onclick="fecharModalEdicao()">Cancelar</button>
@@ -186,7 +195,6 @@
 
 <div class="container" id="conteudo-app">
     
-    <!-- CABEÇALHO -->
     <div class="app-header">
         <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
         <div class="app-actions">
@@ -230,7 +238,7 @@
         <div class="chat-container-dinamico">
             <div class="chat-input-area">
                 <div id="alerta" class="alerta-temporario">Lançado!</div>
-                <input type="text" id="campo-texto" class="chat-input" placeholder="Conversar ou lançar (Ex: uber 45 nubank)..." onkeypress="verificarTecla(event)">
+                <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: uber 45 nubank, aluguel 1200 fixa, pix 200..." onkeypress="verificarTecla(event)">
                 <button class="btn-enviar" onclick="processarComando()">➔</button>
             </div>
         </div>
@@ -245,6 +253,7 @@
                 <option value="entrada">🟢 Entradas</option>
                 <option value="saida">🔴 Saídas</option>
                 <option value="cartao">💳 Cartão</option>
+                <option value="fixa">📌 Contas Fixas</option>
             </select>
         </div>
         <div class="secao-conteudo" style="flex-grow: 1; overflow-y: auto;" id="lista-transacoes-container"></div>
@@ -277,7 +286,7 @@
 
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
-                <h4>2. DESPESAS X RECEITAS</h4>
+                <h4>2. DESPESAS TOTAL X RECEITAS</h4>
                 <div class="donut-chart" id="grafico-pizza-elemento">
                     <div class="donut-hole">
                         <span id="pizza-perc">0%</span>
@@ -317,7 +326,6 @@
 
 </div>
 
-<!-- MENU INFERIOR -->
 <div class="menu-rodape">
     <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
     <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
@@ -487,14 +495,16 @@
             const inicial = parseInt(localStorage.getItem('app_primeiro_acesso') || Date.now());
             const restamMs = (inicial + (48*60*60*1000)) - Date.now();
             const restamHoras = Math.max(Math.round(restamMs / (1000*60*60)), 0);
-            box.style.background = "#eee"; box.style.color = "#333"; box.innerText = `⏳ Teste: Restam ${restamHoras} hours de acesso livre.`;
+            box.style.background = "#eee"; box.style.color = "#333"; box.innerText = `⏳ Teste: Restam ${restamHoras} horas de acesso livre.`;
         }
     }
 
-    function abrirModalEdicao(id, descricao, valor) {
+    function abrirModalEdicao(id, descricao, valor, tipo, fixa) {
         obterId('edit-id').value = id;
         obterId('edit-descricao').value = descricao;
         obterId('edit-valor').value = valor;
+        obterId('edit-tipo').value = tipo || 'saida';
+        obterId('edit-fixa').checked = !!fixa;
         obterId('modal-edicao').style.display = "flex";
     }
 
@@ -504,10 +514,12 @@
         const id = parseInt(obterId('edit-id').value);
         const novaDesc = obterId('edit-descricao').value.trim();
         const novoVal = parseFloat(obterId('edit-valor').value);
+        const novoTipo = obterId('edit-tipo').value;
+        const novaFixa = obterId('edit-fixa').checked;
 
         if(!novaDesc || isNaN(novoVal) || novoVal <= 0) { alert("Preencha os campos corretamente!"); return; }
 
-        transacoes = transacoes.map(t => t.id === id ? { ...t, descricao: novaDesc, valor: novoVal } : t);
+        transacoes = transacoes.map(t => t.id === id ? { ...t, descricao: novaDesc, valor: novoVal, tipo: novoTipo, fixa: novaFixa } : t);
         localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
         fecharModalEdicao(); atualizarAplicativo(); mostrarAviso("Alterado!");
     }
@@ -557,12 +569,26 @@
         if (!num) return mostrarAviso("Digite um valor numérico!");
 
         const valor = parseFloat(num[0].replace(',', '.'));
-        let tipo = /\b(recebi|ganhei|salario|salário|entrada)\b/.test(txt) || txt.includes('+') ? 'entrada' : 'saida';
-        let desc = input.value.replace(num[0], '').replace(/\b(comprei|ganhei|paguei|recebi|gastei|no|na|de)\b/gi, '').trim() || "Lançamento";
+        
+        // Definição inteligente de tipos baseada em palavras-chave no chat
+        let tipo = 'saida';
+        let fixa = false;
+
+        if (/\b(recebi|ganhei|salario|salário|entrada|pix\s*recebido)\b/.test(txt) || txt.includes('+')) {
+            tipo = 'entrada';
+        } else if (/\b(nubank|itau|itaú|inter|bradesco|santander|cartao|cartão|credito|crédito)\b/.test(txt)) {
+            tipo = 'cartao';
+        }
+
+        if (/\b(fixa|fixo|aluguel|internet|net|luz|agua|água|mensalidade)\b/.test(txt)) {
+            fixa = true;
+        }
+
+        let desc = input.value.replace(num[0], '').replace(/\b(comprei|ganhei|paguei|recebi|gastei|no|na|de|fixa|fixo|nubank|itau|itaú|inter|bradesco|santander|cartao|cartão)\b/gi, '').trim() || "Lançamento";
 
         let hoje = new Date();
         transacoes.unshift({
-            id: Date.now(), descricao: desc, valor: valor, tipo: tipo, mes: hoje.getMonth(), ano: hoje.getFullYear(), dia: hoje.getDate()
+            id: Date.now(), descricao: desc, valor: valor, tipo: tipo, fixa: fixa, mes: hoje.getMonth(), ano: hoje.getFullYear(), dia: hoje.getDate()
         });
 
         localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); 
@@ -573,20 +599,31 @@
 
     function atualizarAplicativo() {
         if (!checarBloqueioPlano()) return;
-        let ent = 0, sai = 0, fMes = obterId('filtro-mes').value;
+        let ent = 0, sai = 0, car = 0, fMes = obterId('filtro-mes').value;
         
         transacoes.forEach(t => {
             if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return;
-            t.tipo === 'entrada' ? ent += t.valor : sai += t.valor;
+            
+            if (t.tipo === 'entrada') {
+                ent += t.valor;
+            } else if (t.tipo === 'cartao') {
+                car += t.valor;
+            } else {
+                sai += t.valor;
+            }
         });
 
-        const saldo = ent - sai;
+        // O saldo geral desconta as despesas de conta corrente e faturas de cartão pendentes
+        const saldo = ent - (sai + car);
+        
         obterId('card-entradas').setAttribute('data-valor', ent.toFixed(2));
         obterId('card-saidas').setAttribute('data-valor', sai.toFixed(2));
+        obterId('card-cartao').setAttribute('data-valor', car.toFixed(2));
         obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
-        obterId('previsao-valor').setAttribute('data-valor', (sai / 30).toFixed(2));
+        
+        const totalGastos = sai + car;
+        obterId('previsao-valor').setAttribute('data-valor', (totalGastos / 30).toFixed(2));
 
-        // Ajuste inteligente da Reserva baseada estritamente na porcentagem sobre o saldo real positivo
         const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
         obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
         obterId('saldo-restante-valor').setAttribute('data-valor', (saldo - valReserva).toFixed(2));
@@ -598,7 +635,7 @@
         });
 
         renderizarHistorico();
-        renderizarGraficos(ent, sai, valReserva);
+        renderizarGraficos(ent, totalGastos, valReserva, sai, car);
         gerenciarVisualPlano();
     }
 
@@ -608,6 +645,7 @@
 
         let filtradas = transacoes.filter(t => {
             if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return false;
+            if (fTipo === 'fixa') return t.fixa === true;
             if (fTipo !== 'todos' && t.tipo !== fTipo) return false;
             return true;
         });
@@ -615,46 +653,52 @@
         if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);padding:20px 0;">Vazio.</p>`; return; }
 
         filtradas.forEach(t => {
-            let cor = t.tipo === 'entrada' ? 'var(--entrada)' : 'var(--saida)';
+            let cor = t.tipo === 'entrada' ? 'var(--entrada)' : (t.tipo === 'cartao' ? 'var(--cartao)' : 'var(--saida)');
+            let sinal = t.tipo === 'entrada' ? '+' : '-';
+            let sufixoFixa = t.fixa ? ' 📌' : '';
+            
             let item = document.createElement('div'); item.className = `item-transacao`;
-            item.onclick = () => abrirModalEdicao(t.id, t.descricao, t.valor);
+            item.onclick = () => abrirModalEdicao(t.id, t.descricao, t.valor, t.tipo, t.fixa);
             item.innerHTML = `
                 <div style="flex-grow:1; display:flex; flex-direction:column; text-align: left;">
-                    <span class="descricao-texto" style="text-transform:capitalize;">${t.descricao}</span>
-                    <small style="color:var(--texto-secundario)">📅 ${t.dia}/${nomesMeses[t.mes]}</small>
+                    <span class="descricao-texto" style="text-transform:capitalize;">${t.descricao}${sufixoFixa}</span>
+                    <small style="color:var(--texto-secundario)">📅 ${t.dia}/${nomesMeses[t.mes]} (${t.tipo === 'cartao' ? 'Cartão' : 'À Vista'})</small>
                 </div>
-                <span class="valor-historico" style="color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} R$ ${t.valor.toFixed(2).replace('.',',')}</span>
+                <span class="valor-historico" style="color:${cor}">${sinal} R$ ${t.valor.toFixed(2).replace('.',',')}</span>
             `;
             l.appendChild(item);
         });
     }
 
-    function renderizarGraficos(receitas, despesas, reserva) {
-        const total = receitas + despesas;
-        const percGasto = total > 0 ? Math.round((despesas / total) * 100) : 0;
+    function renderizarGraficos(receitas, despesasTotais, reserva, apenasContas, apenasCartao) {
+        const total = receitas + despesasTotais;
+        const percGasto = total > 0 ? Math.round((despesasTotais / total) * 100) : 0;
         
         obterId('pizza-perc').innerText = `${percGasto}%`;
         obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
 
         const boxBarras = obterId('grafico-barras-horizontais');
         boxBarras.innerHTML = '';
-        let tops = transacoes.filter(t => t.tipo === 'saida').slice(0,3);
+        let tops = transacoes.filter(t => t.tipo === 'saida' || t.tipo === 'cartao').slice(0,3);
         
         if(!tops.length) boxBarras.innerHTML = `<small style="color:var(--texto-secundario);">Sem dados suficientes.</small>`;
         tops.forEach(d => {
+            let corBarra = d.tipo === 'cartao' ? 'var(--cartao)' : 'var(--saida)';
             let linha = document.createElement('div'); linha.className = 'barra-horizontal-linha';
             linha.innerHTML = `
                 <div class="barra-horizontal-info"><span>${d.descricao}</span><span>R$ ${d.valor.toFixed(2)}</span></div>
-                <div class="barra-horizontal-bg"><div class="barra-horizontal-preenchimento" style="width:70%; background:var(--saida)"></div></div>
+                <div class="barra-horizontal-bg"><div class="barra-horizontal-preenchimento" style="width:75%; background:${corBarra}"></div></div>
             `;
             boxBarras.appendChild(linha);
         });
 
-        // Gráfico de colunas verticais usando o valReserva dinâmico e corrigido do fechamento mensal
-        const max = Math.max(despesas, reserva, 100);
-        obterId('v-val-contas').setAttribute('data-valor', despesas.toFixed(2));
+        const max = Math.max(apenasContas, apenasCartao, reserva, 100);
+        obterId('v-val-contas').setAttribute('data-valor', apenasContas.toFixed(2));
+        obterId('v-val-cartoes').setAttribute('data-valor', apenasCartao.toFixed(2));
         obterId('v-val-reserva').setAttribute('data-valor', reserva.toFixed(2));
-        obterId('v-bar-contas').style.height = `${(despesas/max)*100}%`;
+        
+        obterId('v-bar-contas').style.height = `${(apenasContas/max)*100}%`;
+        obterId('v-bar-cartoes').style.height = `${(apenasCartao/max)*100}%`;
         obterId('v-bar-reserva').style.height = `${(reserva/max)*100}%`;
     }
 
