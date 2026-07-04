@@ -84,22 +84,49 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         
-        /* Ajustado para permitir que o body role inteiro junto com o menu */
-        body { background-color: var(--bg-body); color: var(--texto-principal); padding: 16px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; transition: all 0.3s ease; }
+        /* CORREÇÃO: Body travado na tela do celular para evitar rolagem 'falsa' global */
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--texto-principal); 
+            padding: 16px 16px 8px 16px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            height: 100vh; 
+            height: -webkit-fill-available;
+            overflow: hidden; 
+            transition: all 0.3s ease; 
+        }
         
-        /* O container agora cresce de acordo com o conteúdo da view ativa */
-        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; min-height: calc(100vh - 32px); position: relative; }
+        /* CORREÇÃO: Container acompanha rigidamente a altura disponível */
+        .container { 
+            width: 100%; 
+            max-width: 500px; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100%; 
+            position: relative; 
+            overflow: hidden;
+        }
         
-        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px; padding: 4px; flex-shrink: 0; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 16px; padding: 4px; flex-shrink: 0; }
         .app-title { font-size: 1.6rem; font-weight: 900; color: var(--texto-principal); letter-spacing: -1px; text-transform: lowercase; }
         .app-title::after { content: '.'; color: var(--saida); }
         .app-actions { display: flex; gap: 10px; align-items: center; }
         .icon-btn { background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); font-size: 1.2rem; cursor: pointer; color: var(--texto-principal); display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: var(--radius); box-shadow: var(--shadow); transition: all 0.1s; }
         .icon-btn:active { transform: translate(2px, 2px); box-shadow: none; }
 
-        /* As views agora não quebram o scroll individualmente */
+        /* CORREÇÃO: Cada View isolada agora gerencia sua própria rolagem de conteúdo */
         .app-view { display: none; width: 100%; }
-        .app-view.ativa { display: flex; flex-direction: column; }
+        .app-view.ativa { 
+            display: flex; 
+            flex-direction: column; 
+            flex: 1;
+            overflow-y: auto; 
+            padding-bottom: 12px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .app-view.ativa::-webkit-scrollbar { display: none; }
 
         .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
         .card { background: var(--bg-container); padding: 16px 8px; text-align: center; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); box-shadow: var(--shadow); }
@@ -123,10 +150,10 @@
         .cor-saida { color: var(--saida); }
         .cor-cartao { color: var(--cartao); }
 
-        .filtros-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; }
+        .filtros-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; flex-shrink: 0; }
         .filtro-select { flex: 1; padding: 12px 16px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); font-size: 0.9rem; color: var(--texto-principal); box-shadow: var(--shadow); outline: none; font-weight: bold; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 
-        .secao-conteudo { background: var(--bg-container); padding: 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); box-shadow: var(--shadow); margin-bottom: 20px; }
+        .secao-conteudo { background: var(--bg-container); padding: 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); box-shadow: var(--shadow); margin-bottom: 20px; width: 100%; }
         
         .grafico-wrapper { margin-bottom: 8px; }
         .grafico-wrapper h4 { font-size: 0.9rem; color: var(--texto-principal); margin-bottom: 16px; text-transform: lowercase; font-weight: 900; }
@@ -169,7 +196,7 @@
         .btn-resposta { background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); padding: 6px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; color: var(--texto-principal); box-shadow: 2px 2px 0 var(--borda); }
         .btn-resposta:hover { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--borda); }
 
-        .chat-container-dinamico { margin-top: 20px; margin-bottom: 20px; width: 100%; }
+        .chat-container-dinamico { margin-top: 20px; margin-bottom: 20px; width: 100%; flex-shrink: 0; }
         .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 10px 10px 18px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); align-items: center; position: relative; box-shadow: var(--shadow); }
         .chat-input { flex-grow: 1; border: none; padding: 8px 0; font-size: 1rem; outline: none; background: transparent; color: #ffffff; font-weight: bold; }
         .chat-input::placeholder { color: rgba(255, 255, 255, 0.8); }
@@ -180,9 +207,16 @@
         .alerta-temporario { position: absolute; top: -54px; left: 50%; transform: translateX(-50%); background: var(--texto-principal); color: var(--bg-container); padding: 8px 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); font-size: 0.9rem; font-weight: 900; opacity: 0; transition: opacity 0.2s ease; pointer-events: none; white-space: nowrap; z-index: 10; box-shadow: var(--shadow); }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* MUDANÇA FUNDAMENTAL: Menu integrado ao fim da página (relative e margin-top auto) */
-        .menu-rodape-wrapper { margin-top: auto; width: 100%; padding: 24px 0 12px 0; border-top: var(--espessura-borda) solid var(--borda); background: transparent; }
-        .menu-rodape { display: flex; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding: 2px; gap: 12px; }
+        /* CORREÇÃO: Menu fixo na base do app. O scroll interno dele desliza livre sem arrastar o fundo */
+        .menu-rodape-wrapper { 
+            margin-top: auto; 
+            width: 100%; 
+            padding: 12px 0 4px 0; 
+            border-top: var(--espessura-borda) solid var(--borda); 
+            background: var(--bg-body); 
+            flex-shrink: 0; 
+        }
+        .menu-rodape { display: flex; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding: 2px; gap: 12px; width: 100%; }
         .menu-rodape::-webkit-scrollbar { display: none; }
         .menu-rodape { -ms-overflow-style: none; scrollbar-width: none; }
         
@@ -353,13 +387,363 @@
         </div>
     </div>
 
-    <!-- MENU INTEGRADO NO FLUXO DE ROLAGEM DA PÁGINA -->
+    <!-- MENU INTEGRADO FIXADO CORRETAMENTE NA BASE -->
     <div class="menu-rodape-wrapper">
         <div class="menu-rodape">
             <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
             <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
             <button class="tab-item" id="tab-graficos" onclick="navegarPara('graficos')"><span>📊</span><span>Gráficos</span></button>
             <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Ajustes</span></button>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAIS -->
+<div class="modal-overlay" id="modal-edicao">
+    <div class="modal-container">
+        <div class="modal-title">Editar Registro</div>
+        <div class="modal-label">Descrição</div>
+        <input type="text" id="modal-desc" class="modal-input">
+        <div class="modal-label">Valor (R$)</div>
+        <input type="number" id="modal-valor" class="modal-input" step="0.01">
+        <div class="modal-label">Tipo</div>
+        <select id="modal-tipo" class="modal-select">
+            <option value="entrada">Entrada (+)</option>
+            <option value="saida">Saída (-)</option>
+            <option value="cartao">Cartão (-)</option>
+        </select>
+        <div class="modal-label">Conta / Banco</div>
+        <input type="text" id="modal-conta" class="modal-input">
+        <div class="modal-label">Cartão Utilizado</div>
+        <input type="text" id="modal-cartao-id" class="modal-input">
+        <div class="modal-label" style="display: flex; align-items: center; gap: 8px; margin-top: 4px; font-weight:bold;">
+            <input type="checkbox" id="modal-fixa" style="width: 18px; height: 18px;"> Conta Fixa Mensal?
+        </div>
+        <div class="modal-botoes">
+            <button class="btn-modal btn-excluir" onclick="acaoExcluir()">Excluir</button>
+            <button class="btn-modal btn-cancelar" onclick="fecharModal()">Voltar</button>
+            <button class="btn-modal btn-salvar" onclick="acaoSalvar()">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-reserva">
+    <div class="modal-container">
+        <div class="modal-title">💰 Porcentagem de Reserva</div>
+        <div class="modal-label">Quanto quer poupar das entradas?</div>
+        <input type="number" id="modal-reserva-pct" class="modal-input" min="1" max="100" value="10">
+        <div class="modal-botoes">
+            <button class="btn-modal btn-cancelar" onclick="fecharConfigReserva()">Cancelar</button>
+            <button class="btn-modal btn-salvar" onclick="salvarConfigReserva()">Aplicar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let transacoes = [], idEdicaoAtual = null, saldosOcultos = false, porcentagemReserva = 10;
+    let modoGraficoRosca = 0; 
+    const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
+    const MAPA_ENTIDADES = {
+        bancos: { itau: "Itaú", itaú: "Itaú", bradesco: "Bradesco", santander: "Santander", nubank: "Nubank", nu: "Nubank", caixa: "Caixa", inter: "Inter", c6: "C6 Bank", mercadopago: "Mercado Pago", mp: "Mercado Pago", picpay: "PicPay" },
+        cartoes: { black: "Black", visa: "Visa", master: "Mastercard", elo: "Elo", amex: "Amex", flash: "Flash", nubank: "Nubank", nu: "Nubank", itau: "Itaú", c6: "C6 Bank", mercadopago: "Mercado Pago", mp: "Mercado Pago", inter: "Inter", bradesco: "Bradesco" }
+    };
+
+    const obterId = id => document.getElementById(id);
+    const toggleModal = (id, abrir) => obterId(id).style.display = abrir ? 'flex' : 'none';
+    const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 3000); };
+
+    function navegarPara(idAba) {
+        document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo'));
+        
+        const viewAlvo = obterId(`view-${idAba}`);
+        viewAlvo.classList.add('ativa');
+        obterId(`tab-${idAba}`).classList.add('ativo');
+
+        const elementoAtivo = obterId(`tab-${idAba}`);
+        elementoAtivo.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+
+        const titulos = { inicio: "meu saldo", historico: "histórico", graficos: "análises", config: "ajustes" };
+        obterId('titulo-dinamico').innerText = titulos[idAba];
+
+        viewAlvo.scrollTo({ top: 0, behavior: 'smooth' });
+        atualizarAplicativo();
+    }
+
+    function mudarTemaAtivo(tema) {
+        if (tema === 'cyber') {
+            document.documentElement.removeAttribute('data-theme');
+        } else {
+            document.documentElement.setAttribute('data-theme', tema);
+        }
+        localStorage.setItem('vibe_tema_escolhido', tema);
+        mostrarAviso("Vibe visual atualizada! ✨");
+    }
+
+    function inicializarFiltroMeses() {
+        const hoje = new Date(), f = obterId('filtro-mes');
+        let html = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual (${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()})</option><option value="todos">Todos os Meses</option>`;
+        for (let i = 1; i <= 6; i++) {
+            let d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+            html += `<option value="${d.getMonth()}-${d.getFullYear()}">${nomesMeses[d.getMonth()]}/${d.getFullYear()}</option>`;
+        }
+        f.innerHTML = html;
+    }
+
+    function processarComando() {
+        const input = obterId('campo-texto'), txt = input.value.trim().toLowerCase();
+        const num = txt.match(/\d+([.,]\d+)?/g);
+        if (!num) return mostrarAviso("Cadê o valor numérico? 🧐");
+
+        const valor = parseFloat(num[0].replace(',', '.'));
+        let conta = "", cartao = "", tipo = 'saida';
+
+        for (let [k, v] of Object.entries(MAPA_ENTIDADES.bancos)) if (new RegExp(`\\b${k}\\b`).test(txt.replace(/\s+/g, ''))) { conta = v; break; }
+        for (let [k, v] of Object.entries(MAPA_ENTIDADES.cartoes)) if (new RegExp(`\\b${k}\\b`).test(txt.replace(/\s+/g, ''))) { cartao = v; break; }
+
+        if (/\b(cartao|cartão|credito|crédito|black|visa|master|elo|amex|flash|x|mp)\b/.test(txt)) tipo = 'cartao';
+        else if (/\b(recebi|ganhei|salario|salário|entrada|saldo)\b/.test(txt) || txt.includes('+')) tipo = 'entrada';
+
+        let desc = input.value.replace(num[0], ''), parcelas = 1, gId = null, hoje = new Date();
+        const mParc = txt.match(/(\d+)\s*x/i);
+        if (mParc && tipo === 'cartao') { parcelas = parseInt(mParc[1]); desc = desc.replace(mParc[0], ''); gId = Date.now(); }
+
+        desc = desc.replace(/\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|pix|no|na|de|com|o|a|cartao|credito|saldo)\b/gi, '').replace(/\s+/g, ' ').trim() || "Gasto Avulso";
+
+        for (let p = 1; p <= parcelas; p++) {
+            let d = new Date(hoje.getFullYear(), hoje.getMonth() + (p - 1), hoje.getDate());
+            transacoes.unshift({
+                id: Date.now() + p, grupoParcelas: gId, descricao: parcelas > 1 ? `${desc} (${p}/${parcelas})` : desc,
+                valor: valor / parcelas, tipo, conta, cartao, fixa: false, perguntaFixaRespondida: false, mes: d.getMonth(), ano: d.getFullYear(), dia: hoje.getDate()
+            });
+        }
+        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); 
+        
+        atualizarAplicativo();
+        input.value = ''; 
+        mostrarAviso("Lançado! 🚀");
+        setTimeout(() => navegarPara('historico'), 400);
+    }
+
+    function responderAtributo(id, objChave, valor) {
+        const t = transacoes.find(i => i.id === id);
+        if (t) {
+            transacoes.forEach(i => { if (t.grupoParcelas ? i.grupoParcelas === t.grupoParcelas : i.id === id) { i[objChave] = valor; if(objChave==='fixa') i.perguntaFixaRespondida = true; } });
+            localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Salvo! 🎯");
+        }
+    }
+
+    function alternarModoRosca() {
+        modoGraficoRosca = (modoGraficoRosca + 1) % 3;
+        atualizarAplicativo();
+    }
+
+    function atualizarAplicativo() {
+        let ent = 0, sai = 0, car = 0, fMes = obterId('filtro-mes').value;
+        transacoes.forEach(t => {
+            if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return;
+            t.tipo === 'entrada' ? ent += t.valor : t.tipo === 'saida' ? sai += t.valor : car += t.valor;
+        });
+
+        const saldo = ent - sai - car, gastos = sai + car;
+        obterId('card-entradas').setAttribute('data-valor', ent.toFixed(2));
+        obterId('card-saidas').setAttribute('data-valor', sai.toFixed(2));
+        obterId('card-cartao').setAttribute('data-valor', car.toFixed(2));
+        obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
+        obterId('previsao-valor').setAttribute('data-valor', (gastos / 30).toFixed(2));
+
+        const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
+        obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
+        obterId('reserva-porcentagem-label').innerText = porcentagemReserva;
+
+        const saldoSeGuardar = saldo - valReserva;
+        obterId('saldo-restante-valor').setAttribute('data-valor', saldoSeGuardar.toFixed(2));
+
+        obterId('card-alerta-comprometido').style.display = ent > 0 && (gastos / ent) >= 0.8 ? 'block' : 'none';
+        obterId('card-saldo').style.color = saldo >= 0 ? 'var(--texto-principal)' : 'var(--saida)';
+
+        document.querySelectorAll('.valor-dinamico').forEach(el => {
+            const attrVal = el.getAttribute('data-valor') || "0";
+            const v = parseFloat(parseFloat(attrVal).toFixed(2)).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            el.innerText = saldosOcultos ? (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes','v-val-reserva'].includes(el.id) ? "R$ ••••" : "••••") : (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes','v-val-reserva'].includes(el.id) ? `R$ ${v}` : v);
+        });
+
+        renderizarHistorico();
+        renderizarGraficos(ent, gastos, sai, car, valReserva);
+    }
+
+    function renderizarHistorico() {
+        const l = obterId('lista-transacoes-container'), fMes = obterId('filtro-mes').value, fTipo = obterId('filtro-tipo').value;
+        l.innerHTML = '';
+
+        let filtradas = transacoes.filter(t => {
+            if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return false;
+            if (fTipo !== 'todos' && (fTipo === 'fixa' ? !t.fixa : t.tipo !== fTipo)) return false;
+            return true;
+        });
+
+        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);font-size:0.9rem;padding:30px 0;">Vazio por aqui... 📭</p>`; return; }
+
+        filtradas.forEach(t => {
+            let cls = t.tipo === 'entrada' ? 'tag-entrada' : t.tipo === 'cartao' ? 'tag-cartao' : 'tag-saida';
+            let txt = t.tipo === 'entrada' ? 'Entrada' : t.tipo === 'cartao' ? 'Cartão' : 'Saída';
+            let cor = t.tipo === 'entrada' ? 'var(--entrada)' : t.tipo === 'cartao' ? 'var(--cartao)' : 'var(--saida)';
+            let pen = ((t.tipo === 'saida' || t.tipo === 'entrada') && !t.conta) || (t.tipo === 'cartao' && !t.cartao) || ((t.tipo === 'saida' || t.tipo === 'cartao') && !t.perguntaFixaRespondida);
+
+            let item = document.createElement('div'); item.className = `item-transacao ${pen ? 'pendente' : ''}`;
+            item.innerHTML = `
+                <div class="linha-principal" onclick="abrirModal(${t.id})">
+                    <div class="detalhes-item">
+                        <span class="descricao-texto">${t.descricao}</span>
+                        <div class="tags-row">
+                            <span class="tipo-tag ${cls}">${txt}</span>
+                            <span class="tag-conta">📅 ${t.dia}/${nomesMeses[t.mes]}</span>
+                            ${t.conta ? `<span class="tag-conta">${t.conta}</span>` : ''}
+                            ${t.cartao ? `<span class="tag-cartao-especifico">💳 ${t.cartao}</span>` : ''}
+                            ${t.fixa ? `<span class="tag-fixa">📌 Fixa</span>` : ''}
+                        </div>
+                    </div>
+                    <span class="valor-historico" style="color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} ${saldosOcultos ? '•••' : 'R$ '+t.valor.toFixed(2).replace('.',',')}</span>
+                </div>
+                ${pen ? `<div class="container-pergunta"><span class="texto-pergunta">⚡ Completa aí rapidão: ${!t.conta && t.tipo!=='cartao' ? 'Qual conta usou?' : !t.cartao ? 'Qual cartão usou?' : 'É um boleto fixo todo mês?'}</span><div class="botoes-resposta">
+                    ${!t.conta && t.tipo!=='cartao' ? ['Mercado Pago','Nubank','Itaú','Inter','PicPay'].map(b => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'conta','${b}')">${b}</button>`).join('') :
+                      !t.cartao ? ['Mercado Pago','Nubank','Itaú','Inter','C6 Bank','Bradesco'].map(c => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'cartao','${c}')">${c}</button>`).join('') :
+                      `<button class="btn-resposta" style="background:var(--reserva-cor); color:white;" onclick="responderAtributo(${t.id},'fixa',true)">📌 Sim</button><button class="btn-resposta" onclick="responderAtributo(${t.id},'fixa',false)">Não</button>`}
+                </div></div>` : ''}
+            `;
+            l.appendChild(item);
+        });
+    }
+
+    function renderizarGraficos(receitas, totalGastos, saídas, cartões, valorReserva) {
+        const fMes = obterId('filtro-mes').value;
+        const totalFluxo = receitas + totalGastos;
+        const percGasto = totalFluxo > 0 ? Math.round((totalGastos / totalFluxo) * 100) : 0;
+        
+        if (saldosOcultos) {
+            obterId('pizza-perc').innerText = "••••";
+            obterId('pizza-rotulo').innerText = "oculto";
+        } else if (modoGraficoRosca === 0) {
+            obterId('pizza-perc').innerText = `${percGasto}%`;
+            obterId('pizza-rotulo').innerText = "gasto";
+        } else if (modoGraficoRosca === 1) {
+            obterId('pizza-perc').innerText = `R$ ${totalGastos.toFixed(0)}`;
+            obterId('pizza-rotulo').innerText = "total gasto";
+        } else {
+            obterId('pizza-perc').innerText = `R$ ${receitas.toFixed(0)}`;
+            obterId('pizza-rotulo').innerText = "total ganho";
+        }
+        
+        obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
+
+        const boxBarras = obterId('grafico-barras-horizontais');
+        boxBarras.innerHTML = '';
+        
+        let despesasOrdenadas = transacoes.filter(t => {
+            if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return false;
+            return t.tipo === 'saida' || t.tipo === 'cartao';
+        }).sort((a,b) => b.valor - a.valor).slice(0, 5);
+
+        const maiorGastoUnico = despesasOrdenadas.length > 0 ? despesasOrdenadas[0].valor : 1;
+
+        if(!despesasOrdenadas.length) {
+            boxBarras.innerHTML = `<p style="font-size:0.85rem;color:var(--texto-secundario);text-align:center;padding:10px 0;">Sem despesas salvas.</p>`;
+        } else {
+            despesasOrdenadas.forEach(d => {
+                let pBarra = (d.valor / maiorGastoUnico) * 100;
+                let pDoTotal = totalGastos > 0 ? Math.round((d.valor / totalGastos) * 100) : 0;
+                
+                let linha = document.createElement('div');
+                linha.className = 'barra-horizontal-linha';
+                linha.innerHTML = `
+                    <div class="barra-horizontal-info">
+                        <span>${d.descricao} <small style="color:var(--texto-secundario);">(${pDoTotal}%)</small></span>
+                        <span>R$ ${d.valor.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <div class="barra-horizontal-bg">
+                        <div class="barra-horizontal-preenchimento" style="width: ${pBarra}%; background:${d.tipo=='cartao'?'var(--cartao)':'var(--saida)'}"></div>
+                    </div>
+                `;
+                boxBarras.appendChild(linha);
+            });
+        }
+
+        const maxEixoV = Math.max(saídas, cartões, valorReserva, 100);
+        obterId('v-val-contas').setAttribute('data-valor', saídas.toFixed(2));
+        obterId('v-val-cartoes').setAttribute('data-valor', cartões.toFixed(2));
+        obterId('v-val-reserva').setAttribute('data-valor', valorReserva.toFixed(2));
+        
+        obterId('v-bar-contas').style.height = `${Math.max((saídas / maxEixoV) * 100, 5)}%`;
+        obterId('v-bar-cartoes').style.height = `${Math.max((cartões / maxEixoV) * 100, 5)}%`;
+        obterId('v-bar-reserva').style.height = `${Math.max((valorReserva / maxEixoV) * 100, 5)}%`;
+    }
+
+    function abrirModal(id) {
+        idEdicaoAtual = id; const t = transacoes.find(i => i.id === id);
+        obterId('modal-desc').value = t.descricao; obterId('modal-valor').value = t.valor; obterId('modal-tipo').value = t.tipo;
+        obterId('modal-conta').value = t.conta || ''; obterId('modal-cartao-id').value = t.cartao || ''; obterId('modal-fixa').checked = t.fixa;
+        toggleModal('modal-edicao', true);
+    }
+    
+    function fecharModal() { toggleModal('modal-edicao', false); }
+    function abrirConfigReserva() { obterId('modal-reserva-pct').value = porcentagemReserva; toggleModal('modal-reserva', true); }
+    function fecharConfigReserva() { toggleModal('modal-reserva', false); }
+    function alternarVisibilidade() { saldosOcultos = !saldosOcultos; obterId('btn-visibilidade').innerText = saldosOcultos ? "🙈" : "👁️"; atualizarAplicativo(); }
+    function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
+
+    function salvarConfigReserva() {
+        const p = parseInt(obterId('modal-reserva-pct').value);
+        if (p >= 1 && p <= 100) { 
+            porcentagemReserva = p; 
+            localStorage.setItem('saldo_reserva_pct', p); 
+            fecharConfigReserva(); 
+            atualizarAplicativo(); 
+            mostrarAviso(`Salvo: ${p}%`); 
+        }
+    }
+
+    function acaoSalvar() {
+        const t = transacoes.find(i => i.id === idEdicaoAtual);
+        if (t) {
+            t.descricao = obterId('modal-desc').value.trim(); 
+            t.valor = parseFloat(obterId('modal-valor').value); 
+            t.tipo = obterId('modal-tipo').value;
+            t.conta = obterId('modal-conta').value.trim(); 
+            t.cartao = obterId('modal-cartao-id').value.trim(); 
+            t.fixa = obterId('modal-fixa').checked; 
+            t.perguntaFixaRespondida = true;
+        }
+        fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Salvo! ✨");
+    }
+
+    function acaoExcluir() { transacoes = transacoes.filter(i => i.id !== idEdicaoAtual); fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Deletado! 🔥"); }
+    function resetarAplicativoTotal() { if (confirm("Quer mesmo deletar absolutamente tudo do app?")) { transacoes = []; localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Limpo!"); } }
+    function exportarBackup() { if (!transacoes.length) return alert("Sem dados para exportar."); const dl = document.createElement('a'); dl.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transacoes))); dl.setAttribute("download", `meu_saldo_backup.json`); dl.click(); }
+
+    function importarBackup(e) {
+        const f = e.target.files[0]; if (!f) return;
+        const r = new FileReader(); r.onload = ev => {
+            try {
+                const d = JSON.parse(ev.target.result);
+                if (Array.isArray(d)) { transacoes = [...transacoes, ...d]; const ids = new Set(); transacoes = transacoes.filter(t => !ids.has(t.id) && ids.add(t.id)); transacoes.sort((a,b) => b.id - a.id); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Importado com sucesso!"); }
+            } catch (err) { alert("Arquivo corrompido."); }
+        }; r.readAsText(f);
+    }
+
+    window.onload = () => {
+        const tGuardado = localStorage.getItem('vibe_tema_escolhido');
+        if (tGuardado) mudarTemaAtivo(tGuardado);
+        
+        porcentagemReserva = parseInt(localStorage.getItem('saldo_reserva_pct')) || 10;
+        const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s);
+        inicializarFiltroMeses(); 
+        atualizarAplicativo();
+    };
+</script>
+</body>
+</html>
         </div>
     </div>
 
