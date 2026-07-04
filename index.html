@@ -112,7 +112,8 @@
         .coluna-vertical-rotulo { font-size: 0.85rem; font-weight: 600; position: absolute; bottom: -25px; color: var(--texto-secundario); text-transform: uppercase; }
 
         /* HISTÓRICO */
-        .item-transacao { display: flex; flex-direction: column; padding: 10px 2px; border-bottom: 1px solid var(--borda); cursor: pointer; }
+        .item-transacao { display: flex; justify-content: space-between; align-items: center; padding: 12px 6px; border-bottom: 1px solid var(--borda); cursor: pointer; }
+        .item-transacao:hover { background: var(--bg-body); }
         .descricao-texto { font-size: 0.95rem; font-weight: 500; color: var(--texto-principal); }
         .valor-historico { font-weight: 700; font-size: 0.95rem; }
 
@@ -128,7 +129,7 @@
 
         /* MENU RODAPÉ COM ROLAGEM LATERAL */
         .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--bg-rodape); border-top: 1px solid var(--borda); display: flex; justify-content: flex-start; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 90; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-        .menu-rodape::-webkit-scrollbar { display: none; } /* Esconde barra de rolagem horrorosa no mobile */
+        .menu-rodape::-webkit-scrollbar { display: none; }
         .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.75rem; font-weight: bold; gap: 4px; min-width: 90px; height: 100%; justify-content: center; flex-shrink: 0; }
         .tab-item span:first-child { font-size: 1.4rem; }
         .tab-item.ativo { color: var(--azul-saldo); }
@@ -140,6 +141,8 @@
         .modal-input { width: 100%; padding: 10px; border: 1px solid var(--borda); border-radius: 6px; font-size: 1rem; background: var(--bg-container); color: var(--texto-principal); outline: none; text-align: center; }
         .btn-modal { width: 100%; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; border: none; cursor: pointer; text-align: center; margin-top: 5px; }
         .btn-salvar { background: var(--entrada); color: white; }
+        .btn-deletar { background: var(--saida); color: white; }
+        .btn-cancelar { background: #7f8c8d; color: white; }
         .config-btn-bloco { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: bold; text-align: left; cursor: pointer; }
     </style>
 </head>
@@ -168,6 +171,21 @@
         </div>
         <button class="btn-modal btn-salvar" style="background: var(--entrada);" onclick="simularAssinatura()">Assinar Plano Premium</button>
         <button class="btn-modal" style="background: var(--saida); color: white;" onclick="resetarAplicativoTotal()">Resetar e Apagar Dados</button>
+    </div>
+</div>
+
+<!-- MODAL PARA EDITAR OU EXCLUIR TRANSAÇÃO -->
+<div class="modal-overlay" id="modal-edicao" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-title">📝 Editar Registro</div>
+        <input type="hidden" id="edit-id">
+        <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Descrição</label>
+        <input type="text" id="edit-descricao" class="modal-input" style="text-align:left;">
+        <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Valor (R$)</label>
+        <input type="number" id="edit-valor" step="0.01" class="modal-input" style="text-align:left;">
+        <button class="btn-modal btn-salvar" onclick="salvarEdicaoTransacao()">Salvar Alterações</button>
+        <button class="btn-modal btn-deletar" onclick="excluirTransacao()">🗑️ Excluir Registro</button>
+        <button class="btn-modal btn-cancelar" onclick="fecharModalEdicao()">Cancelar</button>
     </div>
 </div>
 
@@ -237,34 +255,12 @@
         <div class="secao-conteudo" style="flex-grow: 1; overflow-y: auto;" id="lista-transacoes-container"></div>
     </div>
 
-    <!-- TELA 3: GRÁFICOS (AMPLIADOS) -->
+    <!-- TELA 3: GRÁFICOS (ORDEM ATUALIZADA) -->
     <div class="app-view" id="view-graficos">
+        <!-- 1. CONTAS X CARTÕES X RESERVAS (No Topo) -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
-                <h4>1. DESPESAS X RECEITAS</h4>
-                <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
-                    <div class="donut-hole">
-                        <span id="pizza-perc">0%</span>
-                        <span id="pizza-rotulo" style="font-size:0.75rem; text-transform:uppercase;">Gasto</span>
-                    </div>
-                </div>
-                <div class="donut-legenda">
-                    <span style="color:var(--entrada)">● Receitas</span>
-                    <span style="color:var(--saida)">● Despesas</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="secao-conteudo">
-            <div class="grafico-wrapper">
-                <h4>2. TOP DESPESAS MENSAL</h4>
-                <div id="grafico-barras-horizontais"></div>
-            </div>
-        </div>
-
-        <div class="secao-conteudo">
-            <div class="grafico-wrapper">
-                <h4>3. CONTAS X CARTÕES X RESERVAS</h4>
+                <h4>1. CONTAS X CARTÕES X RESERVAS</h4>
                 <div class="colunas-container">
                     <div class="coluna-vertical-bloco">
                         <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
@@ -282,6 +278,31 @@
                         <span class="coluna-vertical-rotulo">Reserva</span>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- 2. DESPESAS X RECEITAS (No Meio) -->
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>2. DESPESAS X RECEITAS</h4>
+                <div class="donut-chart" id="grafico-pizza-elemento">
+                    <div class="donut-hole">
+                        <span id="pizza-perc">0%</span>
+                        <span id="pizza-rotulo" style="font-size:0.75rem; text-transform:uppercase;">Gasto</span>
+                    </div>
+                </div>
+                <div class="donut-legenda">
+                    <span style="color:var(--entrada)">● Receitas</span>
+                    <span style="color:var(--saida)">● Despesas</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. TOP DESPESAS MENSAL (Embaixo) -->
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>3. TOP DESPESAS MENSAL</h4>
+                <div id="grafico-barras-horizontais"></div>
             </div>
         </div>
     </div>
@@ -304,7 +325,7 @@
 
 </div>
 
-<!-- MENU INFERIOR COM ROLAGEM DOS DIRETÓRIOS -->
+<!-- MENU INFERIOR COM ROLAGEM LATERAL -->
 <div class="menu-rodape">
     <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
     <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
@@ -313,25 +334,24 @@
 </div>
 
 <script>
-    let transacoes = [], saldosOcultos = false, porcentagemReserva = 10, modoGraficoRosca = 0;
+    let transacoes = [], saldosOcultos = false, porcentagemReserva = 10;
+    const CPF_ADMINISTRADORA = "00000000000"; // Defina o seu CPF aqui para nunca ser bloqueada
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
     const obterId = id => document.getElementById(id);
     const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 3000); };
 
-    // --- CONTROLE DE LOGIN E SEGURANÇA (CPF e PIN 4 DÍGITOS) ---
+    // --- CONTROLE DE LOGIN E SEGURANÇA ---
     function checarSeguranca() {
         const cpfSalvo = localStorage.getItem('app_cpf');
         const pinSalvo = localStorage.getItem('app_pin');
 
         if (!cpfSalvo || !pinSalvo) {
-            // Primeiro acesso: Forçar cadastro
             obterId('auth-titulo').innerText = "✨ Criar Acesso";
             obterId('auth-sub').innerText = "Cadastre seu CPF e um PIN de 4 números para proteger seus dados.";
             obterId('tela-auth').style.display = "flex";
             obterId('conteudo-app').style.filter = "blur(5px)";
         } else {
-            // Login recorrente necessário
             obterId('auth-titulo').innerText = "🔒 Tela de Login";
             obterId('auth-sub').innerText = "Insira suas credenciais cadastradas.";
             obterId('tela-auth').style.display = "flex";
@@ -351,19 +371,16 @@
         }
 
         if (!cpfSalvo || !pinSalvo) {
-            // Salvando o cadastro inicial
             localStorage.setItem('app_cpf', cpfInput);
             localStorage.setItem('app_pin', pinInput);
             alert("Acesso configurado com sucesso!");
         } else {
-            // Validando login
             if (cpfInput !== cpfSalvo || pinInput !== pinSalvo) {
                 alert("CPF ou PIN incorretos!");
                 return;
             }
         }
 
-        // Sucesso no login
         obterId('tela-auth').style.display = "none";
         obterId('conteudo-app').style.filter = "none";
         obterId('auth-cpf').value = '';
@@ -386,6 +403,14 @@
 
     // --- SISTEMA DE ASSINATURA PREMIUM (48 HORAS TESTE) ---
     function checarBloqueioPlano() {
+        const cpfLogado = localStorage.getItem('app_cpf');
+        
+        // REGRA DA ADMINISTRADORA: Se for o seu CPF, ignora o bloqueio completamente
+        if (cpfLogado === CPF_ADMINISTRADORA) {
+            obterId('tela-bloqueio-plano').style.display = "none";
+            return true;
+        }
+
         let primeiroAcesso = localStorage.getItem('app_primeiro_acesso');
         const planoAtivo = localStorage.getItem('app_plano_premium') === 'true';
 
@@ -399,12 +424,10 @@
             return true;
         }
 
-        // Calcula a diferença de tempo (48 Horas = 172.800.000 milissegundos)
         const tempoDecorrido = Date.now() - parseInt(primeiroAcesso);
         const tempoLimite = 48 * 60 * 60 * 1000; 
 
         if (tempoDecorrido > tempoLimite) {
-            // Bloqueia tudo e força a tela de pagamento
             obterId('tela-bloqueio-plano').style.display = "flex";
             obterId('conteudo-app').style.filter = "blur(8px)";
             return false;
@@ -422,7 +445,16 @@
 
     function gerenciarVisualPlano() {
         const premium = localStorage.getItem('app_plano_premium') === 'true';
+        const cpfLogado = localStorage.getItem('app_cpf');
         const box = obterId('status-plano-box');
+        
+        if (cpfLogado === CPF_ADMINISTRADORA) {
+            box.style.background = "#2c3e50";
+            box.style.color = "#white";
+            box.innerText = "👑 Modo Administradora (Acesso Ilimitado e Isento)";
+            return;
+        }
+
         if(premium) {
             box.style.background = "var(--alerta-fundo)";
             box.style.color = "var(--cartao)";
@@ -434,6 +466,46 @@
             box.style.background = "#eee";
             box.style.color = "#333";
             box.innerText = `⏳ Modo de Teste: Restam ${restamHoras} horas de acesso livre.`;
+        }
+    }
+
+    // --- EDICAO E EXCLUSÃO DO HISTÓRICO ---
+    function abrirModalEdicao(id, descricao, valor) {
+        obterId('edit-id').value = id;
+        obterId('edit-descricao').value = descricao;
+        obterId('edit-valor').value = valor;
+        obterId('modal-edicao').style.display = "flex";
+    }
+
+    function fecharModalEdicao() {
+        obterId('modal-edicao').style.display = "none";
+    }
+
+    function salvarEdicaoTransacao() {
+        const id = parseInt(obterId('edit-id').value);
+        const novaDesc = obterId('edit-descricao').value.trim();
+        const novoVal = parseFloat(obterId('edit-valor').value);
+
+        if(!novaDesc || isNaN(novoVal) || novoVal <= 0) {
+            alert("Preencha os campos corretamente com valores válidos!");
+            return;
+        }
+
+        transacoes = transacoes.map(t => t.id === id ? { ...t, descricao: novaDesc, valor: novoVal } : t);
+        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
+        fecharModalEdicao();
+        atualizarAplicativo();
+        mostrarAviso("Alterado!");
+    }
+
+    function excluirTransacao() {
+        const id = parseInt(obterId('edit-id').value);
+        if(confirm("Tem certeza que deseja apagar permanentemente este registro?")) {
+            transacoes = transacoes.filter(t => t.id !== id);
+            localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
+            fecharModalEdicao();
+            atualizarAplicativo();
+            mostrarAviso("Removido!");
         }
     }
 
@@ -492,9 +564,8 @@
 
     function atualizarAplicativo() {
         if (!checarBloqueioPlano()) return;
-        gerenciarVisualPlano();
-
         let ent = 0, sai = 0, fMes = obterId('filtro-mes').value;
+        
         transacoes.forEach(t => {
             if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return;
             t.tipo === 'entrada' ? ent += t.valor : sai += t.valor;
@@ -518,6 +589,7 @@
 
         renderizarHistorico();
         renderizarGraficos(ent, sai, valReserva);
+        gerenciarVisualPlano();
     }
 
     function renderizarHistorico() {
@@ -535,9 +607,12 @@
         filtradas.forEach(t => {
             let cor = t.tipo === 'entrada' ? 'var(--entrada)' : 'var(--saida)';
             let item = document.createElement('div'); item.className = `item-transacao`;
-            item.style.display = "flex"; item.style.justifyContent = "between";
+            
+            // Evento de clique para disparar o Modal de Edição
+            item.onclick = () => abrirModalEdicao(t.id, t.descricao, t.valor);
+            
             item.innerHTML = `
-                <div style="flex-grow:1; display:flex; flex-direction:column;">
+                <div style="flex-grow:1; display:flex; flex-direction:column; text-align: left;">
                     <span class="descricao-texto" style="text-transform:capitalize;">${t.descricao}</span>
                     <small style="color:var(--texto-secundario)">📅 ${t.dia}/${nomesMeses[t.mes]}</small>
                 </div>
@@ -554,7 +629,6 @@
         obterId('pizza-perc').innerText = `${percGasto}%`;
         obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
 
-        // Top Despesas
         const boxBarras = obterId('grafico-barras-horizontais');
         boxBarras.innerHTML = '';
         let tops = transacoes.filter(t => t.tipo === 'saida').slice(0,3);
@@ -569,7 +643,6 @@
             boxBarras.appendChild(linha);
         });
 
-        // Colunas Verticais
         const max = Math.max(despesas, reserva, 100);
         obterId('v-val-contas').setAttribute('data-valor', despesas.toFixed(2));
         obterId('v-val-reserva').setAttribute('data-valor', reserva.toFixed(2));
