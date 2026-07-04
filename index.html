@@ -8,58 +8,56 @@
     <meta name="theme-color" content="#2c3e50">
     <title>Meu Fluxo de Caixa Inteligente</title>
     <style>
-        /* Variáveis de Cores (Suporta Modo Claro e Escuro) */
+        /* Paleta Temática Rústica / Industrial */
         :root {
-            --bg-body: #f4f6f9;
-            --bg-container: white;
-            --texto-principal: #222;
-            --texto-secundario: #666;
-            --borda: #eee;
-            --shadow: rgba(0,0,0,0.05);
-            --entrada: #2ecc71;
-            --saida: #e74c3c;
-            --cartao: #f39c12;
+            --bg-body: #dcd6cd; /* Tom de papel/areia rústico */
+            --bg-container: #eae4da; 
+            --texto-principal: #2b2621; /* Marrom bem escuro/carbono */
+            --texto-secundario: #5c534c;
+            --borda: #4a4139; /* Linhas fortes e marcadas */
+            --shadow: none; /* Sem sombras suaves modernas */
+            --entrada: #27ae60;
+            --saida: #c0392b;
+            --cartao: #d35400;
             --reserva-cor: #16a085;
             --azul-saldo: #2c3e50;
-            --alerta-fundo: #fef9e7;
-            --alerta-borda: #f1c40f;
-            --alerta-danger-bg: #fce4e4;
-            --alerta-danger-borda: #e74c3c;
-            --bg-retratil: #f8f9fa;
-            --chat-verde: #056162;
-            --chat-verde-hover: #044e4f;
-            --bg-rodape: white;
+            --alerta-fundo: #f39c12;
+            --alerta-borda: #4a4139;
+            --alerta-danger-bg: #f2dede;
+            --alerta-danger-borda: #a94442;
+            --bg-retratil: #d2c9bd;
+            --chat-verde: #34495e; /* Tom ardósia */
+            --bg-rodape: #342f2a; /* Rodapé escuro e pesado */
         }
 
         [data-theme="dark"] {
-            --bg-body: #121212;
-            --bg-container: #1e1e1e;
-            --texto-principal: #f5f6fa;
-            --texto-secundario: #aaa;
-            --borda: #2d2d2d;
-            --shadow: rgba(0,0,0,0.3);
+            --bg-body: #1a1816;
+            --bg-container: #262320;
+            --texto-principal: #e6dfd5;
+            --texto-secundario: #968c83;
+            --borda: #5e544b;
             --azul-saldo: #3498db;
-            --alerta-fundo: #2c2512;
+            --alerta-fundo: #3a2f1d;
             --alerta-borda: #d35400;
-            --alerta-danger-bg: #2c1616;
+            --alerta-danger-bg: #3a1d1d;
             --alerta-danger-borda: #c0392b;
-            --bg-retratil: #282828;
+            --bg-retratil: #1f1d1b;
             --reserva-cor: #1abc9c;
-            --bg-rodape: #1e1e1e;
+            --bg-rodape: #151413;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace, sans-serif; }
         body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
         /* Container Principal */
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: calc(100vh - 90px); position: relative; }
         
         /* CABEÇALHO DO APP */
-        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px; padding: 5px; flex-shrink: 0; }
-        .app-title { font-size: 1.3rem; font-weight: 700; color: var(--azul-saldo); letter-spacing: -0.5px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px; padding: 5px; flex-shrink: 0; border-bottom: 2px solid var(--borda); }
+        .app-title { font-size: 1.3rem; font-weight: bold; color: var(--texto-principal); text-transform: uppercase; }
         .app-actions { display: flex; gap: 14px; align-items: center; }
-        .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; }
-        .icon-btn:hover { background: var(--borda); }
+        .icon-btn { background: none; border: 1px solid var(--borda); font-size: 1.1rem; cursor: pointer; color: var(--texto-principal); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; }
+        .icon-btn:hover { background: var(--borda); color: var(--bg-container); }
 
         /* VIEWS (TELAS DO APP) */
         .app-view { display: none; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 20px; }
@@ -67,8 +65,8 @@
 
         /* CARDS NO TOPO (INÍCIO) */
         .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
-        .card { background: var(--bg-container); padding: 10px 5px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
-        .card h3 { font-size: 0.7rem; color: var(--texto-secundario); margin-bottom: 2px; text-transform: uppercase; }
+        .card { background: var(--bg-container); padding: 10px 5px; text-align: center; border: 2px solid var(--borda); }
+        .card h3 { font-size: 0.7rem; color: var(--texto-secundario); margin-bottom: 2px; text-transform: uppercase; font-weight: bold; }
         .card p { font-size: 0.9rem; font-weight: bold; }
         
         .card.saldo-total { 
@@ -82,101 +80,101 @@
             justify-content: center;
         }
         .card.saldo-total h3 { font-size: 0.75rem; letter-spacing: 0.5px; }
-        .card.saldo-total p { font-size: 1.6rem; font-weight: 800; }
+        .card.saldo-total p { font-size: 1.6rem; font-weight: bold; }
         
-        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; margin-top: 4px; border-top: 1px solid var(--borda); padding-top: 8px; }
+        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; margin-top: 4px; border-top: 1px dashed var(--borda); padding-top: 8px; }
         .linha-subtil-valores { display: flex; justify-content: center; gap: 12px; width: 100%; flex-wrap: wrap; }
-        .previsao-texto, .reserva-texto { font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
-        .previsao-texto strong, .reserva-texto strong { font-weight: 700; color: var(--texto-principal); }
-        .saldo-restante-texto { font-size: 0.85rem; color: var(--reserva-cor); font-weight: bold; margin-top: 2px; }
-        .config-reserva-inline { cursor: pointer; font-size: 0.7rem; opacity: 0.6; }
-        .config-reserva-inline:hover { opacity: 1; }
-        .alerta-comprometido { background: var(--alerta-danger-bg); border: 1px solid var(--alerta-danger-borda); color: var(--saida); padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: bold; margin-top: 4px; width: 100%; text-align: center; display: none; }
+        .previsao-texto, .reserva-texto { font-size: 0.75rem; color: var(--texto-secundario); font-weight: bold; display: inline-flex; align-items: center; gap: 3px; }
+        .previsao-texto strong, .reserva-texto strong { font-weight: bold; color: var(--texto-principal); }
+        .saldo-restante-texto { font-size: 0.85rem; color: var(--reserva-cor); font-weight: bold; margin-top: 2px; text-transform: uppercase; }
+        .config-reserva-inline { cursor: pointer; font-size: 0.7rem; }
+        
+        .alerta-comprometido { background: var(--alerta-danger-bg); border: 2px solid var(--alerta-danger-borda); color: var(--saida); padding: 6px; font-size: 0.72rem; font-weight: bold; margin-top: 4px; width: 100%; text-align: center; display: none; text-transform: uppercase; }
 
         .cor-entrada { color: var(--entrada); }
         .cor-saida { color: var(--saida); }
         .cor-cartao { color: var(--cartao); }
 
-        /* FILTROS */
+        /* FILTROS RÚSTICOS */
         .filtros-container { display: flex; gap: 8px; margin-bottom: 12px; width: 100%; }
-        .filtro-select { flex: 1; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.82rem; color: var(--texto-principal); outline: none; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px var(--shadow); appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+        .filtro-select { flex: 1; padding: 8px 12px; border: 2px solid var(--borda); background: var(--bg-container); font-size: 0.82rem; color: var(--texto-principal); outline: none; font-weight: bold; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234a4139' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 
         /* CONTEÚDO DAS LISTAS E GRÁFICOS */
-        .secao-conteudo { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); padding: 12px; border: 1px solid var(--borda); margin-bottom: 15px; }
+        .secao-conteudo { background: var(--bg-container); padding: 12px; border: 2px solid var(--borda); margin-bottom: 15px; }
         
         /* GRÁFICOS */
         .grafico-wrapper { margin-bottom: 20px; }
-        .grafico-wrapper h4 { font-size: 0.8rem; color: var(--texto-principal); margin-bottom: 10px; text-transform: uppercase; border-left: 3px solid #2c3e50; padding-left: 6px; }
-        .donut-chart { width: 120px; height: 120px; border-radius: 50%; margin: 10px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; }
+        .grafico-wrapper h4 { font-size: 0.8rem; color: var(--texto-principal); margin-bottom: 10px; text-transform: uppercase; border-left: 4px solid var(--borda); padding-left: 6px; font-weight: bold; }
+        .donut-chart { width: 120px; height: 120px; border-radius: 50%; margin: 10px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; border: 2px solid var(--borda); }
         .donut-hole { width: 80px; height: 80px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; color: var(--texto-secundario); text-align: center; padding: 4px; }
         .donut-hole span:first-child { font-size: 0.8rem; color: var(--texto-principal); }
-        .donut-legenda { display: flex; justify-content: center; gap: 15px; font-size: 0.75rem; font-weight: 600; }
+        .donut-legenda { display: flex; justify-content: center; gap: 15px; font-size: 0.75rem; font-weight: bold; }
         
         .barra-horizontal-linha { margin-bottom: 8px; }
-        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; margin-bottom: 2px; }
-        .barra-horizontal-bg { background: var(--bg-body); height: 10px; border-radius: 6px; width: 100%; overflow: hidden; border: 1px solid var(--borda); }
-        .barra-horizontal-preenchimento { height: 100%; border-radius: 6px; width: 0%; transition: width 0.5s ease; }
+        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: bold; margin-bottom: 2px; }
+        .barra-horizontal-bg { background: var(--bg-body); height: 12px; width: 100%; overflow: hidden; border: 2px solid var(--borda); }
+        .barra-horizontal-preenchimento { height: 100%; width: 0%; transition: width 0.5s ease; }
         
         .colunas-container { display: flex; justify-content: center; gap: 24px; height: 100px; align-items: flex-end; padding-top: 25px; margin-bottom: 25px; border-bottom: 2px solid var(--borda); position: relative; }
         .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 65px; position: relative; }
-        .coluna-vertical-barra { width: 28px; border-top-left-radius: 4px; border-top-right-radius: 4px; height: 2px; min-height: 2px; transition: height 0.5s ease; }
+        .coluna-vertical-barra { width: 28px; border: 2px solid var(--borda); border-bottom: none; height: 2px; min-height: 2px; transition: height 0.5s ease; }
         .coluna-vertical-valor { font-size: 0.68rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
-        .coluna-vertical-rotulo { font-size: 0.72rem; font-weight: 600; position: absolute; bottom: -22px; color: var(--texto-secundario); text-transform: uppercase; white-space: nowrap; }
+        .coluna-vertical-rotulo { font-size: 0.72rem; font-weight: bold; position: absolute; bottom: -22px; color: var(--texto-secundario); text-transform: uppercase; white-space: nowrap; }
 
         /* HISTÓRICO COMPACTADO */
-        .item-transacao { display: flex; flex-direction: column; padding: 8px 2px; border-bottom: 1px solid var(--borda); cursor: pointer; }
+        .item-transacao { display: flex; flex-direction: column; padding: 8px 2px; border-bottom: 1px dashed var(--borda); cursor: pointer; }
         .item-transacao:hover { background-color: var(--bg-body); }
         .item-transacao:last-child { border-bottom: none; }
         .linha-principal { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .detalhes-item { display: flex; flex-direction: column; gap: 2px; }
-        .descricao-texto { font-size: 0.85rem; font-weight: 500; color: var(--texto-principal); text-transform: capitalize; }
+        .descricao-texto { font-size: 0.85rem; font-weight: bold; color: var(--texto-principal); text-transform: uppercase; }
         .tags-row { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
-        .tipo-tag { font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; color: white; font-weight: bold; text-transform: uppercase; }
+        .tipo-tag { font-size: 0.55rem; padding: 1px 3px; color: white; font-weight: bold; text-transform: uppercase; border: 1px solid rgba(0,0,0,0.2); }
         .tag-entrada { background: var(--entrada); }
         .tag-saida { background: var(--saida); }
         .tag-cartao { background: var(--cartao); }
-        .tag-conta { background: #7f8c8d; color: white; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; font-weight: bold; }
-        .tag-cartao-especifico { background: #34495e; color: white; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; font-weight: bold; }
-        .tag-fixa { background: #9b59b6; color: white; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; font-weight: bold; }
-        .valor-historico { font-weight: 700; font-size: 0.82rem; letter-spacing: -0.2px; }
+        .tag-conta { background: #7f8c8d; color: white; font-size: 0.55rem; padding: 1px 3px; font-weight: bold; }
+        .tag-cartao-especifico { background: #34495e; color: white; font-size: 0.55rem; padding: 1px 3px; font-weight: bold; }
+        .tag-fixa { background: #9b59b6; color: white; font-size: 0.55rem; padding: 1px 3px; font-weight: bold; }
+        .valor-historico { font-weight: bold; font-size: 0.82rem; }
 
-        .item-transacao.pendente { background: var(--alerta-fundo); border-left: 3px solid var(--alerta-borda); padding-left: 6px; }
+        .item-transacao.pendente { background: var(--bg-body); border-left: 4px solid var(--alerta-borda); padding-left: 6px; }
         .container-pergunta { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--borda); width: 100%; }
-        .texto-pergunta { font-size: 0.75rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: 4px; display: block; }
+        .texto-pergunta { font-size: 0.75rem; font-weight: bold; color: var(--texto-secundario); margin-bottom: 4px; display: block; }
         .botoes-resposta { display: flex; gap: 4px; flex-wrap: wrap; }
-        .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 4px 8px; border-radius: 8px; font-size: 0.72rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); }
-        .btn-resposta:hover { background: #2c3e50; color: white; }
+        .btn-resposta { background: var(--bg-container); border: 2px solid var(--borda); padding: 4px 8px; font-size: 0.72rem; font-weight: bold; cursor: pointer; color: var(--texto-principal); }
+        .btn-resposta:hover { background: var(--borda); color: var(--bg-container); }
 
-        /* ÁREA DE CHAT */
+        /* ÁREA DE LANÇAMENTO */
         .chat-container-dinamico { margin-top: auto; padding: 10px 0; margin-bottom: 50px; width: 100%; }
-        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 16px; border-radius: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); align-items: center; position: relative; }
-        .chat-input { flex-grow: 1; border: none; padding: 6px 5px; font-size: 0.95rem; outline: none; background: transparent; color: white; font-weight: 500; }
-        .chat-input::placeholder { color: rgba(255, 255, 255, 0.75); }
-        .btn-enviar { background: white; color: var(--chat-verde); border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 16px; border: 2px solid var(--borda); align-items: center; position: relative; }
+        .chat-input { flex-grow: 1; border: none; padding: 6px 5px; font-size: 0.95rem; outline: none; background: transparent; color: white; font-weight: bold; }
+        .chat-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .btn-enviar { background: white; color: var(--chat-verde); border: 2px solid var(--borda); width: 34px; height: 34px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: bold; }
         
-        .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10; }
+        .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: var(--borda); color: var(--bg-container); padding: 6px 15px; border: 1px solid var(--texto-principal); font-size: 0.85rem; font-weight: bold; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10; }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* MENU INFERIOR (TAB BAR ROBUSTO) */
-        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--bg-rodape); border-top: 1px solid var(--borda); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -3px 12px rgba(0,0,0,0.08); z-index: 99; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.78rem; font-weight: 700; gap: 5px; width: 23%; height: 100%; justify-content: center; transition: all 0.2s ease; }
-        .tab-item span:first-child { font-size: 1.5rem; line-height: 1; }
-        .tab-item:active { transform: scale(0.95); }
-        .tab-item.ativo { color: var(--azul-saldo); border-top: 3px solid var(--azul-saldo); padding-top: 0px; }
-        [data-theme="dark"] .tab-item.ativo { color: var(--azul-saldo); border-top: 3px solid var(--azul-saldo); }
+        /* MENU INFERIOR DESIGN RÚSTICO / INDUSTRIAL (SEM SCROLL) */
+        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--bg-rodape); border-top: 3px solid var(--borda); display: flex; justify-content: space-around; align-items: center; z-index: 99; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.78rem; font-weight: bold; gap: 4px; width: 25%; height: 100%; justify-content: center; text-transform: uppercase; box-sizing: border-box; }
+        .tab-item span:first-child { font-size: 1.3rem; line-height: 1; filter: grayscale(100%); }
+        .tab-item:hover { background: rgba(255, 255, 255, 0.05); }
+        .tab-item.ativo { color: #ffffff; background: var(--borda); border-bottom: none; }
+        .tab-item.ativo span:first-child { filter: none; }
 
         /* MODAIS */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
-        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--borda); }
-        .modal-title { font-size: 1.05rem; font-weight: bold; color: var(--texto-principal); }
-        .modal-label { font-size: 0.8rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: -6px; }
-        .modal-input, .modal-select { width: 100%; padding: 8px; border: 1px solid var(--borda); border-radius: 6px; font-size: 0.95rem; background: var(--bg-container); color: var(--texto-principal); outline: none; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border: 2px solid var(--borda); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .modal-title { font-size: 1.05rem; font-weight: bold; color: var(--texto-principal); text-transform: uppercase; border-bottom: 2px solid var(--borda); padding-bottom: 4px; }
+        .modal-label { font-size: 0.8rem; font-weight: bold; color: var(--texto-secundario); margin-bottom: -6px; text-transform: uppercase; }
+        .modal-input, .modal-select { width: 100%; padding: 8px; border: 2px solid var(--borda); font-size: 0.95rem; background: var(--bg-body); color: var(--texto-principal); outline: none; font-weight: bold; }
         .modal-botoes { display: flex; gap: 8px; margin-top: 5px; }
-        .btn-modal { flex: 1; padding: 8px; border-radius: 6px; font-size: 0.9rem; font-weight: bold; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-modal { flex: 1; padding: 8px; font-size: 0.9rem; font-weight: bold; border: 2px solid var(--borda); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; text-transform: uppercase; }
         .btn-salvar { background: var(--entrada); color: white; }
         .btn-excluir { background: var(--saida); color: white; }
         .btn-cancelar { background: #bdc3c7; color: #333; }
-        .config-btn-bloco { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: bold; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .config-btn-bloco { width: 100%; padding: 12px; margin-bottom: 8px; border: 2px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: bold; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -230,7 +228,7 @@
         <div class="chat-container-dinamico">
             <div class="chat-input-area">
                 <div id="alerta" class="alerta-temporario">Lançado!</div>
-                <input type="text" id="campo-texto" class="chat-input" placeholder="Conversar ou lançar (Ex: uber 45 nubank)..." onkeypress="verificarTecla(event)">
+                <input type="text" id="campo-texto" class="chat-input" placeholder="Lançar (Ex: uber 45 nubank)..." onkeypress="verificarTecla(event)">
                 <button class="btn-enviar" onclick="processarComando()">➔</button>
             </div>
         </div>
@@ -251,10 +249,8 @@
         <div class="secao-conteudo" style="flex-grow: 1; overflow-y: auto;" id="lista-transacoes-container"></div>
     </div>
 
-    <!-- TELA 3: GRÁFICOS (ORDEM ATUALIZADA) -->
+    <!-- TELA 3: GRÁFICOS -->
     <div class="app-view" id="view-graficos">
-        
-        <!-- 1. CONTAS X CARTÕES X RESERVAS -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
                 <h4>1. CONTAS X CARTÕES X RESERVAS</h4>
@@ -278,14 +274,13 @@
             </div>
         </div>
 
-        <!-- 2. DESPESAS X RECEITAS -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
                 <h4>2. DESPESAS X RECEITAS</h4>
                 <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
                     <div class="donut-hole">
                         <span id="pizza-perc">0%</span>
-                        <span id="pizza-rotulo" style="font-size:0.55rem; font-weight:normal; text-transform:uppercase;">Gasto</span>
+                        <span id="pizza-rotulo" style="font-size:0.55rem; font-weight:bold; text-transform:uppercase;">Gasto</span>
                     </div>
                 </div>
                 <div class="donut-legenda">
@@ -295,7 +290,6 @@
             </div>
         </div>
 
-        <!-- 3. TOP DESPESAS -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
                 <h4>3. TOP DESPESAS MENSAL</h4>
@@ -308,18 +302,18 @@
     <div class="app-view" id="view-config">
         <div class="secao-conteudo">
             <h4 style="font-size:0.8rem; margin-bottom:12px; color:var(--texto-secundario);">DADOS E BACKUP</h4>
-            <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar Banco de Dados (JSON)</button>
-            <button class="config-btn-bloco" onclick="document.getElementById('input-file-backup').click()">📤 Importar Banco de Dados (JSON)</button>
+            <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar Banco (JSON)</button>
+            <button class="config-btn-bloco" onclick="document.getElementById('input-file-backup').click()">📤 Importar Banco (JSON)</button>
             <input type="file" id="input-file-backup" accept=".json" style="display: none;" onchange="importarBackup(event)">
             
             <h4 style="font-size:0.8rem; margin-top:20px; margin-bottom:12px; color:var(--texto-secundario);">PERIGO</h4>
-            <button class="config-btn-bloco" style="color:var(--saida); border-color:var(--alerta-danger-borda);" onclick="resetarAplicativoTotal()">🗑️ Limpar Todos os Dados Permanentemente</button>
+            <button class="config-btn-bloco" style="color:var(--saida); border-color:var(--borda);" onclick="resetarAplicativoTotal()">🗑️ Limpar Todos os Dados Permanentemente</button>
         </div>
     </div>
 
 </div>
 
-<!-- MENU FIXO DO RODAPÉ -->
+<!-- MENU RODAPÉ RÚSTICO SIMÉTRICO FIXO -->
 <div class="menu-rodape">
     <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
     <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
@@ -345,8 +339,8 @@
         <input type="text" id="modal-conta" class="modal-input">
         <div class="modal-label">Cartão Utilizado</div>
         <input type="text" id="modal-cartao-id" class="modal-input">
-        <div class="modal-label" style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
-            <input type="checkbox" id="modal-fixa" style="width: 16px; height: 16px;"> É uma Conta Fixa?
+        <div class="modal-label" style="display: flex; align-items: center; gap: 8px; margin-top: 5px; font-weight:bold;">
+            <input type="checkbox" id="modal-fixa" style="width: 16px; height: 16px;"> É UMA CONTA FIXA?
         </div>
         <div class="modal-botoes">
             <button class="btn-modal btn-excluir" onclick="acaoExcluir()">Excluir</button>
@@ -358,8 +352,8 @@
 
 <div class="modal-overlay" id="modal-reserva">
     <div class="modal-container">
-        <div class="modal-title">💰 Definir Meta de Reserva</div>
-        <div class="modal-label">Porcentagem do saldo positivo para guardar:</div>
+        <div class="modal-title">💰 Definir Meta</div>
+        <div class="modal-label">Porcentagem para guardar:</div>
         <input type="number" id="modal-reserva-pct" class="modal-input" min="1" max="100" value="10">
         <div class="modal-botoes">
             <button class="btn-modal btn-cancelar" onclick="fecharConfigReserva()">Cancelar</button>
@@ -390,7 +384,7 @@
         obterId(`tab-${idAba}`).classList.add('ativo');
 
         const titulos = { inicio: "Meu Saldo", historico: "Histórico", graficos: "Análise Mensal", config: "Configurações" };
-        obterId('titulo-dinamico').innerText = titulos[idAba];
+        obterId('titulo-dinamico').innerText = titulos[idAba].toUpperCase();
 
         atualizarAplicativo();
     }
@@ -448,7 +442,6 @@
         atualizarAplicativo();
         input.value = ''; 
         mostrarAviso("Adicionado!");
-
         setTimeout(() => navegarPara('historico'), 400);
     }
 
@@ -488,8 +481,7 @@
 
         obterId('card-alerta-comprometido').style.display = ent > 0 && (gastos / ent) >= 0.8 ? 'block' : 'none';
         
-        const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
-        obterId('card-saldo').style.color = saldo >= 0 ? (escuro ? '#3498db' : '#2c3e50') : 'var(--saida)';
+        obterId('card-saldo').style.color = saldo >= 0 ? 'var(--texto-principal)' : 'var(--saida)';
 
         document.querySelectorAll('.valor-dinamico').forEach(el => {
             const attrVal = el.getAttribute('data-valor') || "0";
@@ -511,7 +503,7 @@
             return true;
         });
 
-        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);font-size:0.8rem;padding:20px 0;">Nenhum registro encontrado.</p>`; return; }
+        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);font-size:0.8rem;padding:20px 0;">NENHUM REGISTRO.</p>`; return; }
 
         filtradas.forEach(t => {
             let cls = t.tipo === 'entrada' ? 'tag-entrada' : t.tipo === 'cartao' ? 'tag-cartao' : 'tag-saida';
@@ -527,9 +519,9 @@
                         <div class="tags-row">
                             <span class="tipo-tag ${cls}">${txt}</span>
                             <span class="tag-conta">📅 ${t.dia}/${nomesMeses[t.mes]}</span>
-                            ${t.conta ? `<span class="tag-conta">${t.conta}</span>` : ''}
-                            ${t.cartao ? `<span class="tag-cartao-especifico">💳 ${t.cartao}</span>` : ''}
-                            ${t.fixa ? `<span class="tag-fixa">📌 Fixa</span>` : ''}
+                            ${t.conta ? `<span class="tag-conta">${t.conta.toUpperCase()}</span>` : ''}
+                            ${t.cartao ? `<span class="tag-cartao-especifico">💳 ${t.cartao.toUpperCase()}</span>` : ''}
+                            ${t.fixa ? `<span class="tag-fixa">📌 FIXA</span>` : ''}
                         </div>
                     </div>
                     <span class="valor-historico" style="color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} ${saldosOcultos ? '•••' : 'R$ '+t.valor.toFixed(2).replace('.',',')}</span>
@@ -576,7 +568,7 @@
         const maiorGastoUnico = despesasOrdenadas.length > 0 ? despesasOrdenadas[0].valor : 1;
 
         if(!despesasOrdenadas.length) {
-            boxBarras.innerHTML = `<p style="font-size:0.75rem;color:var(--texto-secundario);text-align:center;">Nenhum registro.</p>`;
+            boxBarras.innerHTML = `<p style="font-size:0.75rem;color:var(--texto-secundario);text-align:center;">NENHUM REGISTRO.</p>`;
         } else {
             despesasOrdenadas.forEach(d => {
                 let pBarra = (d.valor / maiorGastoUnico) * 100;
@@ -586,7 +578,7 @@
                 linha.className = 'barra-horizontal-linha';
                 linha.innerHTML = `
                     <div class="barra-horizontal-info">
-                        <span style="text-transform:capitalize;">${d.descricao} <small style="color:var(--texto-secundario); font-weight:normal;">(${pDoTotal}%)</small></span>
+                        <span style="text-transform:uppercase;">${d.descricao} <small style="color:var(--texto-secundario); font-weight:normal;">(${pDoTotal}%)</small></span>
                         <span>R$ ${d.valor.toFixed(2).replace('.', ',')}</span>
                     </div>
                     <div class="barra-horizontal-bg">
@@ -627,7 +619,7 @@
             localStorage.setItem('saldo_reserva_pct', p); 
             fecharConfigReserva(); 
             atualizarAplicativo(); 
-            mostrarAviso(`Meta: ${p}%`); 
+            mostrarAviso(`META: ${p}%`); 
         }
     }
 
@@ -642,11 +634,11 @@
             t.fixa = obterId('modal-fixa').checked; 
             t.perguntaFixaRespondida = true;
         }
-        fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Salvo!");
+        fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("SALVO!");
     }
 
-    function acaoExcluir() { transacoes = transacoes.filter(i => i.id !== idEdicaoAtual); fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Excluído!"); }
-    function resetarAplicativoTotal() { if (confirm("Deseja deletar permanentemente todos os registros?")) { transacoes = []; localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Resetado!"); } }
+    function acaoExcluir() { transacoes = transacoes.filter(i => i.id !== idEdicaoAtual); fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("EXCLUÍDO!"); }
+    function resetarAplicativoTotal() { if (confirm("DELETAR TODOS OS REGISTROS PERMANENTEMENTE?")) { transacoes = []; localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("RESETADO!"); } }
     function exportarBackup() { if (!transacoes.length) return alert("Sem dados."); const dl = document.createElement('a'); dl.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transacoes))); dl.setAttribute("download", `backup_saldo.json`); dl.click(); }
 
     function importarBackup(e) {
@@ -654,7 +646,7 @@
         const r = new FileReader(); r.onload = ev => {
             try {
                 const d = JSON.parse(ev.target.result);
-                if (Array.isArray(d)) { transacoes = [...transacoes, ...d]; const ids = new Set(); transacoes = transacoes.filter(t => !ids.has(t.id) && ids.add(t.id)); transacoes.sort((a,b) => b.id - a.id); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Importado!"); }
+                if (Array.isArray(d)) { transacoes = [...transacoes, ...d]; const ids = new Set(); transacoes = transacoes.filter(t => !ids.has(t.id) && ids.add(t.id)); transacoes.sort((a,b) => b.id - a.id); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("IMPORTADO!"); }
             } catch (err) { alert("Erro ao importar."); }
         }; r.readAsText(f);
     }
