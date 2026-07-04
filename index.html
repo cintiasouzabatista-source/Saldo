@@ -5,207 +5,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
-    <title>Fluxo de Caixa Épico</title>
+    <meta name="theme-color" content="#1e3a8a">
+    <title>Fluxo de Caixa Interativo</title>
     <style>
         :root {
-            --bg-body: #0f172a; /* Slate 900 */
-            --bg-container: #1e293b; /* Slate 800 */
-            --bg-card: #334155; /* Slate 700 */
-            --texto-principal: #f8fafc;
+            --bg-body: #0b132b; /* Azul Escuro Espacial */
+            --bg-container: #1c2541; /* Azul Card */
+            --bg-card: #3a506b; /* Azul Interno */
+            --texto-principal: #f1f5f9;
             --texto-secundario: #94a3b8;
             --borda: #475569;
-            --shadow: rgba(0, 0, 0, 0.25);
+            --shadow: rgba(0, 0, 0, 0.3);
             
-            --entrada: #10b981; /* Esmeralda */
+            --entrada: #10b981; /* Verde */
             --saida: #ef4444; /* Vermelho */
-            --cartao: #a855f7; /* Roxo Épico */
-            --reserva-cor: #0ea5e9; /* Azul Claro */
+            --cartao: #3b82f6; /* Azul Dinâmico */
+            --reserva-cor: #6366f1; /* Índigo */
             
-            --btn-puro: #3b82f6;
-            --alerta-fundo: rgba(245, 158, 11, 0.1);
-            --alerta-borda: #f59e0b;
+            --chat-bg: #111827;
+            --chat-user: #1e3a8a; /* Azul WhatsApp Premium */
+            --chat-bot: #1f2937;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
-        .container { width: 100%; max-width: 480px; display: flex; flex-direction: column; min-height: calc(100vh - 40px); padding-bottom: 80px; }
+        .container { width: 100%; max-width: 480px; display: flex; flex-direction: column; height: calc(100vh - 40px); position: relative; }
         
-        /* HEADER ESTILO PREMIUM */
-        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px; padding: 10px 5px; border-bottom: 1px solid var(--borda); }
-        .app-title { font-size: 1.4rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+        /* HEADER */
+        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px; padding: 5px; flex-shrink: 0; border-bottom: 1px solid var(--borda); }
+        .app-title { font-size: 1.3rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
         .app-title span { color: var(--cartao); }
-        .app-actions { display: flex; gap: 10px; }
-        .icon-btn { background: var(--bg-card); border: 1px solid var(--borda); font-size: 1.1rem; cursor: pointer; color: #fff; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--texto-secundario); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .icon-btn:hover { background: var(--borda); }
 
-        .app-view { display: none; width: 100%; flex-direction: column; }
-        .app-view.ativa { display: flex; }
+        .app-view { display: none; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 20px; }
+        .app-view.ativa { display: flex; flex-direction: column; }
 
-        /* CARDS PRINCIPAIS */
-        .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .card { background: var(--bg-container); padding: 15px 10px; border-radius: 14px; text-align: center; border: 1px solid var(--borda); box-shadow: 0 4px 6px var(--shadow); }
-        .card h3 { font-size: 0.75rem; color: var(--texto-secundario); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .card p { font-size: 1.1rem; font-weight: 700; }
+        /* CARDS */
+        .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; flex-shrink: 0; }
+        .card { background: var(--bg-container); padding: 12px 6px; border-radius: 12px; text-align: center; border: 1px solid var(--borda); box-shadow: 0 4px 6px var(--shadow); }
+        .card h3 { font-size: 0.75rem; color: var(--texto-secundario); margin-bottom: 4px; text-transform: uppercase; }
+        .card p { font-size: 1rem; font-weight: 700; }
         
         .card.saldo-total { 
             grid-column: span 3; 
-            padding: 25px 15px; 
-            background: linear-gradient(135deg, var(--bg-container) 0%, #1e1b4b 100%);
-            border-left: 5px solid var(--cartao);
+            padding: 16px 12px; 
+            background: linear-gradient(135deg, var(--bg-container) 0%, #0f172a 100%);
         }
-        .card.saldo-total h3 { font-size: 0.85rem; color: var(--texto-secundario); }
-        .card.saldo-total p { font-size: 2.3rem; font-weight: 900; letter-spacing: -1px; margin: 4px 0; }
+        .card.saldo-total p { font-size: 1.8rem; font-weight: 800; }
         
-        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin-top: 15px; border-top: 1px solid var(--borda); padding-top: 15px; }
-        .linha-subtil-valores { display: flex; justify-content: space-between; width: 100%; font-size: 0.85rem; color: var(--texto-secundario); }
-        .linha-subtil-valores strong { color: #fff; }
-        .saldo-restante-texto { font-size: 0.95rem; color: var(--reserva-cor); font-weight: bold; margin-top: 5px; }
-        .alerta-comprometido { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--saida); color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; width: 100%; text-align: center; display: none; }
+        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; margin-top: 10px; border-top: 1px solid var(--borda); padding-top: 10px; }
+        .linha-subtil-valores { display: flex; justify-content: space-between; width: 100%; font-size: 0.8rem; color: var(--texto-secundario); align-items: center; }
+        
+        .select-reserva { background: var(--bg-card); border: 1px solid var(--borda); color: #fff; font-size: 0.8rem; padding: 2px 4px; border-radius: 4px; outline: none; }
+        .btn-guardar-reserva { background: var(--reserva-cor); color: white; border: none; padding: 4px 8px; font-size: 0.75rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 2px; }
 
         .cor-entrada { color: var(--entrada); }
         .cor-saida { color: var(--saida); }
         .cor-cartao { color: var(--cartao); }
 
-        /* FORMULÁRIO DE CAPTURA RÁPIDA (Estilo App Combustível) */
-        .secao-captura { background: var(--bg-container); border-radius: 16px; padding: 20px; border: 1px solid var(--borda); box-shadow: 0 4px 10px var(--shadow); margin-bottom: 20px; }
-        .secao-captura h4 { font-size: 0.9rem; font-weight: bold; margin-bottom: 15px; color: var(--texto-secundario); text-transform: uppercase; letter-spacing: 0.5px; }
+        /* INTERFACE ESTILO WHATSAPP */
+        .chat-janela { flex-grow: 1; background: var(--chat-bg); border-radius: 16px; border: 1px solid var(--borda); display: flex; flex-direction: column; overflow: hidden; margin-bottom: 10px; height: 150px; }
+        .chat-mensagens { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
         
-        .campo-grupo { display: flex; background: var(--bg-card); border: 1px solid var(--borda); border-radius: 12px; padding: 12px 15px; align-items: center; margin-bottom: 12px; }
-        .campo-grupo input { flex-grow: 1; border: none; background: transparent; color: #fff; font-size: 1.05rem; outline: none; width: 100%; }
-        .campo-grupo input::placeholder { color: var(--texto-secundario); }
+        .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.95rem; line-height: 1.4; word-wrap: break-word; }
+        .msg.user { background: var(--chat-user); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg.bot { background: var(--chat-bot); color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid var(--borda); }
         
-        .btn-acao-principal { background: var(--cartao); color: white; border: none; width: 100%; padding: 14px; border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3); }
-        .btn-acao-principal:active { transform: scale(0.98); }
+        .chat-opcoes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .btn-opcao { background: var(--bg-card); color: white; border: 1px solid var(--borda); padding: 8px 12px; font-size: 0.85rem; font-weight: 600; border-radius: 8px; cursor: pointer; }
+        .btn-opcao:hover { background: var(--cartao); }
 
-        /* FILTROS E CONTEÚDOS */
-        .filtros-container { display: flex; gap: 10px; margin-bottom: 15px; width: 100%; }
-        .filtro-select { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.9rem; color: #fff; outline: none; font-weight: 600; cursor: pointer; }
+        .chat-input-area { display: flex; gap: 8px; background: var(--bg-container); padding: 10px 14px; border-radius: 25px; border: 1px solid var(--borda); align-items: center; flex-shrink: 0; }
+        .chat-input { flex-grow: 1; border: none; padding: 6px 4px; font-size: 1rem; outline: none; background: transparent; color: white; }
+        .chat-input::placeholder { color: var(--texto-secundario); }
+        .btn-enviar { background: var(--cartao); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
-        .secao-conteudo { background: var(--bg-container); border-radius: 16px; box-shadow: 0 4px 6px var(--shadow); padding: 20px; border: 1px solid var(--borda); margin-bottom: 20px; }
-        .secao-conteudo h4 { font-size: 0.9rem; color: var(--texto-secundario); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* HISTÓRICO E CONTEÚDOS */
+        .filtros-container { display: flex; gap: 8px; margin-bottom: 12px; width: 100%; flex-shrink: 0; }
+        .filtro-select { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.85rem; color: #fff; outline: none; }
 
-        /* LISTA DE HISTÓRICO PREMIUM */
-        .item-transacao { display: flex; justify-content: space-between; align-items: center; padding: 14px 10px; border-bottom: 1px solid var(--borda); cursor: pointer; border-radius: 8px; margin-bottom: 4px; }
+        .secao-conteudo { background: var(--bg-container); border-radius: 14px; padding: 15px; border: 1px solid var(--borda); margin-bottom: 12px; }
+        .item-transacao { display: flex; justify-content: space-between; align-items: center; padding: 12px 6px; border-bottom: 1px solid var(--borda); cursor: pointer; }
         .item-transacao:hover { background: var(--bg-card); }
-        .descricao-texto { font-size: 1rem; font-weight: 600; color: #fff; }
-        .valor-historico { font-weight: 800; font-size: 1rem; }
 
-        /* GRÁFICOS */
-        .colunas-container { display: flex; justify-content: center; gap: 35px; height: 140px; align-items: flex-end; padding-top: 30px; margin-bottom: 25px; border-bottom: 2px solid var(--borda); position: relative; }
-        .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 80px; position: relative; }
-        .coluna-vertical-barra { width: 38px; border-top-left-radius: 6px; border-top-right-radius: 6px; height: 2px; }
-        .coluna-vertical-valor { font-size: 0.8rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
-        .coluna-vertical-rotulo { font-size: 0.85rem; font-weight: 600; position: absolute; bottom: -25px; color: var(--texto-secundario); text-transform: uppercase; }
+        /* NAV BAR */
+        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--bg-container); border-top: 1px solid var(--borda); display: flex; justify-content: space-around; align-items: center; z-index: 90; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.75rem; gap: 4px; width: 25%; }
+        .tab-item.ativo { color: var(--cartao); font-weight: bold; }
 
-        .donut-chart { width: 160px; height: 160px; border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .donut-hole { width: 110px; height: 110px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; color: var(--texto-secundario); }
-        .donut-hole span:first-child { font-size: 1.3rem; color: #fff; font-weight: 800; }
-        .donut-legenda { display: flex; justify-content: center; gap: 20px; font-size: 0.85rem; font-weight: 600; margin-top: 15px; }
-
-        .barra-horizontal-linha { margin-bottom: 14px; }
-        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
-        .barra-horizontal-bg { background: var(--bg-body); height: 12px; border-radius: 6px; width: 100%; overflow: hidden; border: 1px solid var(--borda); }
-        .barra-horizontal-preenchimento { height: 100%; border-radius: 6px; width: 0%; }
-
-        /* ALERTA FLUTUANTE SIMPLES */
-        .alerta-temporario { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #10b981; color: white; padding: 10px 25px; border-radius: 12px; font-weight: bold; font-size: 0.9rem; opacity: 0; pointer-events: none; z-index: 500; transition: opacity 0.3s; box-shadow: 0 10px 15px rgba(0,0,0,0.3); }
+        /* ALERTA */
+        .alerta-temporario { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #10b981; color: white; padding: 8px 20px; border-radius: 10px; font-weight: bold; font-size: 0.85rem; opacity: 0; pointer-events: none; z-index: 500; transition: opacity 0.3s; }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* BOTTOM BAR PREMIUM NAV */
-        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--bg-container); border-top: 1px solid var(--borda); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -4px 10px rgba(0,0,0,0.2); z-index: 90; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.75rem; font-weight: 700; gap: 4px; width: 25%; height: 100%; justify-content: center; }
-        .tab-item span:first-child { font-size: 1.3rem; transition: transform 0.2s; }
-        .tab-item.ativo { color: var(--cartao); }
-        .tab-item.ativo span:first-child { transform: translateY(-3px); }
-
-        /* MODAIS */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; backdrop-filter: blur(4px); }
-        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: 16px; padding: 22px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 14px; border: 1px solid var(--borda); }
-        .modal-title { font-size: 1.2rem; font-weight: bold; color: #fff; text-align: center; }
-        .modal-input { width: 100%; padding: 12px; border: 1px solid var(--borda); border-radius: 8px; font-size: 1rem; background: var(--bg-card); color: #fff; outline: none; }
-        .btn-modal { width: 100%; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-weight: bold; border: none; cursor: pointer; text-align: center; }
-        .btn-salvar { background: var(--entrada); color: white; }
-        .btn-deletar { background: var(--saida); color: white; }
-        .btn-cancelar { background: #64748b; color: white; }
-        .config-btn-bloco { width: 100%; padding: 14px; margin-bottom: 8px; border-radius: 10px; border: 1px solid var(--borda); background: var(--bg-card); color: #fff; font-weight: bold; text-align: left; cursor: pointer; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--borda); }
+        .modal-input { width: 100%; padding: 10px; border: 1px solid var(--borda); border-radius: 6px; background: var(--bg-card); color: #fff; outline: none; }
+        .btn-modal { width: 100%; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div id="alerta" class="alerta-temporario">Lançado com sucesso!</div>
+<div id="alerta" class="alerta-temporario">Sucesso!</div>
 
-<!-- TELA BLOQUEIO DE PLANO -->
+<!-- TELA BLOQUEIO -->
 <div class="modal-overlay" id="tela-bloqueio-plano" style="display: none; z-index: 200;">
-    <div class="modal-container" style="text-align: center; gap: 16px;">
-        <div style="font-size: 3rem;">⏳</div>
-        <div class="modal-title" style="color: var(--saida);">Período de Testes Expirado</div>
-        <p style="font-size: 0.95rem; color: var(--texto-secundario);">Suas 48 horas de teste gratuito acabaram. Libere o acesso vitalício.</p>
-        <div style="background: var(--bg-card); padding: 15px; border-radius: 10px; border: 1px dashed var(--borda);">
-            <span style="font-size: 0.85rem; text-transform: uppercase; font-weight: bold; color: var(--texto-secundario);">Plano Único</span>
-            <h2 style="font-size: 1.8rem; color: var(--entrada); margin-top: 4px;">R$ 5,99 <small style="font-size:0.9rem; color:var(--texto-secundario);">/mês</small></h2>
-        </div>
-        <button class="btn-modal btn-salvar" onclick="simularAssinatura()">Assinar Plano Premium</button>
-        <button class="btn-modal" style="background: var(--saida); color: white;" onclick="resetarAplicativoTotal()">Apagar Dados</button>
+    <div class="modal-container" style="text-align: center; gap: 14px;">
+        <div style="font-size: 2.5rem;">⏳</div>
+        <h3 style="color: var(--saida);">Período de Testes Expirado</h3>
+        <p style="font-size: 0.9rem; color: var(--texto-secundario);">Suas 48 horas grátis acabaram.</p>
+        <button class="btn-modal" style="background: var(--entrada); color:white;" onclick="simularAssinatura()">Assinar por R$ 5,99/mês</button>
     </div>
 </div>
 
 <!-- MODAL EDIÇÃO -->
 <div class="modal-overlay" id="modal-edicao" style="display: none;">
     <div class="modal-container">
-        <div class="modal-title">📝 Editar Registro</div>
+        <h3 style="text-align:center;">📝 Editar Registro</h3>
         <input type="hidden" id="edit-id">
-        <div>
-            <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Descrição</label>
-            <input type="text" id="edit-descricao" class="modal-input">
-        </div>
-        <div>
-            <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Valor (R$)</label>
-            <input type="number" id="edit-valor" step="0.01" class="modal-input">
-        </div>
-        <div>
-            <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Tipo</label>
-            <select id="edit-tipo" class="modal-input">
-                <option value="entrada">🟢 Entrada</option>
-                <option value="saida">🔴 Saída (À Vista / Pix)</option>
-                <option value="cartao">💳 Cartão de Crédito</option>
-            </select>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px; margin: 5px 0;">
+        <input type="text" id="edit-descricao" class="modal-input" placeholder="Descrição">
+        <input type="number" id="edit-valor" step="0.01" class="modal-input" placeholder="Valor">
+        <select id="edit-tipo" class="modal-input">
+            <option value="entrada">🟢 Entrada</option>
+            <option value="saida">🔴 À Vista / Pix</option>
+            <option value="cartao">💳 Cartão de Crédito</option>
+        </select>
+        <div style="display:flex; align-items:center; gap:8px;">
             <input type="checkbox" id="edit-fixa">
-            <label for="edit-fixa" style="font-size:0.9rem; font-weight:bold; color:var(--texto-secundario);">Esta é uma Conta Fixa</label>
+            <label for="edit-fixa" style="font-size:0.9rem;">Conta Fixa</label>
         </div>
-        <button class="btn-modal btn-salvar" onclick="salvarEdicaoTransacao()">Salvar Alterações</button>
-        <button class="btn-modal btn-deletar" onclick="excluirTransacao()">🗑️ Excluir Registro</button>
-        <button class="btn-modal btn-cancelar" onclick="fecharModalEdicao()">Cancelar</button>
+        <button class="btn-modal" style="background: var(--entrada); color:white;" onclick="salvarEdicaoTransacao()">Salvar</button>
+        <button class="btn-modal" style="background: var(--saida); color:white;" onclick="excluirTransacao()">🗑️ Excluir</button>
+        <button class="btn-modal" style="background: #64748b; color:white;" onclick="fecharModalEdicao()">Cancelar</button>
     </div>
 </div>
 
 <div class="container" id="conteudo-app">
     
     <div class="app-header">
-        <div class="app-title">Fluxo <span>Épico</span></div>
-        <div class="app-actions">
-            <button class="icon-btn" onclick="alternarVisibilidade()">👁️</button>
-        </div>
+        <div class="app-title">Fluxo <span>Caixa</span></div>
+        <button class="icon-btn" onclick="alternarVisibilidade()">👁️</button>
     </div>
 
-    <!-- TELA 1: INÍCIO (LAYOUT DO APP DE COMBUSTÍVEL) -->
+    <!-- TELA 1: INÍCIO (CHAT WHATSAPP) -->
     <div class="app-view ativa" id="view-inicio">
         
-        <!-- CARD DE SALDO ESTILO DASHBOARD -->
         <div class="cards-container">
             <div class="card saldo-total">
                 <h3>Saldo Geral Líquido</h3>
                 <p id="card-saldo" class="valor-dinamico" data-valor="0.00">R$ 0,00</p>
                 <div class="info-subtil-container">
                     <div class="linha-subtil-valores">
-                        <div><strong>Média/Dia:</strong> <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
-                        <div><strong>Guardar:</strong> <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span></div>
+                        <div>
+                            <strong>Metas de Reserva:</strong> 
+                            <select id="porcentagem-reserva" class="select-reserva" onchange="alterarPorcentagemReserva(this.value)">
+                                <option value="10">10%</option>
+                                <option value="20">20%</option>
+                                <option value="30">30%</option>
+                                <option value="50">50%</option>
+                            </select>
+                        </div>
+                        <div><strong>Sugerido Guardar:</strong> <span class="valor-dinamico" id="reserva-sugerida" data-valor="0.00">R$ 0,00</span></div>
                     </div>
-                    <div class="saldo-restante-texto">
-                        <strong>Livre se Guardar:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
+                    <div class="linha-subtil-valores" style="margin-top: 4px;">
+                        <button class="btn-guardar-reserva" onclick="transferirParaReservaManual()">🎯 Guardar na Reserva Manualmente</button>
                     </div>
                 </div>
             </div>
@@ -218,18 +182,25 @@
                 <p class="cor-saida">R$ <span class="valor-dinamico" id="card-saidas" data-valor="0.00">0,00</span></p>
             </div>
             <div class="card">
-                <h3>Cartão</h3>
+                <h3>Cartões</h3>
                 <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
+            </div>
+            <div class="card" style="grid-column: span 3; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;">
+                <h3 style="margin:0;">🏦 Total Cofre Reserva Físico:</h3>
+                <p class="cor-cartao" style="color: var(--reserva-cor);">R$ <span class="valor-dinamico" id="card-reserva-acumulado" data-valor="0.00">0,00</span></p>
             </div>
         </div>
 
-        <!-- SEÇÃO DE CAPTURA INTELIGENTE (MODELO COMBUSTÍVEL) -->
-        <div class="secao-captura">
-            <h4>Lançamento Inteligente</h4>
-            <div class="campo-grupo">
-                <input type="text" id="campo-texto" placeholder="Ex: uber 45 nubank, aluguel 1200 fixa, pix 200..." onkeypress="verificarTecla(event)">
+        <!-- CHAT EM ESTILO WHATSAPP -->
+        <div class="chat-janela">
+            <div class="chat-mensagens" id="chat-box">
+                <div class="msg bot">Olá! Digite a descrição e o valor do seu lançamento.<br><small>Ex: mercado 150</small></div>
             </div>
-            <button class="btn-acao-principal" onclick="processarComando()">Lançar Registro ➔</button>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="campo-texto" class="chat-input" placeholder="Mensagem..." onkeypress="verificarTecla(event)">
+            <button class="btn-enviar" onclick="enviarMensagemUsuario()">➔</button>
         </div>
         
     </div>
@@ -239,98 +210,46 @@
         <div class="filtros-container">
             <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
             <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
-                <option value="todos">Todos os Lançamentos</option>
+                <option value="todos">Todos</option>
                 <option value="entrada">🟢 Entradas</option>
-                <option value="saida">🔴 Saídas À Vista</option>
-                <option value="cartao">💳 Gastos Cartão</option>
-                <option value="fixa">📌 Apenas Contas Fixas</option>
+                <option value="saida">🔴 À Vista</option>
+                <option value="cartao">💳 Cartão</option>
+                <option value="fixa">📌 Fixas</option>
+                <option value="reserva">📌 Retiradas p/ Reserva</option>
             </select>
         </div>
         <div class="secao-conteudo" id="lista-transacoes-container"></div>
     </div>
 
-    <!-- TELA 3: GRÁFICOS -->
-    <div class="app-view" id="view-graficos">
-        <div class="secao-conteudo">
-            <h4>1. Distribuição de Gastos</h4>
-            <div class="colunas-container">
-                <div class="coluna-vertical-bloco">
-                    <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
-                    <div class="coluna-vertical-barra" id="v-bar-contas" style="background: var(--saida);"></div>
-                    <span class="coluna-vertical-rotulo">À Vista</span>
-                </div>
-                <div class="coluna-vertical-bloco">
-                    <span class="coluna-vertical-valor valor-dinamico" id="v-val-cartoes" data-valor="0.00">R$ 0,00</span>
-                    <div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div>
-                    <span class="coluna-vertical-rotulo">Cartões</span>
-                </div>
-                <div class="coluna-vertical-bloco">
-                    <span class="coluna-vertical-valor valor-dinamico" id="v-val-reserva" data-valor="0.00">R$ 0,00</span>
-                    <div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div>
-                    <span class="coluna-vertical-rotulo">Reserva</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="secao-conteudo">
-            <h4>2. Comprometimento da Receita</h4>
-            <div class="donut-chart" id="grafico-pizza-elemento">
-                <div class="donut-hole">
-                    <span id="pizza-perc">0%</span>
-                    <span style="font-size:0.7rem; text-transform:uppercase; color: var(--texto-secundario);">Gasto</span>
-                </div>
-            </div>
-            <div class="donut-legenda">
-                <span style="color:var(--entrada)">● Receitas</span>
-                <span style="color:var(--saida)">● Despesas</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- TELA 4: CONFIGURAÇÕES -->
+    <!-- TELA 3: CONFIGURAÇÕES -->
     <div class="app-view" id="view-config">
         <div class="secao-conteudo">
-            <h4>Status do Plano</h4>
-            <div id="status-plano-box" style="padding: 12px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; font-size: 0.9rem; text-align: center;"></div>
-            
-            <h4>Manutenção de Dados</h4>
-            <button class="config-btn-bloco" style="color:var(--saida); border-color:var(--saida); background: rgba(239,68,68,0.05);" onclick="resetarAplicativoTotal()">🗑️ Limpar Banco de Dados</button>
+            <h4 style="margin-bottom: 10px;">Manutenção</h4>
+            <button class="btn-modal" style="background: var(--saida); color:white;" onclick="resetarAplicativoTotal()">🗑️ Limpar Todos os Dados</button>
         </div>
     </div>
 
 </div>
 
-<!-- NAV BAR ESTILO PREMIUM -->
+<!-- NAV BAR -->
 <div class="menu-rodape">
-    <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>⚡</span><span>Painel</span></button>
+    <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>💬</span><span>Chat</span></button>
     <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📜</span><span>Histórico</span></button>
-    <button class="tab-item" id="tab-graficos" onclick="navegarPara('graficos')"><span>📊</span><span>Análise</span></button>
-    <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
+    <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Opções</span></button>
 </div>
 
 <script>
-    let transacoes = [], saldosOcultos = false, porcentagemReserva = 10;
+    let transacoes = [], saldosOcultos = false, porcentagemReserva = 10, reservaAcumulada = 0;
+    let fluxoConversa = null; // Guarda o estado atual da pergunta ativa
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-    
     const obterId = id => document.getElementById(id);
-    
-    const mostrarAviso = txt => { 
-        const a = obterId('alerta'); 
-        a.innerText = txt; 
-        a.classList.add('mostrar'); 
-        setTimeout(() => a.classList.remove('mostrar'), 2500); 
-    };
+    const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 2500); };
 
     function checarBloqueioPlano() {
         let primeiroAcesso = localStorage.getItem('app_primeiro_acesso');
-        if (!primeiroAcesso) {
-            localStorage.setItem('app_primeiro_acesso', Date.now());
-            return true;
-        }
+        if (!primeiroAcesso) { localStorage.setItem('app_primeiro_acesso', Date.now()); return true; }
         if (localStorage.getItem('app_plano_premium') === 'true') return true;
-
-        const tempoDecorrido = Date.now() - parseInt(primeiroAcesso);
-        if (tempoDecorrido > 48 * 60 * 60 * 1000) {
+        if (Date.now() - parseInt(primeiroAcesso) > 48 * 60 * 60 * 1000) {
             obterId('tela-bloqueio-plano').style.display = "flex";
             obterId('conteudo-app').style.filter = "blur(8px)";
             return false;
@@ -340,7 +259,6 @@
 
     function simularAssinatura() {
         localStorage.setItem('app_plano_premium', 'true');
-        alert("Plano Premium Ativado!");
         obterId('tela-bloqueio-plano').style.display = "none";
         obterId('conteudo-app').style.filter = "none";
         atualizarAplicativo();
@@ -350,7 +268,6 @@
         if (!checarBloqueioPlano()) return;
         document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
         document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo'));
-        
         obterId(`view-${idAba}`).classList.add('ativa');
         obterId(`tab-${idAba}`).classList.add('ativo');
         atualizarAplicativo();
@@ -358,47 +275,157 @@
 
     function inicializarFiltroMeses() {
         const hoje = new Date(), f = obterId('filtro-mes');
-        let html = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()}</option><option value="todos">Todos os Meses</option>`;
-        for (let i = 1; i <= 5; i++) {
+        let html = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()}</option><option value="todos">Todos</option>`;
+        for (let i = 1; i <= 4; i++) {
             let d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
             html += `<option value="${d.getMonth()}-${d.getFullYear()}">${nomesMeses[d.getMonth()]}/${d.getFullYear()}</option>`;
         }
         f.innerHTML = html;
     }
 
-    function processarComando() {
-        const input = obterId('campo-texto'), txt = input.value.trim().toLowerCase();
+    // ADICIONAR MENSAGENS NA INTERFACE ESTILO WHATSAPP
+    function adicionarMensagemChat(autor, texto, conteudoHTMLAdicional = "") {
+        const box = obterId('chat-box');
+        const d = document.createElement('div');
+        d.className = `msg ${autor}`;
+        d.innerHTML = `<div>${texto}</div>${conteudoHTMLAdicional}`;
+        box.appendChild(d);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function enviarMensagemUsuario() {
+        const input = obterId('campo-texto');
+        const txt = input.value.trim();
+        if(!txt) return;
+
+        adicionarMensagemChat('user', txt);
+        input.value = '';
+
+        if (fluxoConversa) {
+            // Se o robô já estava esperando uma resposta contínua de texto livre
+            processarRespostaLivre(txt.toLowerCase());
+        } else {
+            // Novo fluxo iniciando
+            analisarLancamentoInicial(txt);
+        }
+    }
+
+    function analisarLancamentoInicial(txt) {
         const num = txt.match(/\d+([.,]\d+)?/g);
-        if (!num) return mostrarAviso("Digite um valor numérico!");
-
+        if (!num) {
+            adicionarMensagemChat('bot', "Não identifiquei valores numéricos. Digite a descrição e o valor. Ex: <code>mercado 85</code>");
+            return;
+        }
         const valor = parseFloat(num[0].replace(',', '.'));
+        let desc = txt.replace(num[0], '').trim() || "Lançamento";
+
+        fluxoConversa = { desc: desc, valor: valor, tipo: null, fixa: false };
+
+        // PERGUNTA ATIVA SOBRE O TIPO DE CONTA OU CARTÃO
+        let botoesHTML = `
+            <div class="chat-opcoes">
+                <button class="btn-opcao" onclick="definirTipoConversa('saida')">🔴 À Vista / Pix</button>
+                <button class="btn-opcao" onclick="definirTipoConversa('cartao')">💳 Cartão de Crédito</button>
+                <button class="btn-opcao" onclick="definirTipoConversa('entrada')">🟢 Entrada / Recebimento</button>
+            </div>
+        `;
+        adicionarMensagemChat('bot', `Entendi! O valor de <b>R$ ${valor.toFixed(2)}</b> para "${desc}" deve ser lançado em qual categoria?`, botoesHTML);
+    }
+
+    function definirTipoConversa(tipo) {
+        fluxoConversa.tipo = tipo;
         
-        let tipo = 'saida';
-        let fixa = false;
-
-        // Análise inteligente de texto por palavras-chave
-        if (/\b(recebi|ganhei|salario|salário|entrada|pix\s*recebido)\b/.test(txt) || txt.includes('+')) {
-            tipo = 'entrada';
-        } else if (/\b(nubank|itau|itaú|inter|bradesco|santander|cartao|cartão|credito|crédito)\b/.test(txt)) {
-            tipo = 'cartao';
+        // Se for Entrada, pula a pergunta de conta fixa
+        if (tipo === 'entrada') {
+            finalizarLancamentoChat();
+        } else {
+            let botoesHTML = `
+                <div class="chat-opcoes">
+                    <button class="btn-opcao" onclick="definirFixaConversa(true)">📌 Sim, é fixa</button>
+                    <button class="btn-opcao" onclick="definirFixaConversa(false)">⚡ Não, é variável</button>
+                </div>
+            `;
+            adicionarMensagemChat('bot', `Esta despesa é uma <b>Conta Fixa</b> mensal (como Aluguel, Luz, Internet)?`, botoesHTML);
         }
+    }
 
-        if (/\b(fixa|fixo|aluguel|internet|net|luz|agua|água|mensalidade)\b/.test(txt)) {
-            fixa = true;
-        }
+    function definirFixaConversa(isFixa) {
+        fluxoConversa.fixa = isFixa;
+        finalizarLancamentoChat();
+    }
 
-        let desc = input.value.replace(num[0], '').replace(/\b(comprei|ganhei|paguei|recebi|gastei|no|na|de|fixa|fixo|nubank|itau|itaú|inter|bradesco|santander|cartao|cartão)\b/gi, '').trim() || "Lançamento";
-
+    function finalizarLancamentoChat() {
         let hoje = new Date();
         transacoes.unshift({
-            id: Date.now(), descricao: desc, valor: valor, tipo: tipo, fixa: fixa, mes: hoje.getMonth(), ano: hoje.getFullYear(), dia: hoje.getDate()
+            id: Date.now(),
+            descricao: fluxoConversa.desc,
+            valor: fluxoConversa.valor,
+            tipo: fluxoConversa.tipo,
+            fixa: fluxoConversa.fixa,
+            mes: hoje.getMonth(),
+            ano: hoje.getFullYear(),
+            dia: hoje.getDate()
         });
 
-        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); 
+        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
+        
+        let rotulos = { entrada: '🟢 Entrada', saida: '🔴 À Vista', cartao: '💳 Cartão' };
+        adicionarMensagemChat('bot', `✅ Confirmado e salvo no sistema! Lançado como <b>${rotulos[fluxoConversa.tipo]}</b>${fluxoConversa.fixa ? ' [Conta Fixa]' : ''}.`);
+        
+        fluxoConversa = null;
         atualizarAplicativo();
-        input.value = ''; 
-        mostrarAviso("Lançado!");
-        setTimeout(() => navegarPara('historico'), 400);
+    }
+
+    function alterarPorcentagemReserva(val) {
+        porcentagemReserva = parseInt(val);
+        localStorage.setItem('saldo_porcentagem_reserva', porcentagemReserva);
+        atualizarAplicativo();
+    }
+
+    // SISTEMA DE RETIRADA MANUAL PARA CONTA RESERVA
+    function transferirParaReservaManual() {
+        let ent = 0, sai = 0, car = 0;
+        transacoes.forEach(t => {
+            if(t.tipo === 'entrada') ent += t.valor;
+            else if(t.tipo === 'cartao') car += t.valor;
+            else if(t.tipo === 'saida' || t.tipo === 'reserva') sai += t.valor;
+        });
+        const saldoLivre = ent - (sai + car);
+        const valorSugerido = saldoLivre > 0 ? saldoLivre * (porcentagemReserva / 100) : 0;
+
+        if (valorSugerido <= 0) {
+            alert("Você não possui saldo líquido positivo disponível para transferir para a reserva!");
+            return;
+        }
+
+        const valorDefinido = prompt(`Quanto deseja retirar do seu saldo atual e colocar no Cofre Reserva Físico?`, valorSugerido.toFixed(2));
+        if (!valorDefinido || isNaN(parseFloat(valorDefinido)) || parseFloat(valorDefinido) <= 0) return;
+
+        const valorFinal = parseFloat(valorDefinido);
+        if(valorFinal > saldoLivre) {
+            alert("Valor superior ao seu saldo geral disponível!");
+            return;
+        }
+
+        let hoje = new Date();
+        // Cria um lançamento de Saída especial que alimenta o cofre da reserva
+        transacoes.unshift({
+            id: Date.now(),
+            descricao: "Retirada para o Cofre Reserva",
+            valor: valorFinal,
+            tipo: 'reserva',
+            fixa: false,
+            mes: hoje.getMonth(),
+            ano: hoje.getFullYear(),
+            dia: hoje.getDate()
+        });
+
+        reservaAcumulada += valorFinal;
+        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
+        localStorage.setItem('saldo_reserva_acumulada', reservaAcumulada.toFixed(2));
+        
+        adicionarMensagemChat('bot', `🎯 Você retirou <b>R$ ${valorFinal.toFixed(2)}</b> da conta corrente e enviou para o seu <b>Cofre Reserva Físico</b>.`);
+        atualizarAplicativo();
     }
 
     function atualizarAplicativo() {
@@ -409,22 +436,19 @@
             if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return;
             if (t.tipo === 'entrada') ent += t.valor;
             else if (t.tipo === 'cartao') car += t.valor;
-            else sai += t.valor;
+            else if (t.tipo === 'saida' || t.tipo === 'reserva') sai += t.valor;
         });
 
-        const saldo = ent - (sai + car);
+        // O saldo calcula as entradas menos saídas reais (incluindo as reservas já retiradas) e cartões
+        const saldoGeral = ent - (sai + car);
+        const sugeridoGuardar = saldoGeral > 0 ? saldoGeral * (porcentagemReserva / 100) : 0;
         
         obterId('card-entradas').setAttribute('data-valor', ent.toFixed(2));
-        obterId('card-saidas').setAttribute('data-valor', sai.toFixed(2));
+        obterId('card-saidas').setAttribute('data-valor', (transacoes.filter(t => t.tipo === 'saida').reduce((acc,cur) => acc + cur.valor, 0)).toFixed(2));
         obterId('card-cartao').setAttribute('data-valor', car.toFixed(2));
-        obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
-        
-        const totalGastos = sai + car;
-        obterId('previsao-valor').setAttribute('data-valor', (totalGastos / 30).toFixed(2));
-
-        const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
-        obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
-        obterId('saldo-restante-valor').setAttribute('data-valor', (saldo - valReserva).toFixed(2));
+        obterId('card-saldo').setAttribute('data-valor', saldoGeral.toFixed(2));
+        obterId('reserva-sugerida').setAttribute('data-valor', sugeridoGuardar.toFixed(2));
+        obterId('card-reserva-acumulado').setAttribute('data-valor', reservaAcumulada.toFixed(2));
 
         document.querySelectorAll('.valor-dinamico').forEach(el => {
             const attrVal = el.getAttribute('data-valor') || "0";
@@ -433,13 +457,6 @@
         });
 
         renderizarHistorico();
-        renderizarGraficos(ent, totalGastos, valReserva, sai, car);
-        
-        // Config Premium Status Box
-        const isPremium = localStorage.getItem('app_plano_premium') === 'true';
-        obterId('status-plano-box').style.background = isPremium ? "rgba(16,185,129,0.1)" : "#334155";
-        obterId('status-plano-box').style.color = isPremium ? "var(--entrada)" : "var(--texto-secundario)";
-        obterId('status-plano-box').innerText = isPremium ? "👑 Conta Premium Vitalícia" : "⏳ Modo de Avaliação Ativo";
     }
 
     function renderizarHistorico() {
@@ -453,48 +470,30 @@
             return true;
         });
 
-        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);padding:20px 0;">Nenhum registro encontrado.</p>`; return; }
+        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);padding:20px 0;">Nenhum registro.</p>`; return; }
 
         filtradas.forEach(t => {
-            let cor = t.tipo === 'entrada' ? 'var(--entrada)' : (t.tipo === 'cartao' ? 'var(--cartao)' : 'var(--saida)');
+            let cor = t.tipo === 'entrada' ? 'var(--entrada)' : (t.tipo === 'cartao' ? 'var(--cartao)' : (t.tipo === 'reserva' ? 'var(--reserva-cor)' : 'var(--saida)'));
             let sinal = t.tipo === 'entrada' ? '+' : '-';
-            let sufixoFixa = t.fixa ? ' 📌 [Fixa]' : '';
             
             let item = document.createElement('div'); item.className = `item-transacao`;
             item.onclick = () => abrirModalEdicao(t.id, t.descricao, t.valor, t.tipo, t.fixa);
             item.innerHTML = `
                 <div style="text-align: left;">
-                    <span class="descricao-texto" style="text-transform:capitalize;">${t.descricao}${sufixoFixa}</span>
-                    <br><small style="color:var(--texto-secundario)">📅 ${t.dia}/${nomesMeses[t.mes]} • ${t.tipo === 'cartao' ? 'Cartão' : 'À Vista'}</small>
+                    <span style="font-weight:600;color:#fff;">${t.descricao}${t.fixa ? ' 📌' : ''}</span>
+                    <br><small style="color:var(--texto-secundario)">📅 ${t.dia}/${nomesMeses[t.mes]} • ${t.tipo === 'cartao' ? 'Cartão' : (t.tipo === 'reserva' ? 'Cofre' : 'À Vista')}</small>
                 </div>
-                <span class="valor-historico" style="color:${cor}">${sinal} R$ ${t.valor.toFixed(2).replace('.',',')}</span>
+                <span style="font-weight:700;color:${cor}">${sinal} R$ ${t.valor.toFixed(2).replace('.',',')}</span>
             `;
             l.appendChild(item);
         });
-    }
-
-    function renderizarGraficos(receitas, despesasTotais, reserva, apenasContas, apenasCartao) {
-        const total = receitas + despesasTotais;
-        const percGasto = total > 0 ? Math.round((despesasTotais / total) * 100) : 0;
-        
-        obterId('pizza-perc').innerText = `${percGasto}%`;
-        obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
-
-        const max = Math.max(apenasContas, apenasCartao, reserva, 100);
-        obterId('v-val-contas').setAttribute('data-valor', apenasContas.toFixed(2));
-        obterId('v-val-cartoes').setAttribute('data-valor', apenasCartao.toFixed(2));
-        obterId('v-val-reserva').setAttribute('data-valor', reserva.toFixed(2));
-        
-        obterId('v-bar-contas').style.height = `${(apenasContas/max)*100}%`;
-        obterId('v-bar-cartoes').style.height = `${(apenasCartao/max)*100}%`;
-        obterId('v-bar-reserva').style.height = `${(reserva/max)*100}%`;
     }
 
     function abrirModalEdicao(id, descricao, valor, tipo, fixa) {
         obterId('edit-id').value = id;
         obterId('edit-descricao').value = descricao;
         obterId('edit-valor').value = valor;
-        obterId('edit-tipo').value = tipo || 'saida';
+        obterId('edit-tipo').value = tipo;
         obterId('edit-fixa').checked = !!fixa;
         obterId('modal-edicao').style.display = "flex";
     }
@@ -502,21 +501,35 @@
 
     function salvarEdicaoTransacao() {
         const id = parseInt(obterId('edit-id').value);
+        const tAntiga = transacoes.find(t => t.id === id);
+        
         const novaDesc = obterId('edit-descricao').value.trim();
         const novoVal = parseFloat(obterId('edit-valor').value);
         const novoTipo = obterId('edit-tipo').value;
         const novaFixa = obterId('edit-fixa').checked;
 
-        if(!novaDesc || isNaN(novoVal)) return;
+        if (tAntiga && tAntiga.tipo === 'reserva' && novoTipo !== 'reserva') {
+            reservaAcumulada -= tAntiga.valor;
+        }
 
         transacoes = transacoes.map(t => t.id === id ? { ...t, descricao: novaDesc, valor: novoVal, tipo: novoTipo, fixa: novaFixa } : t);
+        
+        // Recalcula valor total da reserva com base no banco atualizado
+        reservaAcumulada = transacoes.filter(t => t.tipo === 'reserva').reduce((acc, cur) => acc + cur.valor, 0);
+        localStorage.setItem('saldo_reserva_acumulada', reservaAcumulada.toFixed(2));
+
         localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
         fecharModalEdicao(); atualizarAplicativo(); mostrarAviso("Alterado!");
     }
 
     function excluirTransacao() {
         const id = parseInt(obterId('edit-id').value);
-        if(confirm("Excluir definitivamente?")) {
+        if(confirm("Excluir registro?")) {
+            const t = transacoes.find(x => x.id === id);
+            if(t && t.tipo === 'reserva') {
+                reservaAcumulada -= t.valor;
+                localStorage.setItem('saldo_reserva_acumulada', reservaAcumulada.toFixed(2));
+            }
             transacoes = transacoes.filter(t => t.id !== id);
             localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
             fecharModalEdicao(); atualizarAplicativo(); mostrarAviso("Removido!");
@@ -524,11 +537,14 @@
     }
 
     function alternarVisibilidade() { saldosOcultos = !saldosOcultos; atualizarAplicativo(); }
-    function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
+    function verificarTecla(e) { if (e.key === 'Enter') enviarMensagemUsuario(); }
     function resetarAplicativoTotal() { localStorage.clear(); location.reload(); }
 
     window.onload = () => {
         const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s);
+        const r = localStorage.getItem('saldo_reserva_acumulada'); if (r) reservaAcumulada = parseFloat(r);
+        const p = localStorage.getItem('saldo_porcentagem_reserva'); if (p) { porcentagemReserva = parseInt(p); obterId('porcentagem-reserva').value = p; }
+        
         inicializarFiltroMeses(); 
         checarBloqueioPlano();
         atualizarAplicativo();
