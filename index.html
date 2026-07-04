@@ -734,6 +734,41 @@
         inicializarFiltroMeses(); 
         atualizarAplicativo();
     };
+    // Permite trocar de tela deslizando para esquerda/direita
+let touchStartX = 0;
+let touchEndX = 0;
+
+const abas = ["inicio", "historico", "graficos", "config"];
+
+document.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.addEventListener("touchend", (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    trocarTelaSwipe();
+}, { passive: true });
+
+function trocarTelaSwipe() {
+    const diferenca = touchStartX - touchEndX;
+
+    // ignora movimentos pequenos
+    if (Math.abs(diferenca) < 60) return;
+
+    const atual = abas.findIndex(a =>
+        document.getElementById(`view-${a}`).classList.contains("ativa")
+    );
+
+    if (diferenca > 0 && atual < abas.length - 1) {
+        // Arrastou para a esquerda
+        navegarPara(abas[atual + 1]);
+    }
+
+    if (diferenca < 0 && atual > 0) {
+        // Arrastou para a direita
+        navegarPara(abas[atual - 1]);
+    }
+                    }
 </script>
 </body>
 </html>
