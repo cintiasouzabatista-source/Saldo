@@ -1,324 +1,667 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Finanças + Conta Reserva</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<style>
-:root {
-    --primary: #10b981; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --muted: #94a3b8; --border: #334155; --danger: #ef4444; --warn: #f59e0b;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; overflow-x: hidden; }
-.container { max-width: 600px; margin: 0 auto; padding: 16px; }
-.header-area { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
-h1 { font-size: 22px; }
-h3 { font-size: 16px; margin-bottom: 8px; }
-p { color: var(--muted); font-size: 14px; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-input, select, button { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 16px; }
-.btn { background: var(--primary); color: #fff; border: none; font-weight: 600; cursor: pointer; }
-.btn-danger { background: var(--danger); }
-.btn-outline { background: transparent; border: 1px solid var(--border); }
-.kpi p { font-size: 13px; margin-bottom: 4px; }
-.kpi h3 { font-size: 18px; font-weight: 700; }
-.kpi span.sub-data { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    <title>Meu Fluxo de Caixa Inteligente</title>
+    <style>
+        :root {
+            --bg-body: #f4f6f9;
+            --bg-container: white;
+            --texto-principal: #222;
+            --texto-secundario: #666;
+            --borda: #eee;
+            --shadow: rgba(0,0,0,0.05);
+            --entrada: #2ecc71;
+            --saida: #e74c3c;
+            --cartao: #f39c12;
+            --reserva-cor: #16a085;
+            --azul-saldo: #2c3e50;
+            --alerta-fundo: #fef9e7;
+            --alerta-borda: #f1c40f;
+            --alerta-danger-bg: #fce4e4;
+            --alerta-danger-borda: #e74c3c;
+            --bg-retratil: #f8f9fa;
+            --chat-verde: #056162;
+            --bg-rodape: white;
+        }
 
-/* Destaque do Saldo Principal */
-.saldo-destaque { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 20px 16px; margin-bottom: 12px; }
-.saldo-destaque p { color: rgba(255,255,255,0.8); }
-.saldo-destaque h1 { font-size: 32px; font-weight: 700; margin: 2px 0; }
+        [data-theme="dark"] {
+            --bg-body: #121212;
+            --bg-container: #1e1e1e;
+            --texto-principal: #f5f6fa;
+            --texto-secundario: #aaa;
+            --borda: #2d2d2d;
+            --shadow: rgba(0,0,0,0.3);
+            --azul-saldo: #3498db;
+            --alerta-fundo: #2c2512;
+            --alerta-borda: #d35400;
+            --alerta-danger-bg: #2c1616;
+            --alerta-danger-borda: #c0392b;
+            --bg-retratil: #282828;
+            --reserva-cor: #1abc9c;
+            --bg-rodape: #1e1e1e;
+        }
 
-/* Sistema de Swipe das Abas */
-.tabs-view-wrapper { width: 100%; overflow: hidden; touch-action: pan-y; }
-.tabs-container-fluid { display: flex; width: 500%; transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); align-items: flex-start; }
-.tab-content { width: 20%; flex-shrink: 0; padding: 0 4px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
+        body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: calc(100vh - 90px); position: relative; }
+        
+        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px; padding: 5px; flex-shrink: 0; }
+        .app-title { font-size: 1.5rem; font-weight: 700; color: var(--azul-saldo); letter-spacing: -0.5px; }
+        .app-actions { display: flex; gap: 14px; align-items: center; }
+        .icon-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 50%; }
+        .icon-btn:hover { background: var(--borda); }
 
-/* Menu Fixo Inferior */
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 0; z-index: 10; }
-.btn-nav { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; cursor: pointer; width: auto; }
-.btn-nav.active { color: var(--primary); }
-.btn-nav i { font-size: 20px; }
+        .app-view { display: none; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 20px; }
+        .app-view.ativa { display: flex; flex-direction: column; }
 
-.historico-item { padding: 12px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-.historico-acoes button { background: none; border: none; cursor: pointer; padding: 6px; width: auto; color: var(--danger); }
-.meta-barra { background: var(--border); border-radius: 8px; height: 10px; margin-top: 8px; overflow: hidden; }
-.meta-progresso { background: var(--warn); height: 100%; width: 0%; transition: width 0.3s; }
-</style>
+        /* CARDS AMPLIADOS */
+        .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
+        .card { background: var(--bg-container); padding: 14px 8px; border-radius: 10px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
+        .card h3 { font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card p { font-size: 1.1rem; font-weight: bold; }
+        
+        .card.saldo-total { 
+            grid-column: span 3; 
+            padding: 22px 14px; 
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .card.saldo-total h3 { font-size: 0.95rem; }
+        .card.saldo-total p { font-size: 2.1rem; font-weight: 800; }
+        
+        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin-top: 8px; border-top: 1px solid var(--borda); padding-top: 12px; }
+        .linha-subtil-valores { display: flex; justify-content: center; gap: 16px; width: 100%; flex-wrap: wrap; }
+        .previsao-texto, .reserva-texto { font-size: 0.9rem; color: var(--texto-secundario); }
+        .previsao-texto strong, .reserva-texto strong { font-weight: 700; color: var(--texto-principal); }
+        .saldo-restante-texto { font-size: 1rem; color: var(--reserva-cor); font-weight: bold; margin-top: 4px; }
+        .alerta-comprometido { background: var(--alerta-danger-bg); border: 1px solid var(--alerta-danger-borda); color: var(--saida); padding: 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; margin-top: 6px; width: 100%; text-align: center; display: none; }
+
+        .cor-entrada { color: var(--entrada); }
+        .cor-saida { color: var(--saida); }
+        .cor-cartao { color: var(--cartao); }
+
+        .filtros-container { display: flex; gap: 8px; margin-bottom: 12px; width: 100%; }
+        .filtro-select { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.9rem; color: var(--texto-principal); outline: none; font-weight: 600; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
+
+        .secao-conteudo { background: var(--bg-container); border-radius: 10px; box-shadow: 0 2px 4px var(--shadow); padding: 16px; border: 1px solid var(--borda); margin-bottom: 15px; }
+        
+        /* GRÁFICOS AMPLIADOS */
+        .grafico-wrapper { margin-bottom: 10px; }
+        .grafico-wrapper h4 { font-size: 0.9rem; color: var(--texto-principal); margin-bottom: 15px; text-transform: uppercase; border-left: 4px solid #2c3e50; padding-left: 8px; font-weight: 700; }
+        .donut-chart { width: 180px; height: 180px; border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .donut-hole { width: 120px; height: 120px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; color: var(--texto-secundario); text-align: center; }
+        .donut-hole span:first-child { font-size: 1.2rem; color: var(--texto-principal); font-weight: 800; }
+        .donut-legenda { display: flex; justify-content: center; gap: 20px; font-size: 0.9rem; font-weight: 600; margin-top: 10px; }
+        
+        .barra-horizontal-linha { margin-bottom: 12px; }
+        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+        .barra-horizontal-bg { background: var(--bg-body); height: 14px; border-radius: 8px; width: 100%; overflow: hidden; border: 1px solid var(--borda); }
+        .barra-horizontal-preenchimento { height: 100%; border-radius: 8px; width: 0%; }
+        
+        .colunas-container { display: flex; justify-content: center; gap: 35px; height: 140px; align-items: flex-end; padding-top: 30px; margin-bottom: 25px; border-bottom: 2px solid var(--borda); position: relative; }
+        .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 80px; position: relative; }
+        .coluna-vertical-barra { width: 38px; border-top-left-radius: 6px; border-top-right-radius: 6px; height: 2px; }
+        .coluna-vertical-valor { font-size: 0.8rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
+        .coluna-vertical-rotulo { font-size: 0.85rem; font-weight: 600; position: absolute; bottom: -25px; color: var(--texto-secundario); text-transform: uppercase; }
+
+        /* HISTÓRICO */
+        .item-transacao { display: flex; justify-content: space-between; align-items: center; padding: 12px 6px; border-bottom: 1px solid var(--borda); cursor: pointer; }
+        .item-transacao:hover { background: var(--bg-body); }
+        .descricao-texto { font-size: 0.95rem; font-weight: 500; color: var(--texto-principal); }
+        .valor-historico { font-weight: 700; font-size: 0.95rem; }
+
+        /* CHAT INÍCIO */
+        .chat-container-dinamico { margin-top: auto; padding: 10px 0; width: 100%; }
+        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 16px; border-radius: 25px; box-shadow: 0 3px 6px rgba(0,0,0,0.15); align-items: center; position: relative; }
+        .chat-input { flex-grow: 1; border: none; padding: 6px 5px; font-size: 1rem; outline: none; background: transparent; color: white; }
+        .chat-input::placeholder { color: rgba(255, 255, 255, 0.75); }
+        .btn-enviar { background: white; color: var(--chat-verde); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: bold; }
+        
+        .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; opacity: 0; pointer-events: none; white-space: nowrap; z-index: 10; }
+        .alerta-temporario.mostrar { opacity: 1; }
+
+        /* MENU RODAPÉ COM ROLAGEM LATERAL */
+        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--bg-rodape); border-top: 1px solid var(--borda); display: flex; justify-content: flex-start; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 90; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .menu-rodape::-webkit-scrollbar { display: none; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.75rem; font-weight: bold; gap: 4px; min-width: 90px; height: 100%; justify-content: center; flex-shrink: 0; }
+        .tab-item span:first-child { font-size: 1.4rem; }
+        .tab-item.ativo { color: var(--azul-saldo); }
+
+        /* MODAIS E TELAS DE BLOQUEIO */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--borda); }
+        .modal-title { font-size: 1.2rem; font-weight: bold; color: var(--texto-principal); text-align: center; }
+        .modal-input { width: 100%; padding: 10px; border: 1px solid var(--borda); border-radius: 6px; font-size: 1rem; background: var(--bg-container); color: var(--texto-principal); outline: none; text-align: center; }
+        .btn-modal { width: 100%; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; border: none; cursor: pointer; text-align: center; margin-top: 5px; }
+        .btn-salvar { background: var(--entrada); color: white; }
+        .btn-deletar { background: var(--saida); color: white; }
+        .btn-cancelar { background: #7f8c8d; color: white; }
+        .config-btn-bloco { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: bold; text-align: left; cursor: pointer; }
+    </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header-area">
-        <h1>Meu Painel Financeiro</h1>
-    </div>
-
-    <!-- Área Touch para deslizar com o dedo -->
-    <div class="tabs-view-wrapper" id="swipeArea">
-        <div class="tabs-container-fluid" id="tabsFluid">
-            
-            <!-- ABA 1: PAINEL -->
-            <div id="painel" class="tab-content">
-                <div class="card saldo-destaque">
-                    <p>Saldo da Conta Total (Disponível)</p>
-                    <h1 id="txtSaldoPrincipal">R$ 200,00</h1>
-                </div>
-                <div class="grid-2">
-                    <div class="card kpi">
-                        <p>Conta Reserva</p>
-                        <h3 id="txtSaldoReserva" style="color: var(--warn)">R$ 0,00</h3>
-                        <span id="txtMetaPercentual" class="sub-data">Meta: 50%</span>
-                    </div>
-                    <div class="card kpi">
-                        <p>Total Guardado</p>
-                        <h3 id="txtTotalGuardado">R$ 0,00</h3>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>Progresso da Meta Reserva</h3>
-                    <div class="meta-barra"><div class="meta-progresso" id="barraMeta"></div></div>
-                </div>
-            </div>
-
-            <!-- ABA 2: LANÇAR (SAÍDAS / RECEITAS) -->
-            <div id="lancar" class="tab-content">
-                <div class="card">
-                    <h3>Novo Lançamento</h3>
-                    <div style="display:grid; gap:12px; margin-top:10px;">
-                        <input id="fDescricao" type="text" placeholder="Ex: Salário, Aluguel, Reserva">
-                        <input id="fValor" type="number" step="0.01" placeholder="Valor R$">
-                        <select id="fTipo" onchange="verificarTipoReserva()">
-                            <option value="saida">Saída Comum</option>
-                            <option value="reserva">Lançar Reserva (Saída Automática)</option>
-                            <option value="entrada">Entrada / Receita</option>
-                        </select>
-                        <button class="btn" onclick="adicionarLancamento()">Salvar Lançamento</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>Últimos Movimentos</h3>
-                    <div id="listaMovimentos"></div>
-                </div>
-            </div>
-
-            <!-- ABA 3: CONTA RESERVA -->
-            <div id="contaReserva" class="tab-content">
-                <div class="card">
-                    <h3>Entendendo a Conta Reserva</h3>
-                    <p style="margin-top: 8px; line-height: 1.5;">
-                        Toda vez que você seleciona a opção <strong>"Lançar Reserva"</strong>, o sistema faz uma saída automática da sua Conta Total e joga direto para cá. Sem precisar de dois lançamentos!
-                    </p>
-                </div>
-                <div class="card">
-                    <h3>Histórico de Depósitos na Reserva</h3>
-                    <div id="listaReservas"></div>
-                </div>
-            </div>
-
-            <!-- ABA 4: GRÁFICOS / RESUMO -->
-            <div id="graficos" class="tab-content">
-                <div class="card">
-                    <h3>Divisão do seu Dinheiro</h3>
-                    <div style="margin: 20px 0; display:grid; gap:8px;">
-                        <p id="txtPercentualDisponivel">Disponível: 100%</p>
-                        <p id="txtPercentualReservado" style="color:var(--warn)">Reservado: 0%</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ABA 5: CONFIGURAÇÕES -->
-            <div id="config" class="tab-content">
-                <div class="card">
-                    <h3>Definir Meta de Reserva</h3>
-                    <div style="display:grid; gap:12px; margin-top:10px;">
-                        <label>Defina o percentual que deseja guardar das suas entradas (%):</label>
-                        <input id="cfgPercentual" type="number" value="50" onchange="atualizarMetaConfig()">
-                    </div>
-                </div>
-                <div class="card">
-                    <button class="btn btn-danger" onclick="reiniciarDados()">Resetar para R$ 200,00</button>
-                </div>
-            </div>
-
-        </div>
+<!-- TELA TOTAL DE AUTENTICAÇÃO/CADASTRO -->
+<div class="modal-overlay" id="tela-auth" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-title" id="auth-titulo">🔒 Acessar Aplicativo</div>
+        <p id="auth-sub" style="font-size:0.85rem; color:var(--texto-secundario); text-align:center;">Insira suas credenciais de segurança para continuar.</p>
+        <input type="text" id="auth-cpf" class="modal-input" placeholder="Digite seu CPF (Apenas números)" maxlength="11">
+        <input type="password" id="auth-pin" class="modal-input" placeholder="PIN de 4 dígitos" maxlength="4" inputmode="numeric">
+        <button class="btn-modal btn-salvar" id="btn-auth-confirmar" onclick="processarAutenticacao()">Confirmar</button>
     </div>
 </div>
 
-<!-- Navegação Inferior -->
-<nav class="bottom-nav">
-    <button class="btn-nav active" onclick="navegarPara(0)"><i class="fas fa-wallet"></i><span>Painel</span></button>
-    <button class="btn-nav" onclick="navegarPara(1)"><i class="fas fa-exchange-alt"></i><span>Lançar</span></button>
-    <button class="btn-nav" onclick="navegarPara(2)"><i class="fas fa-piggy-bank"></i><span>Reserva</span></button>
-    <button class="btn-nav" onclick="navegarPara(3)"><i class="fas fa-chart-pie"></i><span>Resumo</span></button>
-    <button class="btn-nav" onclick="navegarPara(4)"><i class="fas fa-sliders-h"></i><span>Config</span></button>
-</nav>
+<!-- TELA TOTAL DE BLOQUEIO POR FALTA DE PLANO -->
+<div class="modal-overlay" id="tela-bloqueio-plano" style="display: none; z-index: 200;">
+    <div class="modal-container" style="text-align: center; gap: 16px;">
+        <div style="font-size: 3rem;">⏳</div>
+        <div class="modal-title" style="color: var(--saida);">Período de Testes Expirado</div>
+        <p style="font-size: 0.95rem; color: var(--texto-secundario);">Suas 48 horas de teste gratuito acabaram. Adira ao plano premium para liberar o acesso vitalício aos seus dados.</p>
+        <div style="background: var(--bg-body); padding: 15px; border-radius: 8px; border: 1px dashed var(--borda);">
+            <span style="font-size: 0.85rem; text-transform: uppercase; font-weight: bold; color: var(--texto-secundario);">Valor do Plano</span>
+            <h2 style="font-size: 1.8rem; color: var(--entrada); margin-top: 4px;">R$ 5,99 <small style="font-size:0.9rem; color:var(--texto-secundario);">/mês</small></h2>
+        </div>
+        <button class="btn-modal btn-salvar" style="background: var(--entrada);" onclick="simularAssinatura()">Assinar Plano Premium</button>
+        <button class="btn-modal" style="background: var(--saida); color: white;" onclick="resetarAplicativoTotal()">Resetar e Apagar Dados</button>
+    </div>
+</div>
+
+<!-- MODAL PARA EDITAR OU EXCLUIR TRANSAÇÃO -->
+<div class="modal-overlay" id="modal-edicao" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-title">📝 Editar Registro</div>
+        <input type="hidden" id="edit-id">
+        <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Descrição</label>
+        <input type="text" id="edit-descricao" class="modal-input" style="text-align:left;">
+        <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Valor (R$)</label>
+        <input type="number" id="edit-valor" step="0.01" class="modal-input" style="text-align:left;">
+        <button class="btn-modal btn-salvar" onclick="salvarEdicaoTransacao()">Salvar Alterações</button>
+        <button class="btn-modal btn-deletar" onclick="excluirTransacao()">🗑️ Excluir Registro</button>
+        <button class="btn-modal btn-cancelar" onclick="fecharModalEdicao()">Cancelar</button>
+    </div>
+</div>
+
+<div class="container" id="conteudo-app">
+    
+    <!-- CABEÇALHO -->
+    <div class="app-header">
+        <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
+        <div class="app-actions">
+            <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()">👁️</button>
+            <button class="icon-btn" id="btn-tema" onclick="alternarTema()">🌙</button>
+        </div>
+    </div>
+
+    <!-- TELA 1: INÍCIO -->
+    <div class="app-view ativa" id="view-inicio">
+        <div class="cards-container">
+            <div class="card">
+                <h3>Entradas</h3>
+                <p class="cor-entrada">R$ <span class="valor-dinamico" id="card-entradas" data-valor="0.00">0,00</span></p>
+            </div>
+            <div class="card">
+                <h3>Saídas</h3>
+                <p class="cor-saida">R$ <span class="valor-dinamico" id="card-saidas" data-valor="0.00">0,00</span></p>
+            </div>
+            <div class="card">
+                <h3>Cartão</h3>
+                <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
+            </div>
+            <div class="card saldo-total">
+                <h3>Saldo Atual</h3>
+                <p id="card-saldo" class="valor-dinamico" data-valor="0.00">R$ 0,00</p>
+                
+                <div class="info-subtil-container">
+                    <div class="linha-subtil-valores">
+                        <div class="previsao-texto" id="card-previsao"><strong>Média/Dia:</strong> <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
+                        <div class="reserva-texto" id="card-reserva"><strong>Guardar:</strong> <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span></div>
+                    </div>
+                    <div class="saldo-restante-texto" id="card-saldo-restante">
+                        <strong>Saldo se Guardar:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
+                    </div>
+                </div>
+                <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Orçamento Comprometido (>80%).</div>
+            </div>
+        </div>
+
+        <div class="chat-container-dinamico">
+            <div class="chat-input-area">
+                <div id="alerta" class="alerta-temporario">Lançado!</div>
+                <input type="text" id="campo-texto" class="chat-input" placeholder="Conversar ou lançar (Ex: uber 45 nubank)..." onkeypress="verificarTecla(event)">
+                <button class="btn-enviar" onclick="processarComando()">➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA 2: HISTÓRICO -->
+    <div class="app-view" id="view-historico">
+        <div class="filtros-container">
+            <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
+            <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
+                <option value="todos">Todos os Tipos</option>
+                <option value="entrada">🟢 Entradas</option>
+                <option value="saida">🔴 Saídas</option>
+                <option value="cartao">💳 Cartão</option>
+            </select>
+        </div>
+        <div class="secao-conteudo" style="flex-grow: 1; overflow-y: auto;" id="lista-transacoes-container"></div>
+    </div>
+
+    <!-- TELA 3: GRÁFICOS (ORDEM ATUALIZADA) -->
+    <div class="app-view" id="view-graficos">
+        <!-- 1. CONTAS X CARTÕES X RESERVAS (No Topo) -->
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>1. CONTAS X CARTÕES X RESERVAS</h4>
+                <div class="colunas-container">
+                    <div class="coluna-vertical-bloco">
+                        <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
+                        <div class="coluna-vertical-barra" id="v-bar-contas" style="background: #7f8c8d;"></div>
+                        <span class="coluna-vertical-rotulo">Contas</span>
+                    </div>
+                    <div class="coluna-vertical-bloco">
+                        <span class="coluna-vertical-valor valor-dinamico" id="v-val-cartoes" data-valor="0.00">R$ 0,00</span>
+                        <div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div>
+                        <span class="coluna-vertical-rotulo">Cartões</span>
+                    </div>
+                    <div class="coluna-vertical-bloco">
+                        <span class="coluna-vertical-valor valor-dinamico" id="v-val-reserva" data-valor="0.00">R$ 0,00</span>
+                        <div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div>
+                        <span class="coluna-vertical-rotulo">Reserva</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. DESPESAS X RECEITAS (No Meio) -->
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>2. DESPESAS X RECEITAS</h4>
+                <div class="donut-chart" id="grafico-pizza-elemento">
+                    <div class="donut-hole">
+                        <span id="pizza-perc">0%</span>
+                        <span id="pizza-rotulo" style="font-size:0.75rem; text-transform:uppercase;">Gasto</span>
+                    </div>
+                </div>
+                <div class="donut-legenda">
+                    <span style="color:var(--entrada)">● Receitas</span>
+                    <span style="color:var(--saida)">● Despesas</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. TOP DESPESAS MENSAL (Embaixo) -->
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>3. TOP DESPESAS MENSAL</h4>
+                <div id="grafico-barras-horizontais"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA 4: CONFIGURAÇÕES -->
+    <div class="app-view" id="view-config">
+        <div class="secao-conteudo">
+            <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--texto-secundario);">PLANO PREMIUM</h4>
+            <div id="status-plano-box" style="padding: 10px; border-radius: 6px; font-weight: bold; margin-bottom: 12px; font-size: 0.9rem;"></div>
+            
+            <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--texto-secundario);">SEGURANÇA</h4>
+            <button class="config-btn-bloco" onclick="alterarCredenciaisAcesso()">🔐 Alterar CPF ou PIN de Acesso</button>
+            <button class="config-btn-bloco" onclick="bloquearAppManualmente()">🔒 Bloquear Tela Agora</button>
+
+            <h4 style="font-size:0.85rem; margin-top:15px; margin-bottom:12px; color:var(--texto-secundario);">DADOS</h4>
+            <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar Banco (JSON)</button>
+            <button class="config-btn-bloco" style="color:var(--saida); border-color:var(--alerta-danger-borda);" onclick="resetarAplicativoTotal()">🗑️ Limpar Todos os Dados</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- MENU INFERIOR COM ROLAGEM LATERAL -->
+<div class="menu-rodape">
+    <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
+    <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
+    <button class="tab-item" id="tab-graficos" onclick="navegarPara('graficos')"><span>📊</span><span>Gráficos</span></button>
+    <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
+</div>
 
 <script>
-// Dados Iniciais e LocalStorage
-let saldoPrincipal = parseFloat(localStorage.getItem('saldoPrincipal')) ?? 200.00;
-let saldoReserva = parseFloat(localStorage.getItem('saldoReserva')) ?? 0.00;
-let percentualMeta = parseInt(localStorage.getItem('percentualMeta')) || 50;
-let lancamentos = JSON.parse(localStorage.getItem('lancamentos') || '[]');
+    let transacoes = [], saldosOcultos = false, porcentagemReserva = 10;
+    const CPF_ADMINISTRADORA = "00000000000"; // Defina o seu CPF aqui para nunca ser bloqueada
+    const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
-if (localStorage.getItem('saldoPrincipal') === null) {
-    saldoPrincipal = 200.00;
-    salvarDados();
-}
+    const obterId = id => document.getElementById(id);
+    const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 3000); };
 
-let abaAtual = 0;
-const totalAbas = 5;
-let toqueX = 0;
-let toqueY = 0;
+    // --- CONTROLE DE LOGIN E SEGURANÇA ---
+    function checarSeguranca() {
+        const cpfSalvo = localStorage.getItem('app_cpf');
+        const pinSalvo = localStorage.getItem('app_pin');
 
-// Sistema de monitoramento do dedo (Swipe)
-const areaSwipe = document.getElementById('swipeArea');
-areaSwipe.addEventListener('touchstart', e => {
-    toqueX = e.touches[0].clientX;
-    toqueY = e.touches[0].clientY;
-}, {passive: true});
-
-areaSwipe.addEventListener('touchend', e => {
-    if (!toqueX || !toqueY) return;
-    let difX = toqueX - e.changedTouches[0].clientX;
-    let difY = toqueY - e.changedTouches[0].clientY;
-    
-    // Verifica se o movimento foi mais horizontal que vertical e se passou de 70px
-    if (Math.abs(difX) > Math.abs(difY) && Math.abs(difX) > 70) {
-        if (difX > 0) navegarPara(abaAtual + 1); // Deslizar para a esquerda avança
-        else navegarPara(abaAtual - 1);         // Deslizar para a direita volta
-    }
-    toqueX = 0; toqueY = 0;
-}, {passive: true});
-
-function navegarPara(indice) {
-    if (indice < 0 || indice >= totalAbas) return;
-    abaAtual = indice;
-    document.getElementById('tabsFluid').style.transform = `translateX(-${indice * 20}%)`;
-    
-    document.querySelectorAll('.btn-nav').forEach((btn, idx) => {
-        btn.classList.toggle('active', idx === indice);
-    });
-    
-    renderizarPainel();
-}
-
-function verificarTipoReserva() {
-    const tipo = document.getElementById('fTipo').value;
-    if(tipo === 'reserva') {
-        document.getElementById('fDescricao').value = "Reserva Automática";
-    }
-}
-
-function adicionarLancamento() {
-    const desc = document.getElementById('fDescricao').value || "Lançamento";
-    const valor = parseFloat(document.getElementById('fValor').value);
-    const tipo = document.getElementById('fTipo').value;
-
-    if (!valor || valor <= 0) { alert("Insira um valor válido."); return; }
-
-    if (tipo === 'entrada') {
-        saldoPrincipal += valor;
-    } else if (tipo === 'saida') {
-        saldoPrincipal -= valor;
-    } else if (tipo === 'reserva') {
-        // A mágica acontece aqui: Uma única saída que alimenta a conta reserva
-        saldoPrincipal -= valor;
-        saldoReserva += valor;
+        if (!cpfSalvo || !pinSalvo) {
+            obterId('auth-titulo').innerText = "✨ Criar Acesso";
+            obterId('auth-sub').innerText = "Cadastre seu CPF e um PIN de 4 números para proteger seus dados.";
+            obterId('tela-auth').style.display = "flex";
+            obterId('conteudo-app').style.filter = "blur(5px)";
+        } else {
+            obterId('auth-titulo').innerText = "🔒 Tela de Login";
+            obterId('auth-sub').innerText = "Insira suas credenciais cadastradas.";
+            obterId('tela-auth').style.display = "flex";
+            obterId('conteudo-app').style.filter = "blur(5px)";
+        }
     }
 
-    lancamentos.unshift({ id: Date.now(), desc, valor, tipo, data: new Date().toLocaleDateString('pt-BR') });
-    
-    salvarDados();
-    renderizarPainel();
-    
-    // Limpa campos
-    document.getElementById('fDescricao').value = '';
-    document.getElementById('fValor').value = '';
-}
+    function processarAutenticacao() {
+        const cpfInput = obterId('auth-cpf').value.replace(/\D/g, '');
+        const pinInput = obterId('auth-pin').value.replace(/\D/g, '');
+        const cpfSalvo = localStorage.getItem('app_cpf');
+        const pinSalvo = localStorage.getItem('app_pin');
 
-function deletarLancamento(id) {
-    const item = lancamentos.find(l => l.id === id);
-    if (!item) return;
+        if (cpfInput.length !== 11 || pinInput.length !== 4) {
+            alert("O CPF deve conter 11 dígitos e o PIN exatos 4 números.");
+            return;
+        }
 
-    if (item.type === 'entrada') saldoPrincipal -= item.valor;
-    if (item.type === 'saida') saldoPrincipal += item.valor;
-    if (item.type === 'reserva') {
-        saldoPrincipal += item.valor;
-        saldoReserva -= item.valor;
+        if (!cpfSalvo || !pinSalvo) {
+            localStorage.setItem('app_cpf', cpfInput);
+            localStorage.setItem('app_pin', pinInput);
+            alert("Acesso configurado com sucesso!");
+        } else {
+            if (cpfInput !== cpfSalvo || pinInput !== pinSalvo) {
+                alert("CPF ou PIN incorretos!");
+                return;
+            }
+        }
+
+        obterId('tela-auth').style.display = "none";
+        obterId('conteudo-app').style.filter = "none";
+        obterId('auth-cpf').value = '';
+        obterId('auth-pin').value = '';
+
+        checarBloqueioPlano();
     }
 
-    lancamentos = lancamentos.filter(l => l.id !== id);
-    salvarDados();
-    renderizarPainel();
-}
+    function bloquearAppManualmente() {
+        checarSeguranca();
+    }
 
-function atualizarMetaConfig() {
-    percentualMeta = parseInt(document.getElementById('cfgPercentual').value) || 50;
-    localStorage.setItem('percentualMeta', percentualMeta);
-    renderizarPainel();
-}
+    function alterarCredenciaisAcesso() {
+        if(confirm("Deseja reconfigurar seu CPF e PIN de segurança?")) {
+            localStorage.removeItem('app_cpf');
+            localStorage.removeItem('app_pin');
+            checarSeguranca();
+        }
+    }
 
-function salvarDados() {
-    localStorage.setItem('saldoPrincipal', saldoPrincipal);
-    localStorage.setItem('saldoReserva', saldoReserva);
-    localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
-}
+    // --- SISTEMA DE ASSINATURA PREMIUM (48 HORAS TESTE) ---
+    function checarBloqueioPlano() {
+        const cpfLogado = localStorage.getItem('app_cpf');
+        
+        // REGRA DA ADMINISTRADORA: Se for o seu CPF, ignora o bloqueio completamente
+        if (cpfLogado === CPF_ADMINISTRADORA) {
+            obterId('tela-bloqueio-plano').style.display = "none";
+            return true;
+        }
 
-function reiniciarDados() {
-    saldoPrincipal = 200.00;
-    saldoReserva = 0.00;
-    lancamentos = [];
-    salvarDados();
-    renderizarPainel();
-}
+        let primeiroAcesso = localStorage.getItem('app_primeiro_acesso');
+        const planoAtivo = localStorage.getItem('app_plano_premium') === 'true';
 
-function renderizarPainel() {
-    // Atualiza valores nas telas
-    document.getElementById('txtSaldoPrincipal').innerText = `R$ ${saldoPrincipal.toFixed(2).replace('.', ',')}`;
-    document.getElementById('txtSaldoReserva').innerText = `R$ ${saldoReserva.toFixed(2).replace('.', ',')}`;
-    document.getElementById('txtTotalGuardado').innerText = `R$ ${saldoReserva.toFixed(2).replace('.', ',')}`;
-    document.getElementById('txtMetaPercentual').innerText = `Meta: ${percentualMeta}%`;
-    document.getElementById('cfgPercentual').value = percentualMeta;
+        if (!primeiroAcesso) {
+            primeiroAcesso = Date.now();
+            localStorage.setItem('app_primeiro_acesso', primeiroAcesso);
+        }
 
-    // Calcula barras e metas de progresso
-    let totalSomas = saldoPrincipal + saldoReserva;
-    let pctReserva = totalSomas > 0 ? (saldoReserva / totalSomas) * 100 : 0;
-    let pctDisponivel = totalSomas > 0 ? (saldoPrincipal / totalSomas) * 100 : 100;
+        if (planoAtivo) {
+            obterId('tela-bloqueio-plano').style.display = "none";
+            return true;
+        }
 
-    document.getElementById('barraMeta').style.width = `${Math.min(pctReserva, 100)}%`;
-    document.getElementById('txtPercentualDisponivel').innerText = `Disponível: ${pctDisponivel.toFixed(1)}%`;
-    document.getElementById('txtPercentualReservado').innerText = `Reservado: ${pctReserva.toFixed(1)}%`;
+        const tempoDecorrido = Date.now() - parseInt(primeiroAcesso);
+        const tempoLimite = 48 * 60 * 60 * 1000; 
 
-    // Lista aba Movimentos
-    document.getElementById('listaMovimentos').innerHTML = lancamentos.map(l => `
-        <div class="historico-item">
-            <div>
-                <strong>${l.desc}</strong><br>
-                <small style="color:var(--muted)">${l.data} - ${l.tipo.toUpperCase()}</small>
-            </div>
-            <div class="historico-acoes">
-                <span style="font-weight:bold; margin-right:10px; color:${l.tipo === 'entrada' ? 'var(--primary)' : 'var(--danger)'}">
-                    ${l.tipo === 'entrada' ? '+' : '-'} R$ ${l.valor.toFixed(2)}
-                </span>
-                <button onclick="deletarLancamento(${l.id})"><i class="fas fa-trash"></i></button>
-            </div>
-        </div>
-    `).join('');
+        if (tempoDecorrido > tempoLimite) {
+            obterId('tela-bloqueio-plano').style.display = "flex";
+            obterId('conteudo-app').style.filter = "blur(8px)";
+            return false;
+        }
+        return true;
+    }
 
-    // Lista aba Reservas
-    const apenasReservas = lancamentos.filter(l => l.type === 'reserva');
-    document.getElementById('listaReservas').innerHTML = apenasReservas.length ? apenasReservas.map(l => `
-        <div class="historico-item">
-            <div><strong>${l.desc}</strong><br><small>${l.data}</small></div>
-            <div><span style="color:var(--warn); font-weight:bold;">+ R$ ${l.valor.toFixed(2)}</span></div>
-        </div>
-    `).join('') : '<p style="text-align:center; padding:15px;">Nenhuma reserva guardada ainda.</p>';
-}
+    function simularAssinatura() {
+        localStorage.setItem('app_plano_premium', 'true');
+        alert("Obrigado por assinar! Seu acesso total e vitalício foi liberado.");
+        obterId('tela-bloqueio-plano').style.display = "none";
+        obterId('conteudo-app').style.filter = "none";
+        atualizarAplicativo();
+    }
 
-// Inicializa o Painel ao carregar
-renderizarPainel();
+    function gerenciarVisualPlano() {
+        const premium = localStorage.getItem('app_plano_premium') === 'true';
+        const cpfLogado = localStorage.getItem('app_cpf');
+        const box = obterId('status-plano-box');
+        
+        if (cpfLogado === CPF_ADMINISTRADORA) {
+            box.style.background = "#2c3e50";
+            box.style.color = "#white";
+            box.innerText = "👑 Modo Administradora (Acesso Ilimitado e Isento)";
+            return;
+        }
+
+        if(premium) {
+            box.style.background = "var(--alerta-fundo)";
+            box.style.color = "var(--cartao)";
+            box.innerText = "⭐ Plano Premium Ativo (Acesso Liberado)";
+        } else {
+            const inicial = parseInt(localStorage.getItem('app_primeiro_acesso') || Date.now());
+            const restamMs = (inicial + (48*60*60*1000)) - Date.now();
+            const restamHoras = Math.max(Math.round(restamMs / (1000*60*60)), 0);
+            box.style.background = "#eee";
+            box.style.color = "#333";
+            box.innerText = `⏳ Modo de Teste: Restam ${restamHoras} horas de acesso livre.`;
+        }
+    }
+
+    // --- EDICAO E EXCLUSÃO DO HISTÓRICO ---
+    function abrirModalEdicao(id, descricao, valor) {
+        obterId('edit-id').value = id;
+        obterId('edit-descricao').value = descricao;
+        obterId('edit-valor').value = valor;
+        obterId('modal-edicao').style.display = "flex";
+    }
+
+    function fecharModalEdicao() {
+        obterId('modal-edicao').style.display = "none";
+    }
+
+    function salvarEdicaoTransacao() {
+        const id = parseInt(obterId('edit-id').value);
+        const novaDesc = obterId('edit-descricao').value.trim();
+        const novoVal = parseFloat(obterId('edit-valor').value);
+
+        if(!novaDesc || isNaN(novoVal) || novoVal <= 0) {
+            alert("Preencha os campos corretamente com valores válidos!");
+            return;
+        }
+
+        transacoes = transacoes.map(t => t.id === id ? { ...t, descricao: novaDesc, valor: novoVal } : t);
+        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
+        fecharModalEdicao();
+        atualizarAplicativo();
+        mostrarAviso("Alterado!");
+    }
+
+    function excluirTransacao() {
+        const id = parseInt(obterId('edit-id').value);
+        if(confirm("Tem certeza que deseja apagar permanentemente este registro?")) {
+            transacoes = transacoes.filter(t => t.id !== id);
+            localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
+            fecharModalEdicao();
+            atualizarAplicativo();
+            mostrarAviso("Removido!");
+        }
+    }
+
+    // --- OPERAÇÕES DO FLUXO DE CAIXA ---
+    function navegarPara(idAba) {
+        if (!checarBloqueioPlano()) return;
+        document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo'));
+        
+        obterId(`view-${idAba}`).classList.add('ativa');
+        obterId(`tab-${idAba}`).classList.add('ativo');
+
+        const titulos = { inicio: "Meu Saldo", historico: "Histórico", graficos: "Análise Mensal", config: "Configurações" };
+        obterId('titulo-dinamico').innerText = titulos[idAba];
+
+        atualizarAplicativo();
+    }
+
+    function inicializarFiltroMeses() {
+        const hoje = new Date(), f = obterId('filtro-mes');
+        let html = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual (${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()})</option><option value="todos">Todos</option>`;
+        for (let i = 1; i <= 4; i++) {
+            let d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+            html += `<option value="${d.getMonth()}-${d.getFullYear()}">${nomesMeses[d.getMonth()]}/${d.getFullYear()}</option>`;
+        }
+        f.innerHTML = html;
+    }
+
+    function alternarTema() {
+        const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', escuro ? 'light' : 'dark');
+        obterId('btn-tema').innerText = escuro ? "🌙" : "☀️";
+        localStorage.setItem('saldo_tema', escuro ? 'light' : 'dark');
+    }
+
+    function processarComando() {
+        const input = obterId('campo-texto'), txt = input.value.trim().toLowerCase();
+        const num = txt.match(/\d+([.,]\d+)?/g);
+        if (!num) return mostrarAviso("Digite um valor numérico!");
+
+        const valor = parseFloat(num[0].replace(',', '.'));
+        let tipo = /\b(recebi|ganhei|salario|salário|entrada)\b/.test(txt) || txt.includes('+') ? 'entrada' : 'saida';
+        let desc = input.value.replace(num[0], '').replace(/\b(comprei|ganhei|paguei|recebi|gastei|no|na|de)\b/gi, '').trim() || "Lançamento";
+
+        let hoje = new Date();
+        transacoes.unshift({
+            id: Date.now(), descricao: desc, valor: valor, tipo: tipo, mes: hoje.getMonth(), ano: hoje.getFullYear(), dia: hoje.getDate()
+        });
+
+        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); 
+        atualizarAplicativo();
+        input.value = ''; 
+        mostrarAviso("Adicionado!");
+        setTimeout(() => navegarPara('historico'), 400);
+    }
+
+    function atualizarAplicativo() {
+        if (!checarBloqueioPlano()) return;
+        let ent = 0, sai = 0, fMes = obterId('filtro-mes').value;
+        
+        transacoes.forEach(t => {
+            if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return;
+            t.tipo === 'entrada' ? ent += t.valor : sai += t.valor;
+        });
+
+        const saldo = ent - sai;
+        obterId('card-entradas').setAttribute('data-valor', ent.toFixed(2));
+        obterId('card-saidas').setAttribute('data-valor', sai.toFixed(2));
+        obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
+        obterId('previsao-valor').setAttribute('data-valor', (sai / 30).toFixed(2));
+
+        const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
+        obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
+        obterId('saldo-restante-valor').setAttribute('data-valor', (saldo - valReserva).toFixed(2));
+
+        document.querySelectorAll('.valor-dinamico').forEach(el => {
+            const attrVal = el.getAttribute('data-valor') || "0";
+            const v = parseFloat(parseFloat(attrVal).toFixed(2)).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            el.innerText = saldosOcultos ? "R$ ••••" : `R$ ${v}`;
+        });
+
+        renderizarHistorico();
+        renderizarGraficos(ent, sai, valReserva);
+        gerenciarVisualPlano();
+    }
+
+    function renderizarHistorico() {
+        const l = obterId('lista-transacoes-container'), fMes = obterId('filtro-mes').value, fTipo = obterId('filtro-tipo').value;
+        l.innerHTML = '';
+
+        let filtradas = transacoes.filter(t => {
+            if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return false;
+            if (fTipo !== 'todos' && t.tipo !== fTipo) return false;
+            return true;
+        });
+
+        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);padding:20px 0;">Vazio.</p>`; return; }
+
+        filtradas.forEach(t => {
+            let cor = t.tipo === 'entrada' ? 'var(--entrada)' : 'var(--saida)';
+            let item = document.createElement('div'); item.className = `item-transacao`;
+            
+            // Evento de clique para disparar o Modal de Edição
+            item.onclick = () => abrirModalEdicao(t.id, t.descricao, t.valor);
+            
+            item.innerHTML = `
+                <div style="flex-grow:1; display:flex; flex-direction:column; text-align: left;">
+                    <span class="descricao-texto" style="text-transform:capitalize;">${t.descricao}</span>
+                    <small style="color:var(--texto-secundario)">📅 ${t.dia}/${nomesMeses[t.mes]}</small>
+                </div>
+                <span class="valor-historico" style="color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} R$ ${t.valor.toFixed(2).replace('.',',')}</span>
+            `;
+            l.appendChild(item);
+        });
+    }
+
+    function renderizarGraficos(receitas, despesas, reserva) {
+        const total = receitas + despesas;
+        const percGasto = total > 0 ? Math.round((despesas / total) * 100) : 0;
+        
+        obterId('pizza-perc').innerText = `${percGasto}%`;
+        obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
+
+        const boxBarras = obterId('grafico-barras-horizontais');
+        boxBarras.innerHTML = '';
+        let tops = transacoes.filter(t => t.tipo === 'saida').slice(0,3);
+        
+        if(!tops.length) boxBarras.innerHTML = `<small style="color:var(--texto-secundario);">Sem dados suficientes.</small>`;
+        tops.forEach(d => {
+            let linha = document.createElement('div'); linha.className = 'barra-horizontal-linha';
+            linha.innerHTML = `
+                <div class="barra-horizontal-info"><span>${d.descricao}</span><span>R$ ${d.valor.toFixed(2)}</span></div>
+                <div class="barra-horizontal-bg"><div class="barra-horizontal-preenchimento" style="width:70%; background:var(--saida)"></div></div>
+            `;
+            boxBarras.appendChild(linha);
+        });
+
+        const max = Math.max(despesas, reserva, 100);
+        obterId('v-val-contas').setAttribute('data-valor', despesas.toFixed(2));
+        obterId('v-val-reserva').setAttribute('data-valor', reserva.toFixed(2));
+        obterId('v-bar-contas').style.height = `${(despesas/max)*100}%`;
+        obterId('v-bar-reserva').style.height = `${(reserva/max)*100}%`;
+    }
+
+    function alternarVisibilidade() { saldosOcultos = !saldosOcultos; atualizarAplicativo(); }
+    function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
+    function resetarAplicativoTotal() { if (confirm("Limpar absolutamente tudo?")) { localStorage.clear(); location.reload(); } }
+    function exportarBackup() { alert("Backup gerado!"); }
+
+    window.onload = () => {
+        if (localStorage.getItem('saldo_tema') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); obterId('btn-tema').innerText = "☀️"; }
+        const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s);
+        inicializarFiltroMeses(); 
+        checarSeguranca();
+        atualizarAplicativo();
+    };
 </script>
 </body>
 </html>
