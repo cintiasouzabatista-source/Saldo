@@ -60,7 +60,7 @@
         .app-view { display: none; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 20px; }
         .app-view.ativa { display: flex; flex-direction: column; }
 
-        /* CARDS */
+        /* CARDS AMPLIADOS */
         .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
         .card { background: var(--bg-container); padding: 14px 8px; border-radius: 10px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
         .card h3 { font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -92,7 +92,7 @@
 
         .secao-conteudo { background: var(--bg-container); border-radius: 10px; box-shadow: 0 2px 4px var(--shadow); padding: 16px; border: 1px solid var(--borda); margin-bottom: 15px; }
         
-        /* GRÁFICOS */
+        /* GRÁFICOS AMPLIADOS */
         .grafico-wrapper { margin-bottom: 10px; }
         .grafico-wrapper h4 { font-size: 0.9rem; color: var(--texto-principal); margin-bottom: 15px; text-transform: uppercase; border-left: 4px solid #2c3e50; padding-left: 8px; font-weight: 700; }
         .donut-chart { width: 180px; height: 180px; border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
@@ -127,14 +127,14 @@
         .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; opacity: 0; pointer-events: none; white-space: nowrap; z-index: 10; }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* MENU RODAPÉ */
+        /* MENU RODAPÉ COM ROLAGEM LATERAL */
         .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--bg-rodape); border-top: 1px solid var(--borda); display: flex; justify-content: flex-start; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 90; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         .menu-rodape::-webkit-scrollbar { display: none; }
         .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.75rem; font-weight: bold; gap: 4px; min-width: 90px; height: 100%; justify-content: center; flex-shrink: 0; }
         .tab-item span:first-child { font-size: 1.4rem; }
         .tab-item.ativo { color: var(--azul-saldo); }
 
-        /* MODAIS */
+        /* MODAIS E TELAS DE BLOQUEIO */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
         .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--borda); }
         .modal-title { font-size: 1.2rem; font-weight: bold; color: var(--texto-principal); text-align: center; }
@@ -148,10 +148,14 @@
 </head>
 <body>
 
-<!-- TELA DINÂMICA DE AUTENTICAÇÃO / CADASTRO AO FIM -->
+<!-- TELA TOTAL DE AUTENTICAÇÃO/CADASTRO -->
 <div class="modal-overlay" id="tela-auth" style="display: none;">
-    <div class="modal-container" id="container-fluxo-auth">
-        <!-- O conteúdo aqui muda dinamicamente via JS (Aviso ou Formulário) -->
+    <div class="modal-container">
+        <div class="modal-title" id="auth-titulo">🔒 Acessar Aplicativo</div>
+        <p id="auth-sub" style="font-size:0.85rem; color:var(--texto-secundario); text-align:center;">Insira suas credenciais de segurança para continuar.</p>
+        <input type="text" id="auth-cpf" class="modal-input" placeholder="Digite seu CPF (Apenas números)" maxlength="11">
+        <input type="password" id="auth-pin" class="modal-input" placeholder="PIN de 4 dígitos" maxlength="4" inputmode="numeric">
+        <button class="btn-modal btn-salvar" id="btn-auth-confirmar" onclick="processarAutenticacao()">Confirmar</button>
     </div>
 </div>
 
@@ -251,8 +255,9 @@
         <div class="secao-conteudo" style="flex-grow: 1; overflow-y: auto;" id="lista-transacoes-container"></div>
     </div>
 
-    <!-- TELA 3: GRÁFICOS -->
+    <!-- TELA 3: GRÁFICOS (ORDEM ATUALIZADA) -->
     <div class="app-view" id="view-graficos">
+        <!-- 1. CONTAS X CARTÕES X RESERVAS (No Topo) -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
                 <h4>1. CONTAS X CARTÕES X RESERVAS</h4>
@@ -276,6 +281,7 @@
             </div>
         </div>
 
+        <!-- 2. DESPESAS X RECEITAS (No Meio) -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
                 <h4>2. DESPESAS X RECEITAS</h4>
@@ -292,6 +298,7 @@
             </div>
         </div>
 
+        <!-- 3. TOP DESPESAS MENSAL (Embaixo) -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
                 <h4>3. TOP DESPESAS MENSAL</h4>
@@ -318,7 +325,7 @@
 
 </div>
 
-<!-- MENU INFERIOR -->
+<!-- MENU INFERIOR COM ROLAGEM LATERAL -->
 <div class="menu-rodape">
     <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
     <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
@@ -329,34 +336,29 @@
 <script>
     let transacoes = [], saldosOcultos = false, porcentagemReserva = 10;
     
-    // Configuração de Fábrica Oculta (Administradora entra direto)
+    // CONFIGURAÇÃO DE FÁBRICA DA ADMINISTRADORA
     const CPF_ADMINISTRADORA = "00000000000"; 
     const PIN_ADMINISTRADORA = "0000";
     
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
     const obterId = id => document.getElementById(id);
     const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 3000); };
 
-    // --- NOVO FLUXO DE SEGURANÇA INTELIGENTE ---
+    // --- CONTROLE DE LOGIN E SEGURANÇA CORRIGIDO ---
     function checarSeguranca() {
-        const estadoCadastro = localStorage.getItem('app_cadastro_status'); // 'criado' ou null
-        const cpfSalvo = localStorage.getItem('app_cpf');
+        let cpfSalvo = localStorage.getItem('app_cpf');
+        let pinSalvo = localStorage.getItem('app_pin');
 
-        // Cenário 1: Dispositivo virgem, sem nenhuma configuração interna de fábrica ainda
-        if (!estadoCadastro && !cpfSalvo) {
-            // Auto-configura os dados da Administradora em segundo plano
+        // Se estiver totalmente sem cadastro, auto-configura você como Administradora de fábrica
+        if (!cpfSalvo || !pinSalvo) {
             localStorage.setItem('app_cpf', CPF_ADMINISTRADORA);
             localStorage.setItem('app_pin', PIN_ADMINISTRADORA);
-            localStorage.setItem('app_cadastro_status', 'criado');
-            
-            // Você entra direto! Sem modal, sem bloqueio.
-            obterId('tela-auth').style.display = "none";
-            obterId('conteudo-app').style.filter = "none";
-            checarBloqueioPlano();
-            return;
+            cpfSalvo = CPF_ADMINISTRADORA;
+            pinSalvo = PIN_ADMINISTRADORA;
         }
 
-        // Cenário 2: Se quem estiver logado for a Administradora de fábrica, entra direto sempre
+        // Se for a Administradora, entra direto sem exibir modal ou borrões!
         if (cpfSalvo === CPF_ADMINISTRADORA) {
             obterId('tela-auth').style.display = "none";
             obterId('conteudo-app').style.filter = "none";
@@ -364,98 +366,54 @@
             return;
         }
 
-        // Cenário 3: É um NOVO USUÁRIO (O sistema detecta que o CPF padrão mudou ou foi resetado)
-        if (localStorage.getItem('app_usuario_novo') === 'true' || !cpfSalvo) {
-            renderizarAvisoNovoUsuario();
-            return;
-        }
-
-        // Cenário 4: Usuário comum que já se cadastrou antes (Pede apenas o PIN/Login normal)
-        renderizarTelaLoginNormal();
-    }
-
-    // Passos do Fluxo para o Novo Usuário
-    function renderizarAvisoNovoUsuario() {
-        const box = obterId('container-fluxo-auth');
+        // Caso mude o CPF para um usuário comum no futuro, pede o login normalmente
+        obterId('auth-titulo').innerText = "🔒 Tela de Login";
+        obterId('auth-sub').innerText = "Insira suas credenciais cadastradas.";
         obterId('tela-auth').style.display = "flex";
         obterId('conteudo-app').style.filter = "blur(5px)";
-
-        box.innerHTML = `
-            <div style="font-size: 3rem; text-align:center;">🔍</div>
-            <div class="modal-title" style="color: var(--saida);">Cadastro Não Reconhecido</div>
-            <p style="font-size:0.95rem; color:var(--texto-secundario); text-align:center; line-height:1.4;">
-                O sistema não identificou nenhum cadastro ativo neste dispositivo. Para começar a usar, você precisará registrar suas credenciais agora.
-            </p>
-            <button class="btn-modal btn-salvar" style="margin-top:10px;" onclick="renderizarFormularioCadastroFim()">Criar Meu Cadastro Agora</button>
-        `;
     }
 
-    function renderizarFormularioCadastroFim() {
-        const box = obterId('container-fluxo-auth');
-        box.innerHTML = `
-            <div class="modal-title">✨ Finalizar Cadastro</div>
-            <p style="font-size:0.85rem; color:var(--texto-secundario); text-align:center;">Defina o seu CPF e PIN de 4 dígitos para proteger seus dados.</p>
-            <input type="text" id="reg-cpf" class="modal-input" placeholder="Digite seu CPF (Apenas números)" maxlength="11">
-            <input type="password" id="reg-pin" class="modal-input" placeholder="Crie um PIN de 4 dígitos" maxlength="4" inputmode="numeric">
-            <button class="btn-modal btn-salvar" onclick="salvarCadastroNovoUsuario()">Concluir e Entrar</button>
-        `;
-    }
-
-    function salvarCadastroNovoUsuario() {
-        const cpfInput = obterId('reg-cpf').value.replace(/\D/g, '');
-        const pinInput = obterId('reg-pin').value.replace(/\D/g, '');
-
-        if (cpfInput.length !== 11 || pinInput.length !== 4) {
-            alert("Por favor, insira um CPF válido com 11 dígitos e crie um PIN de 4 números.");
-            return;
-        }
-
-        localStorage.setItem('app_cpf', cpfInput);
-        localStorage.setItem('app_pin', pinInput);
-        localStorage.setItem('app_cadastro_status', 'criado');
-        localStorage.removeItem('app_usuario_novo');
-        localStorage.setItem('app_primeiro_acesso', Date.now()); // Inicia as 48h de teste dele aqui
-
-        alert("Cadastro realizado com sucesso!");
-        obterId('tela-auth').style.display = "none";
-        obterId('conteudo-app').style.filter = "none";
-        atualizarAplicativo();
-    }
-
-    function renderizarTelaLoginNormal() {
-        const box = obterId('container-fluxo-auth');
-        obterId('tela-auth').style.display = "flex";
-        obterId('conteudo-app').style.filter = "blur(5px)";
-
-        box.innerHTML = `
-            <div class="modal-title">🔒 Acessar Aplicativo</div>
-            <p style="font-size:0.85rem; color:var(--texto-secundario); text-align:center;">Insira seu PIN para liberar o painel.</p>
-            <input type="password" id="login-pin" class="modal-input" placeholder="PIN de 4 dígitos" maxlength="4" inputmode="numeric">
-            <button class="btn-modal btn-salvar" onclick="processarLoginComum()">Entrar</button>
-        `;
-    }
-
-    function processarLoginComum() {
-        const pinInput = obterId('login-pin').value.replace(/\D/g, '');
+    function processarAutenticacao() {
+        const cpfInput = obterId('auth-cpf').value.replace(/\D/g, '');
+        const pinInput = obterId('auth-pin').value.replace(/\D/g, '');
+        const cpfSalvo = localStorage.getItem('app_cpf');
         const pinSalvo = localStorage.getItem('app_pin');
 
-        if (pinInput !== pinSalvo) {
-            alert("PIN incorreto!");
+        if (cpfInput.length !== 11 || pinInput.length !== 4) {
+            alert("O CPF deve conter 11 dígitos e o PIN exatos 4 números.");
+            return;
+        }
+
+        if (cpfInput !== cpfSalvo || pinInput !== pinSalvo) {
+            alert("CPF ou PIN incorretos!");
             return;
         }
 
         obterId('tela-auth').style.display = "none";
         obterId('conteudo-app').style.filter = "none";
+        obterId('auth-cpf').value = '';
+        obterId('auth-pin').value = '';
+
         checarBloqueioPlano();
     }
 
     function bloquearAppManualmente() {
-        renderizarTelaLoginNormal();
+        // Remove os dados temporariamente para forçar a tela de login ao clicar no botão
+        localStorage.removeItem('app_cpf');
+        localStorage.removeItem('app_pin');
+        obterId('auth-titulo').innerText = "🔒 Tela de Login";
+        obterId('tela-auth').style.display = "flex";
+        obterId('conteudo-app').style.filter = "blur(5px)";
     }
 
     function alterarCredenciaisAcesso() {
-        if(confirm("Deseja alterar seu CPF e PIN atuais?")) {
-            renderizarFormularioCadastroFim();
+        if(confirm("Deseja reconfigurar seu CPF e PIN de segurança?")) {
+            localStorage.removeItem('app_cpf');
+            localStorage.removeItem('app_pin');
+            obterId('auth-titulo').innerText = "✨ Criar Acesso";
+            obterId('auth-sub').innerText = "Cadastre as novas credenciais do dispositivo.";
+            obterId('tela-auth').style.display = "flex";
+            obterId('conteudo-app').style.filter = "blur(5px)";
         }
     }
 
@@ -463,7 +421,7 @@
     function checarBloqueioPlano() {
         const cpfLogado = localStorage.getItem('app_cpf');
         
-        // Administradora isenta de bloqueios
+        // REGRA DA ADMINISTRADORA: Se for você, ignora o bloqueio completamente
         if (cpfLogado === CPF_ADMINISTRADORA) {
             obterId('tela-bloqueio-plano').style.display = "none";
             obterId('conteudo-app').style.filter = "none";
@@ -473,7 +431,10 @@
         let primeiroAcesso = localStorage.getItem('app_primeiro_acesso');
         const planoAtivo = localStorage.getItem('app_plano_premium') === 'true';
 
-        if (!primeiroAcesso) return true; 
+        if (!primeiroAcesso) {
+            primeiroAcesso = Date.now();
+            localStorage.setItem('app_primeiro_acesso', primeiroAcesso);
+        }
 
         if (planoAtivo) {
             obterId('tela-bloqueio-plano').style.display = "none";
@@ -507,21 +468,21 @@
         if (cpfLogado === CPF_ADMINISTRADORA) {
             box.style.background = "#2c3e50";
             box.style.color = "white";
-            box.innerText = "👑 Modo Administradora (Acesso Ilimitado)";
+            box.innerText = "👑 Modo Administradora (Acesso Ilimitado e Isento)";
             return;
         }
 
         if(premium) {
             box.style.background = "var(--alerta-fundo)";
             box.style.color = "var(--cartao)";
-            box.innerText = "⭐ Plano Premium Ativo";
+            box.innerText = "⭐ Plano Premium Ativo (Acesso Liberado)";
         } else {
             const inicial = parseInt(localStorage.getItem('app_primeiro_acesso') || Date.now());
             const restamMs = (inicial + (48*60*60*1000)) - Date.now();
             const restamHoras = Math.max(Math.round(restamMs / (1000*60*60)), 0);
             box.style.background = "#eee";
             box.style.color = "#333";
-            box.innerText = `⏳ Teste: Restam ${restamHoras} horas de acesso livre.`;
+            box.innerText = `⏳ Modo de Teste: Restam ${restamHoras} horas de acesso livre.`;
         }
     }
 
@@ -533,7 +494,9 @@
         obterId('modal-edicao').style.display = "flex";
     }
 
-    function fecharModalEdicao() { obterId('modal-edicao').style.display = "none"; }
+    function fecharModalEdicao() {
+        obterId('modal-edicao').style.display = "none";
+    }
 
     function salvarEdicaoTransacao() {
         const id = parseInt(obterId('edit-id').value);
@@ -541,7 +504,7 @@
         const novoVal = parseFloat(obterId('edit-valor').value);
 
         if(!novaDesc || isNaN(novoVal) || novoVal <= 0) {
-            alert("Preencha os campos corretamente!");
+            alert("Preencha os campos corretamente com valores válidos!");
             return;
         }
 
@@ -554,7 +517,7 @@
 
     function excluirTransacao() {
         const id = parseInt(obterId('edit-id').value);
-        if(confirm("Deseja apagar permanentemente este registro?")) {
+        if(confirm("Tem certeza que deseja apagar permanentemente este registro?")) {
             transacoes = transacoes.filter(t => t.id !== id);
             localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
             fecharModalEdicao();
@@ -661,7 +624,9 @@
         filtradas.forEach(t => {
             let cor = t.tipo === 'entrada' ? 'var(--entrada)' : 'var(--saida)';
             let item = document.createElement('div'); item.className = `item-transacao`;
+            
             item.onclick = () => abrirModalEdicao(t.id, t.descricao, t.valor);
+            
             item.innerHTML = `
                 <div style="flex-grow:1; display:flex; flex-direction:column; text-align: left;">
                     <span class="descricao-texto" style="text-transform:capitalize;">${t.descricao}</span>
@@ -703,14 +668,7 @@
 
     function alternarVisibilidade() { saldosOcultos = !saldosOcultos; atualizarAplicativo(); }
     function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
-    
-    function resetarAplicativoTotal() { 
-        if (confirm("Limpar dados? Isso simulará um dispositivo novo.")) { 
-            localStorage.clear(); 
-            localStorage.setItem('app_usuario_novo', 'true'); 
-            location.reload(); 
-        } 
-    }
+    function resetarAplicativoTotal() { if (confirm("Limpar absolutamente tudo?")) { localStorage.clear(); location.reload(); } }
     function exportarBackup() { alert("Backup gerado!"); }
 
     window.onload = () => {
