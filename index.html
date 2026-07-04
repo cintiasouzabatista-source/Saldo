@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#2c3e50">
     <title>Meu Fluxo de Caixa Inteligente</title>
     <style>
+        /* Variáveis de Cores (Suporta Modo Claro e Escuro) */
         :root {
             --bg-body: #f4f6f9;
             --bg-container: white;
@@ -26,6 +27,7 @@
             --alerta-danger-borda: #e74c3c;
             --bg-retratil: #f8f9fa;
             --chat-verde: #056162;
+            --chat-verde-hover: #044e4f;
             --bg-rodape: white;
         }
 
@@ -49,158 +51,147 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
         body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
+        /* Container Principal esticado para preencher a tela, descontando o rodapé */
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: calc(100vh - 90px); position: relative; }
         
+        /* CABEÇALHO DO APP */
         .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px; padding: 5px; flex-shrink: 0; }
-        .app-title { font-size: 1.5rem; font-weight: 700; color: var(--azul-saldo); letter-spacing: -0.5px; }
+        .app-title { font-size: 1.3rem; font-weight: 700; color: var(--azul-saldo); letter-spacing: -0.5px; }
         .app-actions { display: flex; gap: 14px; align-items: center; }
-        .icon-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 50%; }
+        .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; }
         .icon-btn:hover { background: var(--borda); }
 
+        /* VIEWS (TELAS DO APP) */
         .app-view { display: none; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 20px; }
         .app-view.ativa { display: flex; flex-direction: column; }
 
-        /* CARDS AMPLIADOS */
-        .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
-        .card { background: var(--bg-container); padding: 14px 8px; border-radius: 10px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
-        .card h3 { font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .card p { font-size: 1.1rem; font-weight: bold; }
+        /* CARDS NO TOPO (INÍCIO) */
+        .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
+        .card { background: var(--bg-container); padding: 10px 5px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
+        .card h3 { font-size: 0.7rem; color: var(--texto-secundario); margin-bottom: 2px; text-transform: uppercase; }
+        .card p { font-size: 0.9rem; font-weight: bold; }
         
         .card.saldo-total { 
             grid-column: span 3; 
-            padding: 22px 14px; 
+            padding: 14px; 
+            margin-top: 2px; 
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
+            align-items: center;
+            justify-content: center;
         }
-        .card.saldo-total h3 { font-size: 0.95rem; }
-        .card.saldo-total p { font-size: 2.1rem; font-weight: 800; }
+        .card.saldo-total h3 { font-size: 0.75rem; letter-spacing: 0.5px; }
+        .card.saldo-total p { font-size: 1.6rem; font-weight: 800; }
         
-        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin-top: 8px; border-top: 1px solid var(--borda); padding-top: 12px; }
-        .linha-subtil-valores { display: flex; justify-content: center; gap: 16px; width: 100%; flex-wrap: wrap; }
-        .previsao-texto, .reserva-texto { font-size: 0.9rem; color: var(--texto-secundario); }
+        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; margin-top: 4px; border-top: 1px solid var(--borda); padding-top: 8px; }
+        .linha-subtil-valores { display: flex; justify-content: center; gap: 12px; width: 100%; flex-wrap: wrap; }
+        .previsao-texto, .reserva-texto { font-size: 0.75rem; color: var(--texto-secundario); font-weight: 500; display: inline-flex; align-items: center; gap: 3px; }
         .previsao-texto strong, .reserva-texto strong { font-weight: 700; color: var(--texto-principal); }
-        .saldo-restante-texto { font-size: 1rem; color: var(--reserva-cor); font-weight: bold; margin-top: 4px; }
-        .alerta-comprometido { background: var(--alerta-danger-bg); border: 1px solid var(--alerta-danger-borda); color: var(--saida); padding: 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; margin-top: 6px; width: 100%; text-align: center; display: none; }
+        .saldo-restante-texto { font-size: 0.85rem; color: var(--reserva-cor); font-weight: bold; margin-top: 2px; }
+        .config-reserva-inline { cursor: pointer; font-size: 0.7rem; opacity: 0.6; }
+        .config-reserva-inline:hover { opacity: 1; }
+        .alerta-comprometido { background: var(--alerta-danger-bg); border: 1px solid var(--alerta-danger-borda); color: var(--saida); padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: bold; margin-top: 4px; width: 100%; text-align: center; display: none; }
 
         .cor-entrada { color: var(--entrada); }
         .cor-saida { color: var(--saida); }
         .cor-cartao { color: var(--cartao); }
 
+        /* FILTROS (MUDADOS PARA O TOPO DO HISTÓRICO) */
         .filtros-container { display: flex; gap: 8px; margin-bottom: 12px; width: 100%; }
-        .filtro-select { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.9rem; color: var(--texto-principal); outline: none; font-weight: 600; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
+        .filtro-select { flex: 1; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.82rem; color: var(--texto-principal); outline: none; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px var(--shadow); appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 
-        .secao-conteudo { background: var(--bg-container); border-radius: 10px; box-shadow: 0 2px 4px var(--shadow); padding: 16px; border: 1px solid var(--borda); margin-bottom: 15px; }
+        /* CONTEÚDO DAS LISTAS E GRÁFICOS */
+        .secao-conteudo { background: var(--bg-container); border-radius: 8px; box-shadow: 0 2px 4px var(--shadow); padding: 12px; border: 1px solid var(--borda); margin-bottom: 15px; }
         
-        /* GRÁFICOS AMPLIADOS */
-        .grafico-wrapper { margin-bottom: 10px; }
-        .grafico-wrapper h4 { font-size: 0.9rem; color: var(--texto-principal); margin-bottom: 15px; text-transform: uppercase; border-left: 4px solid #2c3e50; padding-left: 8px; font-weight: 700; }
-        .donut-chart { width: 180px; height: 180px; border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-        .donut-hole { width: 120px; height: 120px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; color: var(--texto-secundario); text-align: center; }
-        .donut-hole span:first-child { font-size: 1.2rem; color: var(--texto-principal); font-weight: 800; }
-        .donut-legenda { display: flex; justify-content: center; gap: 20px; font-size: 0.9rem; font-weight: 600; margin-top: 10px; }
+        /* GRÁFICOS */
+        .grafico-wrapper { margin-bottom: 20px; }
+        .grafico-wrapper h4 { font-size: 0.8rem; color: var(--texto-principal); margin-bottom: 10px; text-transform: uppercase; border-left: 3px solid #2c3e50; padding-left: 6px; }
+        .donut-chart { width: 120px; height: 120px; border-radius: 50%; margin: 10px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; }
+        .donut-hole { width: 80px; height: 80px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; color: var(--texto-secundario); text-align: center; padding: 4px; }
+        .donut-hole span:first-child { font-size: 0.8rem; color: var(--texto-principal); }
+        .donut-legenda { display: flex; justify-content: center; gap: 15px; font-size: 0.75rem; font-weight: 600; }
         
-        .barra-horizontal-linha { margin-bottom: 12px; }
-        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
-        .barra-horizontal-bg { background: var(--bg-body); height: 14px; border-radius: 8px; width: 100%; overflow: hidden; border: 1px solid var(--borda); }
-        .barra-horizontal-preenchimento { height: 100%; border-radius: 8px; width: 0%; }
+        .barra-horizontal-linha { margin-bottom: 8px; }
+        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; margin-bottom: 2px; }
+        .barra-horizontal-bg { background: var(--bg-body); height: 10px; border-radius: 6px; width: 100%; overflow: hidden; border: 1px solid var(--borda); }
+        .barra-horizontal-preenchimento { height: 100%; border-radius: 6px; width: 0%; transition: width 0.5s ease; }
         
-        .colunas-container { display: flex; justify-content: center; gap: 35px; height: 140px; align-items: flex-end; padding-top: 30px; margin-bottom: 25px; border-bottom: 2px solid var(--borda); position: relative; }
-        .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 80px; position: relative; }
-        .coluna-vertical-barra { width: 38px; border-top-left-radius: 6px; border-top-right-radius: 6px; height: 2px; }
-        .coluna-vertical-valor { font-size: 0.8rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
-        .coluna-vertical-rotulo { font-size: 0.85rem; font-weight: 600; position: absolute; bottom: -25px; color: var(--texto-secundario); text-transform: uppercase; }
+        .colunas-container { display: flex; justify-content: center; gap: 24px; height: 100px; align-items: flex-end; padding-top: 25px; margin-bottom: 25px; border-bottom: 2px solid var(--borda); position: relative; }
+        .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 65px; position: relative; }
+        .coluna-vertical-barra { width: 28px; border-top-left-radius: 4px; border-top-right-radius: 4px; height: 2px; min-height: 2px; transition: height 0.5s ease; }
+        .coluna-vertical-valor { font-size: 0.68rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
+        .coluna-vertical-rotulo { font-size: 0.72rem; font-weight: 600; position: absolute; bottom: -22px; color: var(--texto-secundario); text-transform: uppercase; white-space: nowrap; }
 
-        /* HISTÓRICO */
-        .item-transacao { display: flex; justify-content: space-between; align-items: center; padding: 12px 6px; border-bottom: 1px solid var(--borda); cursor: pointer; }
-        .item-transacao:hover { background: var(--bg-body); }
-        .descricao-texto { font-size: 0.95rem; font-weight: 500; color: var(--texto-principal); }
-        .valor-historico { font-weight: 700; font-size: 0.95rem; }
+        /* HISTÓRICO COMPACTADO */
+        .item-transacao { display: flex; flex-direction: column; padding: 8px 2px; border-bottom: 1px solid var(--borda); cursor: pointer; }
+        .item-transacao:hover { background-color: var(--bg-body); }
+        .item-transacao:last-child { border-bottom: none; }
+        .linha-principal { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .detalhes-item { display: flex; flex-direction: column; gap: 2px; }
+        .descricao-texto { font-size: 0.85rem; font-weight: 500; color: var(--texto-principal); text-transform: capitalize; }
+        .tags-row { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+        .tipo-tag { font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; color: white; font-weight: bold; text-transform: uppercase; }
+        .tag-entrada { background: var(--entrada); }
+        .tag-saida { background: var(--saida); }
+        .tag-cartao { background: var(--cartao); }
+        .tag-conta { background: #7f8c8d; color: white; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; font-weight: bold; }
+        .tag-cartao-especifico { background: #34495e; color: white; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; font-weight: bold; }
+        .tag-fixa { background: #9b59b6; color: white; font-size: 0.55rem; padding: 1px 3px; border-radius: 3px; font-weight: bold; }
+        .valor-historico { font-weight: 700; font-size: 0.82rem; letter-spacing: -0.2px; }
 
-        /* CHAT INÍCIO */
+        .item-transacao.pendente { background: var(--alerta-fundo); border-left: 3px solid var(--alerta-borda); padding-left: 6px; }
+        .container-pergunta { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--borda); width: 100%; }
+        .texto-pergunta { font-size: 0.75rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: 4px; display: block; }
+        .botoes-resposta { display: flex; gap: 4px; flex-wrap: wrap; }
+        .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 4px 8px; border-radius: 8px; font-size: 0.72rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); }
+        .btn-resposta:hover { background: #2c3e50; color: white; }
+
+        /* NOVA ÁREA DE CHAT FIXADA APENAS NA TELA INICIAL */
         .chat-container-dinamico { margin-top: auto; padding: 10px 0; width: 100%; }
-        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 16px; border-radius: 25px; box-shadow: 0 3px 6px rgba(0,0,0,0.15); align-items: center; position: relative; }
-        .chat-input { flex-grow: 1; border: none; padding: 6px 5px; font-size: 1rem; outline: none; background: transparent; color: white; }
+        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 8px 14px; border-radius: 25px; box-shadow: 0 3px 6px rgba(0,0,0,0.15); align-items: center; position: relative; }
+        .chat-input { flex-grow: 1; border: none; padding: 6px 5px; font-size: 0.95rem; outline: none; background: transparent; color: white; font-weight: 500; }
         .chat-input::placeholder { color: rgba(255, 255, 255, 0.75); }
-        .btn-enviar { background: white; color: var(--chat-verde); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: bold; }
+        .btn-enviar { background: white; color: var(--chat-verde); border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         
-        .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; opacity: 0; pointer-events: none; white-space: nowrap; z-index: 10; }
+        .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10; }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* MENU RODAPÉ COM ROLAGEM LATERAL */
-        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--bg-rodape); border-top: 1px solid var(--borda); display: flex; justify-content: flex-start; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 90; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-        .menu-rodape::-webkit-scrollbar { display: none; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.75rem; font-weight: bold; gap: 4px; min-width: 90px; height: 100%; justify-content: center; flex-shrink: 0; }
-        .tab-item span:first-child { font-size: 1.4rem; }
+        /* NOVO MENU INFERIOR (TAB BAR RODAPÉ) */
+        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--bg-rodape); border-top: 1px solid var(--borda); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 90; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.7rem; font-weight: bold; gap: 4px; width: 22%; height: 100%; justify-content: center; }
+        .tab-item span:first-child { font-size: 1.3rem; }
         .tab-item.ativo { color: var(--azul-saldo); }
+        [data-theme="dark"] .tab-item.ativo { color: var(--azul-saldo); }
 
-        /* MODAIS E TELAS DE BLOQUEIO */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        /* MODAIS */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
         .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--borda); }
-        .modal-title { font-size: 1.2rem; font-weight: bold; color: var(--texto-principal); text-align: center; }
-        .modal-input { width: 100%; padding: 10px; border: 1px solid var(--borda); border-radius: 6px; font-size: 1rem; background: var(--bg-container); color: var(--texto-principal); outline: none; text-align: center; }
-        .btn-modal { width: 100%; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; border: none; cursor: pointer; text-align: center; margin-top: 5px; }
+        .modal-title { font-size: 1.05rem; font-weight: bold; color: var(--texto-principal); }
+        .modal-label { font-size: 0.8rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: -6px; }
+        .modal-input, .modal-select { width: 100%; padding: 8px; border: 1px solid var(--borda); border-radius: 6px; font-size: 0.95rem; background: var(--bg-container); color: var(--texto-principal); outline: none; }
+        .modal-botoes { display: flex; gap: 8px; margin-top: 5px; }
+        .btn-modal { flex: 1; padding: 8px; border-radius: 6px; font-size: 0.9rem; font-weight: bold; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
         .btn-salvar { background: var(--entrada); color: white; }
-        .btn-deletar { background: var(--saida); color: white; }
-        .btn-cancelar { background: #7f8c8d; color: white; }
-        .config-btn-bloco { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: bold; text-align: left; cursor: pointer; }
+        .btn-excluir { background: var(--saida); color: white; }
+        .btn-cancelar { background: #bdc3c7; color: #333; }
+        .config-btn-bloco { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: bold; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
 
-<!-- TELA TOTAL DE AUTENTICAÇÃO/CADASTRO -->
-<div class="modal-overlay" id="tela-auth" style="display: none;">
-    <div class="modal-container">
-        <div class="modal-title" id="auth-titulo">🔒 Acessar Aplicativo</div>
-        <p id="auth-sub" style="font-size:0.85rem; color:var(--texto-secundario); text-align:center;">Insira suas credenciais de segurança para continuar.</p>
-        <input type="text" id="auth-cpf" class="modal-input" placeholder="Digite seu CPF (Apenas números)" maxlength="11">
-        <input type="password" id="auth-pin" class="modal-input" placeholder="PIN de 4 dígitos" maxlength="4" inputmode="numeric">
-        <button class="btn-modal btn-salvar" id="btn-auth-confirmar" onclick="processarAutenticacao()">Confirmar</button>
-    </div>
-</div>
-
-<!-- TELA TOTAL DE BLOQUEIO POR FALTA DE PLANO -->
-<div class="modal-overlay" id="tela-bloqueio-plano" style="display: none; z-index: 200;">
-    <div class="modal-container" style="text-align: center; gap: 16px;">
-        <div style="font-size: 3rem;">⏳</div>
-        <div class="modal-title" style="color: var(--saida);">Período de Testes Expirado</div>
-        <p style="font-size: 0.95rem; color: var(--texto-secundario);">Suas 48 horas de teste gratuito acabaram. Adira ao plano premium para liberar o acesso vitalício aos seus dados.</p>
-        <div style="background: var(--bg-body); padding: 15px; border-radius: 8px; border: 1px dashed var(--borda);">
-            <span style="font-size: 0.85rem; text-transform: uppercase; font-weight: bold; color: var(--texto-secundario);">Valor do Plano</span>
-            <h2 style="font-size: 1.8rem; color: var(--entrada); margin-top: 4px;">R$ 5,99 <small style="font-size:0.9rem; color:var(--texto-secundario);">/mês</small></h2>
-        </div>
-        <button class="btn-modal btn-salvar" style="background: var(--entrada);" onclick="simularAssinatura()">Assinar Plano Premium</button>
-        <button class="btn-modal" style="background: var(--saida); color: white;" onclick="resetarAplicativoTotal()">Resetar e Apagar Dados</button>
-    </div>
-</div>
-
-<!-- MODAL PARA EDITAR OU EXCLUIR TRANSAÇÃO -->
-<div class="modal-overlay" id="modal-edicao" style="display: none;">
-    <div class="modal-container">
-        <div class="modal-title">📝 Editar Registro</div>
-        <input type="hidden" id="edit-id">
-        <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Descrição</label>
-        <input type="text" id="edit-descricao" class="modal-input" style="text-align:left;">
-        <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Valor (R$)</label>
-        <input type="number" id="edit-valor" step="0.01" class="modal-input" style="text-align:left;">
-        <button class="btn-modal btn-salvar" onclick="salvarEdicaoTransacao()">Salvar Alterações</button>
-        <button class="btn-modal btn-deletar" onclick="excluirTransacao()">🗑️ Excluir Registro</button>
-        <button class="btn-modal btn-cancelar" onclick="fecharModalEdicao()">Cancelar</button>
-    </div>
-</div>
-
-<div class="container" id="conteudo-app">
+<div class="container">
     
-    <!-- CABEÇALHO -->
+    <!-- CABEÇALHO COMUM A TODOS -->
     <div class="app-header">
         <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
         <div class="app-actions">
-            <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()">👁️</button>
-            <button class="icon-btn" id="btn-tema" onclick="alternarTema()">🌙</button>
+            <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">👁️</button>
+            <button class="icon-btn" id="btn-tema" onclick="alternarTema()" title="Mudar Tema">🌙</button>
         </div>
     </div>
 
-    <!-- TELA 1: INÍCIO -->
+    <!-- TELA 1: INÍCIO (CHATS E CARDS) -->
     <div class="app-view ativa" id="view-inicio">
         <div class="cards-container">
             <div class="card">
@@ -217,12 +208,15 @@
             </div>
             <div class="card saldo-total">
                 <h3>Saldo Atual</h3>
-                <p id="card-saldo" class="valor-dinamico" data-valor="0.00">R$ 0,00</p>
+                <p id="card-saldo" class="valor-dinamico" data-valor="0.00" style="color: var(--texto-principal);">R$ 0,00</p>
                 
                 <div class="info-subtil-container">
                     <div class="linha-subtil-valores">
                         <div class="previsao-texto" id="card-previsao"><strong>Média/Dia:</strong> <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
-                        <div class="reserva-texto" id="card-reserva"><strong>Guardar:</strong> <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span></div>
+                        <div class="reserva-texto" id="card-reserva">
+                            <strong>Guardar</strong> (<span id="reserva-porcentagem-label">10</span>%): <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span> 
+                            <span class="config-reserva-inline" onclick="abrirConfigReserva()" title="Mudar porcentagem">⚙️</span>
+                        </div>
                     </div>
                     <div class="saldo-restante-texto" id="card-saldo-restante">
                         <strong>Saldo se Guardar:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
@@ -232,6 +226,7 @@
             </div>
         </div>
 
+        <!-- O Campo de Chat estilo WhatsApp fica estrategicamente fixado no fim da tela Inicial -->
         <div class="chat-container-dinamico">
             <div class="chat-input-area">
                 <div id="alerta" class="alerta-temporario">Lançado!</div>
@@ -250,17 +245,40 @@
                 <option value="entrada">🟢 Entradas</option>
                 <option value="saida">🔴 Saídas</option>
                 <option value="cartao">💳 Cartão</option>
+                <option value="fixa">📌 Contas Fixas</option>
             </select>
         </div>
         <div class="secao-conteudo" style="flex-grow: 1; overflow-y: auto;" id="lista-transacoes-container"></div>
     </div>
 
-    <!-- TELA 3: GRÁFICOS (ORDEM ATUALIZADA) -->
+    <!-- TELA 3: GRÁFICOS -->
     <div class="app-view" id="view-graficos">
-        <!-- 1. CONTAS X CARTÕES X RESERVAS (No Topo) -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
-                <h4>1. CONTAS X CARTÕES X RESERVAS</h4>
+                <h4>1. DESPESAS X RECEITAS</h4>
+                <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
+                    <div class="donut-hole">
+                        <span id="pizza-perc">0%</span>
+                        <span id="pizza-rotulo" style="font-size:0.55rem; font-weight:normal; text-transform:uppercase;">Gasto</span>
+                    </div>
+                </div>
+                <div class="donut-legenda">
+                    <span style="color:var(--entrada)">● Receitas</span>
+                    <span style="color:var(--saida)">● Despesas</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>2. TOP DESPESAS</h4>
+                <div id="grafico-barras-horizontais"></div>
+            </div>
+        </div>
+
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>3. CONTAS X CARTÕES</h4>
                 <div class="colunas-container">
                     <div class="coluna-vertical-bloco">
                         <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
@@ -280,52 +298,24 @@
                 </div>
             </div>
         </div>
-
-        <!-- 2. DESPESAS X RECEITAS (No Meio) -->
-        <div class="secao-conteudo">
-            <div class="grafico-wrapper">
-                <h4>2. DESPESAS X RECEITAS</h4>
-                <div class="donut-chart" id="grafico-pizza-elemento">
-                    <div class="donut-hole">
-                        <span id="pizza-perc">0%</span>
-                        <span id="pizza-rotulo" style="font-size:0.75rem; text-transform:uppercase;">Gasto</span>
-                    </div>
-                </div>
-                <div class="donut-legenda">
-                    <span style="color:var(--entrada)">● Receitas</span>
-                    <span style="color:var(--saida)">● Despesas</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. TOP DESPESAS MENSAL (Embaixo) -->
-        <div class="secao-conteudo">
-            <div class="grafico-wrapper">
-                <h4>3. TOP DESPESAS MENSAL</h4>
-                <div id="grafico-barras-horizontais"></div>
-            </div>
-        </div>
     </div>
 
     <!-- TELA 4: CONFIGURAÇÕES -->
     <div class="app-view" id="view-config">
         <div class="secao-conteudo">
-            <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--texto-secundario);">PLANO PREMIUM</h4>
-            <div id="status-plano-box" style="padding: 10px; border-radius: 6px; font-weight: bold; margin-bottom: 12px; font-size: 0.9rem;"></div>
+            <h4 style="font-size:0.8rem; margin-bottom:12px; color:var(--texto-secundario);">DADOS E BACKUP</h4>
+            <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar Banco de Dados (JSON)</button>
+            <button class="config-btn-bloco" onclick="document.getElementById('input-file-backup').click()">📤 Importar Banco de Dados (JSON)</button>
+            <input type="file" id="input-file-backup" accept=".json" style="display: none;" onchange="importarBackup(event)">
             
-            <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--texto-secundario);">SEGURANÇA</h4>
-            <button class="config-btn-bloco" onclick="alterarCredenciaisAcesso()">🔐 Alterar CPF ou PIN de Acesso</button>
-            <button class="config-btn-bloco" onclick="bloquearAppManualmente()">🔒 Bloquear Tela Agora</button>
-
-            <h4 style="font-size:0.85rem; margin-top:15px; margin-bottom:12px; color:var(--texto-secundario);">DADOS</h4>
-            <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar Banco (JSON)</button>
-            <button class="config-btn-bloco" style="color:var(--saida); border-color:var(--alerta-danger-borda);" onclick="resetarAplicativoTotal()">🗑️ Limpar Todos os Dados</button>
+            <h4 style="font-size:0.8rem; margin-top:20px; margin-bottom:12px; color:var(--texto-secundario);">PERIGO</h4>
+            <button class="config-btn-bloco" style="color:var(--saida); border-color:var(--alerta-danger-borda);" onclick="resetarAplicativoTotal()">🗑️ Limpar Todos os Dados Permanentemente</button>
         </div>
     </div>
 
 </div>
 
-<!-- MENU INFERIOR COM ROLAGEM LATERAL -->
+<!-- MENU FIXO DO RODAPÉ (TAB BAR) -->
 <div class="menu-rodape">
     <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
     <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
@@ -333,191 +323,72 @@
     <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
 </div>
 
+<!-- MODAIS -->
+<div class="modal-overlay" id="modal-edicao">
+    <div class="modal-container">
+        <div class="modal-title">Editar Lançamento</div>
+        <div class="modal-label">Descrição</div>
+        <input type="text" id="modal-desc" class="modal-input">
+        <div class="modal-label">Valor (R$)</div>
+        <input type="number" id="modal-valor" class="modal-input" step="0.01">
+        <div class="modal-label">Tipo</div>
+        <select id="modal-tipo" class="modal-select">
+            <option value="entrada">Entrada (+)</option>
+            <option value="saida">Saída (-)</option>
+            <option value="cartao">Cartão (-)</option>
+        </select>
+        <div class="modal-label">Conta / Banco</div>
+        <input type="text" id="modal-conta" class="modal-input">
+        <div class="modal-label">Cartão Utilizado</div>
+        <input type="text" id="modal-cartao-id" class="modal-input">
+        <div class="modal-label" style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+            <input type="checkbox" id="modal-fixa" style="width: 16px; height: 16px;"> É uma Conta Fixa?
+        </div>
+        <div class="modal-botoes">
+            <button class="btn-modal btn-excluir" onclick="acaoExcluir()">Excluir</button>
+            <button class="btn-modal btn-cancelar" onclick="fecharModal()">Voltar</button>
+            <button class="btn-modal btn-salvar" onclick="acaoSalvar()">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-reserva">
+    <div class="modal-container">
+        <div class="modal-title">💰 Definir Meta de Reserva</div>
+        <div class="modal-label">Porcentagem do saldo positivo para guardar:</div>
+        <input type="number" id="modal-reserva-pct" class="modal-input" min="1" max="100" value="10">
+        <div class="modal-botoes">
+            <button class="btn-modal btn-cancelar" onclick="fecharConfigReserva()">Cancelar</button>
+            <button class="btn-modal btn-salvar" onclick="salvarConfigReserva()">Definir</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    let transacoes = [], saldosOcultos = false, porcentagemReserva = 10;
-    const CPF_ADMINISTRADORA = "00000000000"; // Defina o seu CPF aqui para nunca ser bloqueada
+    let transacoes = [], idEdicaoAtual = null, saldosOcultos = false, porcentagemReserva = 10;
+    let modoGraficoRosca = 0; 
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
+    const MAPA_ENTIDADES = {
+        bancos: { itau: "Itaú", itaú: "Itaú", bradesco: "Bradesco", santander: "Santander", nubank: "Nubank", nu: "Nubank", caixa: "Caixa", inter: "Inter", c6: "C6 Bank", mercadopago: "Mercado Pago", mp: "Mercado Pago", picpay: "PicPay" },
+        cartoes: { black: "Black", visa: "Visa", master: "Mastercard", elo: "Elo", amex: "Amex", flash: "Flash", nubank: "Nubank", nu: "Nubank", itau: "Itaú", c6: "C6 Bank", mercadopago: "Mercado Pago", mp: "Mercado Pago", inter: "Inter", bradesco: "Bradesco" }
+    };
+
     const obterId = id => document.getElementById(id);
+    const toggleModal = (id, abrir) => obterId(id).style.display = abrir ? 'flex' : 'none';
     const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 3000); };
 
-    // --- CONTROLE DE LOGIN E SEGURANÇA ---
-    function checarSeguranca() {
-        const cpfSalvo = localStorage.getItem('app_cpf');
-        const pinSalvo = localStorage.getItem('app_pin');
-
-        if (!cpfSalvo || !pinSalvo) {
-            obterId('auth-titulo').innerText = "✨ Criar Acesso";
-            obterId('auth-sub').innerText = "Cadastre seu CPF e um PIN de 4 números para proteger seus dados.";
-            obterId('tela-auth').style.display = "flex";
-            obterId('conteudo-app').style.filter = "blur(5px)";
-        } else {
-            obterId('auth-titulo').innerText = "🔒 Tela de Login";
-            obterId('auth-sub').innerText = "Insira suas credenciais cadastradas.";
-            obterId('tela-auth').style.display = "flex";
-            obterId('conteudo-app').style.filter = "blur(5px)";
-        }
-    }
-
-    function processarAutenticacao() {
-        const cpfInput = obterId('auth-cpf').value.replace(/\D/g, '');
-        const pinInput = obterId('auth-pin').value.replace(/\D/g, '');
-        const cpfSalvo = localStorage.getItem('app_cpf');
-        const pinSalvo = localStorage.getItem('app_pin');
-
-        if (cpfInput.length !== 11 || pinInput.length !== 4) {
-            alert("O CPF deve conter 11 dígitos e o PIN exatos 4 números.");
-            return;
-        }
-
-        if (!cpfSalvo || !pinSalvo) {
-            localStorage.setItem('app_cpf', cpfInput);
-            localStorage.setItem('app_pin', pinInput);
-            alert("Acesso configurado com sucesso!");
-        } else {
-            if (cpfInput !== cpfSalvo || pinInput !== pinSalvo) {
-                alert("CPF ou PIN incorretos!");
-                return;
-            }
-        }
-
-        obterId('tela-auth').style.display = "none";
-        obterId('conteudo-app').style.filter = "none";
-        obterId('auth-cpf').value = '';
-        obterId('auth-pin').value = '';
-
-        checarBloqueioPlano();
-    }
-
-    function bloquearAppManualmente() {
-        checarSeguranca();
-    }
-
-    function alterarCredenciaisAcesso() {
-        if(confirm("Deseja reconfigurar seu CPF e PIN de segurança?")) {
-            localStorage.removeItem('app_cpf');
-            localStorage.removeItem('app_pin');
-            checarSeguranca();
-        }
-    }
-
-    // --- SISTEMA DE ASSINATURA PREMIUM (48 HORAS TESTE) ---
-    function checarBloqueioPlano() {
-        const cpfLogado = localStorage.getItem('app_cpf');
-        
-        // REGRA DA ADMINISTRADORA: Se for o seu CPF, ignora o bloqueio completamente
-        if (cpfLogado === CPF_ADMINISTRADORA) {
-            obterId('tela-bloqueio-plano').style.display = "none";
-            return true;
-        }
-
-        let primeiroAcesso = localStorage.getItem('app_primeiro_acesso');
-        const planoAtivo = localStorage.getItem('app_plano_premium') === 'true';
-
-        if (!primeiroAcesso) {
-            primeiroAcesso = Date.now();
-            localStorage.setItem('app_primeiro_acesso', primeiroAcesso);
-        }
-
-        if (planoAtivo) {
-            obterId('tela-bloqueio-plano').style.display = "none";
-            return true;
-        }
-
-        const tempoDecorrido = Date.now() - parseInt(primeiroAcesso);
-        const tempoLimite = 48 * 60 * 60 * 1000; 
-
-        if (tempoDecorrido > tempoLimite) {
-            obterId('tela-bloqueio-plano').style.display = "flex";
-            obterId('conteudo-app').style.filter = "blur(8px)";
-            return false;
-        }
-        return true;
-    }
-
-    function simularAssinatura() {
-        localStorage.setItem('app_plano_premium', 'true');
-        alert("Obrigado por assinar! Seu acesso total e vitalício foi liberado.");
-        obterId('tela-bloqueio-plano').style.display = "none";
-        obterId('conteudo-app').style.filter = "none";
-        atualizarAplicativo();
-    }
-
-    function gerenciarVisualPlano() {
-        const premium = localStorage.getItem('app_plano_premium') === 'true';
-        const cpfLogado = localStorage.getItem('app_cpf');
-        const box = obterId('status-plano-box');
-        
-        if (cpfLogado === CPF_ADMINISTRADORA) {
-            box.style.background = "#2c3e50";
-            box.style.color = "#white";
-            box.innerText = "👑 Modo Administradora (Acesso Ilimitado e Isento)";
-            return;
-        }
-
-        if(premium) {
-            box.style.background = "var(--alerta-fundo)";
-            box.style.color = "var(--cartao)";
-            box.innerText = "⭐ Plano Premium Ativo (Acesso Liberado)";
-        } else {
-            const inicial = parseInt(localStorage.getItem('app_primeiro_acesso') || Date.now());
-            const restamMs = (inicial + (48*60*60*1000)) - Date.now();
-            const restamHoras = Math.max(Math.round(restamMs / (1000*60*60)), 0);
-            box.style.background = "#eee";
-            box.style.color = "#333";
-            box.innerText = `⏳ Modo de Teste: Restam ${restamHoras} horas de acesso livre.`;
-        }
-    }
-
-    // --- EDICAO E EXCLUSÃO DO HISTÓRICO ---
-    function abrirModalEdicao(id, descricao, valor) {
-        obterId('edit-id').value = id;
-        obterId('edit-descricao').value = descricao;
-        obterId('edit-valor').value = valor;
-        obterId('modal-edicao').style.display = "flex";
-    }
-
-    function fecharModalEdicao() {
-        obterId('modal-edicao').style.display = "none";
-    }
-
-    function salvarEdicaoTransacao() {
-        const id = parseInt(obterId('edit-id').value);
-        const novaDesc = obterId('edit-descricao').value.trim();
-        const novoVal = parseFloat(obterId('edit-valor').value);
-
-        if(!novaDesc || isNaN(novoVal) || novoVal <= 0) {
-            alert("Preencha os campos corretamente com valores válidos!");
-            return;
-        }
-
-        transacoes = transacoes.map(t => t.id === id ? { ...t, descricao: novaDesc, valor: novoVal } : t);
-        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
-        fecharModalEdicao();
-        atualizarAplicativo();
-        mostrarAviso("Alterado!");
-    }
-
-    function excluirTransacao() {
-        const id = parseInt(obterId('edit-id').value);
-        if(confirm("Tem certeza que deseja apagar permanentemente este registro?")) {
-            transacoes = transacoes.filter(t => t.id !== id);
-            localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
-            fecharModalEdicao();
-            atualizarAplicativo();
-            mostrarAviso("Removido!");
-        }
-    }
-
-    // --- OPERAÇÕES DO FLUXO DE CAIXA ---
+    // MECANISMO DE NAVEGAÇÃO ENTRE AS ABAS DO RODAPÉ
     function navegarPara(idAba) {
-        if (!checarBloqueioPlano()) return;
+        // Desativa todas as views e abas
         document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
         document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo'));
         
+        // Ativa a view e aba selecionada
         obterId(`view-${idAba}`).classList.add('ativa');
         obterId(`tab-${idAba}`).classList.add('ativo');
 
+        // Altera dinamicamente o título do topo para contextualizar
         const titulos = { inicio: "Meu Saldo", historico: "Histórico", graficos: "Análise Mensal", config: "Configurações" };
         obterId('titulo-dinamico').innerText = titulos[idAba];
 
@@ -526,8 +397,8 @@
 
     function inicializarFiltroMeses() {
         const hoje = new Date(), f = obterId('filtro-mes');
-        let html = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual (${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()})</option><option value="todos">Todos</option>`;
-        for (let i = 1; i <= 4; i++) {
+        let html = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual (${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()})</option><option value="todos">Todos os Meses</option>`;
+        for (let i = 1; i <= 6; i++) {
             let d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
             html += `<option value="${d.getMonth()}-${d.getFullYear()}">${nomesMeses[d.getMonth()]}/${d.getFullYear()}</option>`;
         }
@@ -536,7 +407,11 @@
 
     function alternarTema() {
         const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
-        document.documentElement.setAttribute('data-theme', escuro ? 'light' : 'dark');
+        if (escuro) {
+            document.documentElement.removeAttribute('data-theme');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
         obterId('btn-tema').innerText = escuro ? "🌙" : "☀️";
         localStorage.setItem('saldo_tema', escuro ? 'light' : 'dark');
     }
@@ -547,49 +422,84 @@
         if (!num) return mostrarAviso("Digite um valor numérico!");
 
         const valor = parseFloat(num[0].replace(',', '.'));
-        let tipo = /\b(recebi|ganhei|salario|salário|entrada)\b/.test(txt) || txt.includes('+') ? 'entrada' : 'saida';
-        let desc = input.value.replace(num[0], '').replace(/\b(comprei|ganhei|paguei|recebi|gastei|no|na|de)\b/gi, '').trim() || "Lançamento";
+        let conta = "", cartao = "", tipo = 'saida';
 
-        let hoje = new Date();
-        transacoes.unshift({
-            id: Date.now(), descricao: desc, valor: valor, tipo: tipo, mes: hoje.getMonth(), ano: hoje.getFullYear(), dia: hoje.getDate()
-        });
+        for (let [k, v] of Object.entries(MAPA_ENTIDADES.bancos)) if (new RegExp(`\\b${k}\\b`).test(txt.replace(/\s+/g, ''))) { conta = v; break; }
+        for (let [k, v] of Object.entries(MAPA_ENTIDADES.cartoes)) if (new RegExp(`\\b${k}\\b`).test(txt.replace(/\s+/g, ''))) { cartao = v; break; }
 
+        if (/\b(cartao|cartão|credito|crédito|black|visa|master|elo|amex|flash|x|mp)\b/.test(txt)) tipo = 'cartao';
+        else if (/\b(recebi|ganhei|salario|salário|entrada|saldo)\b/.test(txt) || txt.includes('+')) tipo = 'entrada';
+
+        let desc = input.value.replace(num[0], ''), parcelas = 1, gId = null, hoje = new Date();
+        const mParc = txt.match(/(\d+)\s*x/i);
+        if (mParc && tipo === 'cartao') { parcelas = parseInt(mParc[1]); desc = desc.replace(mParc[0], ''); gId = Date.now(); }
+
+        desc = desc.replace(/\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|pix|no|na|de|com|o|a|cartao|credito|saldo)\b/gi, '').replace(/\s+/g, ' ').trim() || "Lançamento Avulso";
+
+        for (let p = 1; p <= parcelas; p++) {
+            let d = new Date(hoje.getFullYear(), hoje.getMonth() + (p - 1), hoje.getDate());
+            transacoes.unshift({
+                id: Date.now() + p, grupoParcelas: gId, descricao: parcelas > 1 ? `${desc} (${p}/${parcelas})` : desc,
+                valor: valor / parcelas, tipo, conta, cartao, fixa: false, perguntaFixaRespondida: false, mes: d.getMonth(), ano: d.getFullYear(), dia: hoje.getDate()
+            });
+        }
         localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); 
+        
         atualizarAplicativo();
         input.value = ''; 
         mostrarAviso("Adicionado!");
+
+        // Se o usuário lançar algo por texto, joga ele direto pro Histórico para ver a mágica acontecer
         setTimeout(() => navegarPara('historico'), 400);
     }
 
+    function responderAtributo(id, objChave, valor) {
+        const t = transacoes.find(i => i.id === id);
+        if (t) {
+            transacoes.forEach(i => { if (t.grupoParcelas ? i.grupoParcelas === t.grupoParcelas : i.id === id) { i[objChave] = valor; if(objChave==='fixa') i.perguntaFixaRespondida = true; } });
+            localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Atualizado!");
+        }
+    }
+
+    function alternarModoRosca() {
+        modoGraficoRosca = (modoGraficoRosca + 1) % 3;
+        atualizarAplicativo();
+    }
+
     function atualizarAplicativo() {
-        if (!checarBloqueioPlano()) return;
-        let ent = 0, sai = 0, fMes = obterId('filtro-mes').value;
-        
+        let ent = 0, sai = 0, car = 0, fMes = obterId('filtro-mes').value;
         transacoes.forEach(t => {
             if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return;
-            t.tipo === 'entrada' ? ent += t.valor : sai += t.valor;
+            t.tipo === 'entrada' ? ent += t.valor : t.tipo === 'saida' ? sai += t.valor : car += t.valor;
         });
 
-        const saldo = ent - sai;
+        const saldo = ent - sai - car, gastos = sai + car;
         obterId('card-entradas').setAttribute('data-valor', ent.toFixed(2));
         obterId('card-saidas').setAttribute('data-valor', sai.toFixed(2));
+        obterId('card-cartao').setAttribute('data-valor', car.toFixed(2));
         obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
-        obterId('previsao-valor').setAttribute('data-valor', (sai / 30).toFixed(2));
+        obterId('previsao-valor').setAttribute('data-valor', (gastos / 30).toFixed(2));
 
         const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
         obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
-        obterId('saldo-restante-valor').setAttribute('data-valor', (saldo - valReserva).toFixed(2));
+        obterId('reserva-porcentagem-label').innerText = porcentagemReserva;
+
+        const saldoSeGuardar = saldo - valReserva;
+        obterId('saldo-restante-valor').setAttribute('data-valor', saldoSeGuardar.toFixed(2));
+
+        obterId('card-alerta-comprometido').style.display = ent > 0 && (gastos / ent) >= 0.8 ? 'block' : 'none';
+        
+        const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
+        obterId('card-saldo').style.color = saldo >= 0 ? (escuro ? '#3498db' : '#2c3e50') : 'var(--saida)';
 
         document.querySelectorAll('.valor-dinamico').forEach(el => {
             const attrVal = el.getAttribute('data-valor') || "0";
             const v = parseFloat(parseFloat(attrVal).toFixed(2)).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-            el.innerText = saldosOcultos ? "R$ ••••" : `R$ ${v}`;
+            el.innerText = saldosOcultos ? (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes','v-val-reserva'].includes(el.id) ? "R$ ••••" : "••••") : (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes','v-val-reserva'].includes(el.id) ? `R$ ${v}` : v);
         });
 
         renderizarHistorico();
-        renderizarGraficos(ent, sai, valReserva);
-        gerenciarVisualPlano();
+        renderizarGraficos(ent, gastos, sai, car, valReserva);
     }
 
     function renderizarHistorico() {
@@ -598,68 +508,163 @@
 
         let filtradas = transacoes.filter(t => {
             if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return false;
-            if (fTipo !== 'todos' && t.tipo !== fTipo) return false;
+            if (fTipo !== 'todos' && (fTipo === 'fixa' ? !t.fixa : t.tipo !== fTipo)) return false;
             return true;
         });
 
-        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);padding:20px 0;">Vazio.</p>`; return; }
+        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);font-size:0.8rem;padding:20px 0;">Nenhum registro encontrado.</p>`; return; }
 
         filtradas.forEach(t => {
-            let cor = t.tipo === 'entrada' ? 'var(--entrada)' : 'var(--saida)';
-            let item = document.createElement('div'); item.className = `item-transacao`;
-            
-            // Evento de clique para disparar o Modal de Edição
-            item.onclick = () => abrirModalEdicao(t.id, t.descricao, t.valor);
-            
+            let cls = t.tipo === 'entrada' ? 'tag-entrada' : t.tipo === 'cartao' ? 'tag-cartao' : 'tag-saida';
+            let txt = t.tipo === 'entrada' ? 'Entrada' : t.tipo === 'cartao' ? 'Cartão' : 'Saída';
+            let cor = t.tipo === 'entrada' ? 'var(--entrada)' : t.tipo === 'cartao' ? 'var(--cartao)' : 'var(--saida)';
+            let pen = ((t.tipo === 'saida' || t.tipo === 'entrada') && !t.conta) || (t.tipo === 'cartao' && !t.cartao) || ((t.tipo === 'saida' || t.tipo === 'cartao') && !t.perguntaFixaRespondida);
+
+            let item = document.createElement('div'); item.className = `item-transacao ${pen ? 'pendente' : ''}`;
             item.innerHTML = `
-                <div style="flex-grow:1; display:flex; flex-direction:column; text-align: left;">
-                    <span class="descricao-texto" style="text-transform:capitalize;">${t.descricao}</span>
-                    <small style="color:var(--texto-secundario)">📅 ${t.dia}/${nomesMeses[t.mes]}</small>
+                <div class="linha-principal" onclick="abrirModal(${t.id})">
+                    <div class="detalhes-item">
+                        <span class="descricao-texto">${t.descricao}</span>
+                        <div class="tags-row">
+                            <span class="tipo-tag ${cls}">${txt}</span>
+                            <span class="tag-conta">📅 ${t.dia}/${nomesMeses[t.mes]}</span>
+                            ${t.conta ? `<span class="tag-conta">${t.conta}</span>` : ''}
+                            ${t.cartao ? `<span class="tag-cartao-especifico">💳 ${t.cartao}</span>` : ''}
+                            ${t.fixa ? `<span class="tag-fixa">📌 Fixa</span>` : ''}
+                        </div>
+                    </div>
+                    <span class="valor-historico" style="color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} ${saldosOcultos ? '•••' : 'R$ '+t.valor.toFixed(2).replace('.',',')}</span>
                 </div>
-                <span class="valor-historico" style="color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} R$ ${t.valor.toFixed(2).replace('.',',')}</span>
+                ${pen ? `<div class="container-pergunta"><span class="texto-pergunta">💬 ${!t.conta && t.tipo!=='cartao' ? 'Qual conta utilizou?' : !t.cartao ? 'Qual cartão utilizou?' : 'É uma conta fixa mensal?'}</span><div class="botoes-resposta">
+                    ${!t.conta && t.tipo!=='cartao' ? ['Mercado Pago','Nubank','Itaú','Inter','PicPay'].map(b => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'conta','${b}')">${b}</button>`).join('') :
+                      !t.cartao ? ['Mercado Pago','Nubank','Itaú','Inter','C6 Bank','Bradesco'].map(c => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'cartao','${c}')">${c}</button>`).join('') :
+                      `<button class="btn-resposta" style="color:#9b59b6;" onclick="responderAtributo(${t.id},'fixa',true)">📌 Sim</button><button class="btn-resposta" onclick="responderAtributo(${t.id},'fixa',false)">Não</button>`}
+                </div></div>` : ''}
             `;
             l.appendChild(item);
         });
     }
 
-    function renderizarGraficos(receitas, despesas, reserva) {
-        const total = receitas + despesas;
-        const percGasto = total > 0 ? Math.round((despesas / total) * 100) : 0;
+    function renderizarGraficos(receitas, totalGastos, saídas, cartões, valorReserva) {
+        const fMes = obterId('filtro-mes').value;
+        const totalFluxo = receitas + totalGastos;
+        const percGasto = totalFluxo > 0 ? Math.round((totalGastos / totalFluxo) * 100) : 0;
         
-        obterId('pizza-perc').innerText = `${percGasto}%`;
+        if (saldosOcultos) {
+            obterId('pizza-perc').innerText = "••••";
+            obterId('pizza-rotulo').innerText = "Oculto";
+        } else if (modoGraficoRosca === 0) {
+            obterId('pizza-perc').innerText = `${percGasto}%`;
+            obterId('pizza-rotulo').innerText = "Gasto";
+        } else if (modoGraficoRosca === 1) {
+            obterId('pizza-perc').innerText = `R$ ${totalGastos.toFixed(0)}`;
+            obterId('pizza-rotulo').innerText = "Total Despesas";
+        } else {
+            obterId('pizza-perc').innerText = `R$ ${receitas.toFixed(0)}`;
+            obterId('pizza-rotulo').innerText = "Total Receitas";
+        }
+        
         obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
 
         const boxBarras = obterId('grafico-barras-horizontais');
         boxBarras.innerHTML = '';
-        let tops = transacoes.filter(t => t.tipo === 'saida').slice(0,3);
         
-        if(!tops.length) boxBarras.innerHTML = `<small style="color:var(--texto-secundario);">Sem dados suficientes.</small>`;
-        tops.forEach(d => {
-            let linha = document.createElement('div'); linha.className = 'barra-horizontal-linha';
-            linha.innerHTML = `
-                <div class="barra-horizontal-info"><span>${d.descricao}</span><span>R$ ${d.valor.toFixed(2)}</span></div>
-                <div class="barra-horizontal-bg"><div class="barra-horizontal-preenchimento" style="width:70%; background:var(--saida)"></div></div>
-            `;
-            boxBarras.appendChild(linha);
-        });
+        let despesasOrdenadas = transacoes.filter(t => {
+            if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return false;
+            return t.tipo === 'saida' || t.tipo === 'cartao';
+        }).sort((a,b) => b.valor - a.valor).slice(0, 5);
 
-        const max = Math.max(despesas, reserva, 100);
-        obterId('v-val-contas').setAttribute('data-valor', despesas.toFixed(2));
-        obterId('v-val-reserva').setAttribute('data-valor', reserva.toFixed(2));
-        obterId('v-bar-contas').style.height = `${(despesas/max)*100}%`;
-        obterId('v-bar-reserva').style.height = `${(reserva/max)*100}%`;
+        const maiorGastoUnico = despesasOrdenadas.length > 0 ? despesasOrdenadas[0].valor : 1;
+
+        if(!despesasOrdenadas.length) {
+            boxBarras.innerHTML = `<p style="font-size:0.75rem;color:var(--texto-secundario);text-align:center;">Nenhum registro.</p>`;
+        } else {
+            despesasOrdenadas.forEach(d => {
+                let pBarra = (d.valor / maiorGastoUnico) * 100;
+                let pDoTotal = totalGastos > 0 ? Math.round((d.valor / totalGastos) * 100) : 0;
+                
+                let linha = document.createElement('div');
+                linha.className = 'barra-horizontal-linha';
+                linha.innerHTML = `
+                    <div class="barra-horizontal-info">
+                        <span style="text-transform:capitalize;">${d.descricao} <small style="color:var(--texto-secundario); font-weight:normal;">(${pDoTotal}%)</small></span>
+                        <span>R$ ${d.valor.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <div class="barra-horizontal-bg">
+                        <div class="barra-horizontal-preenchimento" style="width: ${pBarra}%; background:${d.tipo==='cartao'?'var(--cartao)':'var(--saida)'}"></div>
+                    </div>
+                `;
+                boxBarras.appendChild(linha);
+            });
+        }
+
+        const maxEixoV = Math.max(saídas, cartões, valorReserva, 100);
+        obterId('v-val-contas').setAttribute('data-valor', saídas.toFixed(2));
+        obterId('v-val-cartoes').setAttribute('data-valor', cartões.toFixed(2));
+        obterId('v-val-reserva').setAttribute('data-valor', valorReserva.toFixed(2));
+        
+        obterId('v-bar-contas').style.height = `${Math.max((saídas / maxEixoV) * 100, 5)}%`;
+        obterId('v-bar-cartoes').style.height = `${Math.max((cartões / maxEixoV) * 100, 5)}%`;
+        obterId('v-bar-reserva').style.height = `${Math.max((valorReserva / maxEixoV) * 100, 5)}%`;
     }
 
-    function alternarVisibilidade() { saldosOcultos = !saldosOcultos; atualizarAplicativo(); }
+    function abrirModal(id) {
+        idEdicaoAtual = id; const t = transacoes.find(i => i.id === id);
+        obterId('modal-desc').value = t.descricao; obterId('modal-valor').value = t.valor; obterId('modal-tipo').value = t.tipo;
+        obterId('modal-conta').value = t.conta || ''; obterId('modal-cartao-id').value = t.cartao || ''; obterId('modal-fixa').checked = t.fixa;
+        toggleModal('modal-edicao', true);
+    }
+    
+    function fecharModal() { toggleModal('modal-edicao', false); }
+    function abrirConfigReserva() { obterId('modal-reserva-pct').value = porcentagemReserva; toggleModal('modal-reserva', true); }
+    function fecharConfigReserva() { toggleModal('modal-reserva', false); }
+    function alternarVisibilidade() { saldosOcultos = !saldosOcultos; obterId('btn-visibilidade').innerText = saldosOcultos ? "🙈" : "👁️"; atualizarAplicativo(); }
     function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
-    function resetarAplicativoTotal() { if (confirm("Limpar absolutamente tudo?")) { localStorage.clear(); location.reload(); } }
-    function exportarBackup() { alert("Backup gerado!"); }
+
+    function salvarConfigReserva() {
+        const p = parseInt(obterId('modal-reserva-pct').value);
+        if (p >= 1 && p <= 100) { 
+            porcentagemReserva = p; 
+            localStorage.setItem('saldo_reserva_pct', p); 
+            fecharConfigReserva(); 
+            atualizarAplicativo(); 
+            mostrarAviso(`Meta: ${p}%`); 
+        }
+    }
+
+    function acaoSalvar() {
+        const t = transacoes.find(i => i.id === idEdicaoAtual);
+        if (t) {
+            t.descricao = obterId('modal-desc').value.trim(); 
+            t.valor = parseFloat(obterId('modal-valor').value); 
+            t.tipo = obterId('modal-tipo').value;
+            t.conta = obterId('modal-conta').value.trim(); 
+            t.cartao = obterId('modal-cartao-id').value.trim(); 
+            t.fixa = obterId('modal-fixa').checked; 
+            t.perguntaFixaRespondida = true;
+        }
+        fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Salvo!");
+    }
+
+    function acaoExcluir() { transacoes = transacoes.filter(i => i.id !== idEdicaoAtual); fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Excluído!"); }
+    function resetarAplicativoTotal() { if (confirm("Deseja deletar permanentemente todos os registros?")) { transacoes = []; localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Resetado!"); } }
+    function exportarBackup() { if (!transacoes.length) return alert("Sem dados."); const dl = document.createElement('a'); dl.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transacoes))); dl.setAttribute("download", `backup_saldo.json`); dl.click(); }
+
+    function importarBackup(e) {
+        const f = e.target.files[0]; if (!f) return;
+        const r = new FileReader(); r.onload = ev => {
+            try {
+                const d = JSON.parse(ev.target.result);
+                if (Array.isArray(d)) { transacoes = [...transacoes, ...d]; const ids = new Set(); transacoes = transacoes.filter(t => !ids.has(t.id) && ids.add(t.id)); transacoes.sort((a,b) => b.id - a.id); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Importado!"); }
+            } catch (err) { alert("Erro ao importar."); }
+        }; r.readAsText(f);
+    }
 
     window.onload = () => {
         if (localStorage.getItem('saldo_tema') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); obterId('btn-tema').innerText = "☀️"; }
+        porcentagemReserva = parseInt(localStorage.getItem('saldo_reserva_pct')) || 10;
         const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s);
         inicializarFiltroMeses(); 
-        checarSeguranca();
         atualizarAplicativo();
     };
 </script>
