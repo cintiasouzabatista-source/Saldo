@@ -98,6 +98,7 @@
         .donut-chart { width: 180px; height: 180px; border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
         .donut-hole { width: 120px; height: 120px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; color: var(--texto-secundario); text-align: center; }
         .donut-hole span:first-child { font-size: 1.2rem; color: var(--texto-principal); font-weight: 800; }
+        .donut-hole span:first-child { font-size: 1.2rem; color: var(--texto-principal); font-weight: 800; }
         .donut-legenda { display: flex; justify-content: center; gap: 20px; font-size: 0.9rem; font-weight: 600; margin-top: 10px; }
         
         .barra-horizontal-linha { margin-bottom: 12px; }
@@ -150,9 +151,7 @@
 
 <!-- TELA DINÂMICA DE AUTENTICAÇÃO / CADASTRO AO FIM -->
 <div class="modal-overlay" id="tela-auth" style="display: none;">
-    <div class="modal-container" id="container-fluxo-auth">
-        <!-- O conteúdo aqui muda dinamicamente via JS (Aviso ou Formulário) -->
-    </div>
+    <div class="modal-container" id="container-fluxo-auth"></div>
 </div>
 
 <!-- TELA TOTAL DE BLOQUEIO POR FALTA DE PLANO -->
@@ -329,7 +328,6 @@
 <script>
     let transacoes = [], saldosOcultos = false, porcentagemReserva = 10;
     
-    // Configuração de Fábrica Oculta (Administradora entra direto)
     const CPF_ADMINISTRADORA = "00000000000"; 
     const PIN_ADMINISTRADORA = "0000";
     
@@ -337,26 +335,20 @@
     const obterId = id => document.getElementById(id);
     const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 3000); };
 
-    // --- NOVO FLUXO DE SEGURANÇA INTELIGENTE ---
     function checarSeguranca() {
-        const estadoCadastro = localStorage.getItem('app_cadastro_status'); // 'criado' ou null
+        const estadoCadastro = localStorage.getItem('app_cadastro_status');
         const cpfSalvo = localStorage.getItem('app_cpf');
 
-        // Cenário 1: Dispositivo virgem, sem nenhuma configuração interna de fábrica ainda
         if (!estadoCadastro && !cpfSalvo) {
-            // Auto-configura os dados da Administradora em segundo plano
             localStorage.setItem('app_cpf', CPF_ADMINISTRADORA);
             localStorage.setItem('app_pin', PIN_ADMINISTRADORA);
             localStorage.setItem('app_cadastro_status', 'criado');
-            
-            // Você entra direto! Sem modal, sem bloqueio.
             obterId('tela-auth').style.display = "none";
             obterId('conteudo-app').style.filter = "none";
             checarBloqueioPlano();
             return;
         }
 
-        // Cenário 2: Se quem estiver logado for a Administradora de fábrica, entra direto sempre
         if (cpfSalvo === CPF_ADMINISTRADORA) {
             obterId('tela-auth').style.display = "none";
             obterId('conteudo-app').style.filter = "none";
@@ -364,22 +356,18 @@
             return;
         }
 
-        // Cenário 3: É um NOVO USUÁRIO (O sistema detecta que o CPF padrão mudou ou foi resetado)
         if (localStorage.getItem('app_usuario_novo') === 'true' || !cpfSalvo) {
             renderizarAvisoNovoUsuario();
             return;
         }
 
-        // Cenário 4: Usuário comum que já se cadastrou antes (Pede apenas o PIN/Login normal)
         renderizarTelaLoginNormal();
     }
 
-    // Passos do Fluxo para o Novo Usuário
     function renderizarAvisoNovoUsuario() {
         const box = obterId('container-fluxo-auth');
         obterId('tela-auth').style.display = "flex";
         obterId('conteudo-app').style.filter = "blur(5px)";
-
         box.innerHTML = `
             <div style="font-size: 3rem; text-align:center;">🔍</div>
             <div class="modal-title" style="color: var(--saida);">Cadastro Não Reconhecido</div>
@@ -414,7 +402,7 @@
         localStorage.setItem('app_pin', pinInput);
         localStorage.setItem('app_cadastro_status', 'criado');
         localStorage.removeItem('app_usuario_novo');
-        localStorage.setItem('app_primeiro_acesso', Date.now()); // Inicia as 48h de teste dele aqui
+        localStorage.setItem('app_primeiro_acesso', Date.now());
 
         alert("Cadastro realizado com sucesso!");
         obterId('tela-auth').style.display = "none";
@@ -426,7 +414,6 @@
         const box = obterId('container-fluxo-auth');
         obterId('tela-auth').style.display = "flex";
         obterId('conteudo-app').style.filter = "blur(5px)";
-
         box.innerHTML = `
             <div class="modal-title">🔒 Acessar Aplicativo</div>
             <p style="font-size:0.85rem; color:var(--texto-secundario); text-align:center;">Insira seu PIN para liberar o painel.</p>
@@ -449,21 +436,11 @@
         checarBloqueioPlano();
     }
 
-    function bloquearAppManualmente() {
-        renderizarTelaLoginNormal();
-    }
+    function bloquearAppManualmente() { renderizarTelaLoginNormal(); }
+    function alterarCredenciaisAcesso() { if(confirm("Deseja alterar seu CPF e PIN atuais?")) { renderizarFormularioCadastroFim(); } }
 
-    function alterarCredenciaisAcesso() {
-        if(confirm("Deseja alterar seu CPF e PIN atuais?")) {
-            renderizarFormularioCadastroFim();
-        }
-    }
-
-    // --- SISTEMA DE ASSINATURA PREMIUM (48 HORAS TESTE) ---
     function checarBloqueioPlano() {
         const cpfLogado = localStorage.getItem('app_cpf');
-        
-        // Administradora isenta de bloqueios
         if (cpfLogado === CPF_ADMINISTRADORA) {
             obterId('tela-bloqueio-plano').style.display = "none";
             obterId('conteudo-app').style.filter = "none";
@@ -474,11 +451,7 @@
         const planoAtivo = localStorage.getItem('app_plano_premium') === 'true';
 
         if (!primeiroAcesso) return true; 
-
-        if (planoAtivo) {
-            obterId('tela-bloqueio-plano').style.display = "none";
-            return true;
-        }
+        if (planoAtivo) { obterId('tela-bloqueio-plano').style.display = "none"; return true; }
 
         const tempoDecorrido = Date.now() - parseInt(primeiroAcesso);
         const tempoLimite = 48 * 60 * 60 * 1000; 
@@ -505,27 +478,19 @@
         const box = obterId('status-plano-box');
         
         if (cpfLogado === CPF_ADMINISTRADORA) {
-            box.style.background = "#2c3e50";
-            box.style.color = "white";
-            box.innerText = "👑 Modo Administradora (Acesso Ilimitado)";
-            return;
+            box.style.background = "#2c3e50"; box.style.color = "white"; box.innerText = "👑 Modo Administradora (Acesso Ilimitado)"; return;
         }
 
         if(premium) {
-            box.style.background = "var(--alerta-fundo)";
-            box.style.color = "var(--cartao)";
-            box.innerText = "⭐ Plano Premium Ativo";
+            box.style.background = "var(--alerta-fundo)"; box.style.color = "var(--cartao)"; box.innerText = "⭐ Plano Premium Ativo";
         } else {
             const inicial = parseInt(localStorage.getItem('app_primeiro_acesso') || Date.now());
             const restamMs = (inicial + (48*60*60*1000)) - Date.now();
             const restamHoras = Math.max(Math.round(restamMs / (1000*60*60)), 0);
-            box.style.background = "#eee";
-            box.style.color = "#333";
-            box.innerText = `⏳ Teste: Restam ${restamHoras} horas de acesso livre.`;
+            box.style.background = "#eee"; box.style.color = "#333"; box.innerText = `⏳ Teste: Restam ${restamHoras} hours de acesso livre.`;
         }
     }
 
-    // --- EDICAO E EXCLUSÃO DO HISTÓRICO ---
     function abrirModalEdicao(id, descricao, valor) {
         obterId('edit-id').value = id;
         obterId('edit-descricao').value = descricao;
@@ -540,16 +505,11 @@
         const novaDesc = obterId('edit-descricao').value.trim();
         const novoVal = parseFloat(obterId('edit-valor').value);
 
-        if(!novaDesc || isNaN(novoVal) || novoVal <= 0) {
-            alert("Preencha os campos corretamente!");
-            return;
-        }
+        if(!novaDesc || isNaN(novoVal) || novoVal <= 0) { alert("Preencha os campos corretamente!"); return; }
 
         transacoes = transacoes.map(t => t.id === id ? { ...t, descricao: novaDesc, valor: novoVal } : t);
         localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
-        fecharModalEdicao();
-        atualizarAplicativo();
-        mostrarAviso("Alterado!");
+        fecharModalEdicao(); atualizarAplicativo(); mostrarAviso("Alterado!");
     }
 
     function excluirTransacao() {
@@ -557,13 +517,10 @@
         if(confirm("Deseja apagar permanentemente este registro?")) {
             transacoes = transacoes.filter(t => t.id !== id);
             localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
-            fecharModalEdicao();
-            atualizarAplicativo();
-            mostrarAviso("Removido!");
+            fecharModalEdicao(); atualizarAplicativo(); mostrarAviso("Removido!");
         }
     }
 
-    // --- OPERAÇÕES DO FLUXO DE CAIXA ---
     function navegarPara(idAba) {
         if (!checarBloqueioPlano()) return;
         document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
@@ -574,7 +531,6 @@
 
         const titulos = { inicio: "Meu Saldo", historico: "Histórico", graficos: "Análise Mensal", config: "Configurações" };
         obterId('titulo-dinamico').innerText = titulos[idAba];
-
         atualizarAplicativo();
     }
 
@@ -611,8 +567,7 @@
 
         localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); 
         atualizarAplicativo();
-        input.value = ''; 
-        mostrarAviso("Adicionado!");
+        input.value = ''; mostrarAviso("Adicionado!");
         setTimeout(() => navegarPara('historico'), 400);
     }
 
@@ -631,6 +586,7 @@
         obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
         obterId('previsao-valor').setAttribute('data-valor', (sai / 30).toFixed(2));
 
+        // Ajuste inteligente da Reserva baseada estritamente na porcentagem sobre o saldo real positivo
         const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
         obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
         obterId('saldo-restante-valor').setAttribute('data-valor', (saldo - valReserva).toFixed(2));
@@ -694,6 +650,7 @@
             boxBarras.appendChild(linha);
         });
 
+        // Gráfico de colunas verticais usando o valReserva dinâmico e corrigido do fechamento mensal
         const max = Math.max(despesas, reserva, 100);
         obterId('v-val-contas').setAttribute('data-valor', despesas.toFixed(2));
         obterId('v-val-reserva').setAttribute('data-valor', reserva.toFixed(2));
@@ -706,9 +663,7 @@
     
     function resetarAplicativoTotal() { 
         if (confirm("Limpar dados? Isso simulará um dispositivo novo.")) { 
-            localStorage.clear(); 
-            localStorage.setItem('app_usuario_novo', 'true'); 
-            location.reload(); 
+            localStorage.clear(); localStorage.setItem('app_usuario_novo', 'true'); location.reload(); 
         } 
     }
     function exportarBackup() { alert("Backup gerado!"); }
