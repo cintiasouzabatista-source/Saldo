@@ -3,395 +3,637 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1e3a8a">
-    <title>Fluxo de Caixa Premium</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    <title>Meu Fluxo de Caixa Inteligente</title>
     <style>
         :root {
-            --bg-body: #0b132b; 
-            --bg-container: #1c2541; 
-            --bg-card: #ffffff; 
-            --texto-principal: #1e293b;
-            --texto-secundario: #64748b;
-            --borda: #cbd5e1;
-            
-            --entrada: #10b981; 
-            --saida: #ef4444; 
-            --cartao: #eab308; 
-            --reserva-cor: #6366f1; 
-            --tag-bg: #475569;
-            
-            --chat-bg: #0f172a;
-            --chat-user: #1e3a8a; 
-            --chat-bot: #1e293b;
+            --bg-body: #f4f6f9;
+            --bg-container: white;
+            --texto-principal: #222;
+            --texto-secundario: #666;
+            --borda: #eee;
+            --shadow: rgba(0,0,0,0.05);
+            --entrada: #2ecc71;
+            --saida: #e74c3c;
+            --cartao: #f39c12;
+            --reserva-cor: #16a085;
+            --azul-saldo: #2c3e50;
+            --alerta-fundo: #fef9e7;
+            --alerta-borda: #f1c40f;
+            --alerta-danger-bg: #fce4e4;
+            --alerta-danger-borda: #e74c3c;
+            --bg-retratil: #f8f9fa;
+            --chat-verde: #056162;
+            --bg-rodape: white;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background-color: #f8fafc; color: var(--texto-principal); padding: 12px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
-        .container { width: 100%; max-width: 480px; display: flex; flex-direction: column; min-height: calc(100vh - 40px); padding-bottom: 70px; }
-        
-        /* HEADER */
-        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px; padding: 5px; border-bottom: 1px solid var(--borda); }
-        .app-title { font-size: 1.2rem; font-weight: 800; color: #1e3a8a; }
-        .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--texto-secundario); }
-
-        /* CARD SALDO ATUAL (FIEL À IMAGEM) */
-        .card-saldo-atual {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-bottom: 14px;
-            border: 1px solid #e2e8f0;
+        [data-theme="dark"] {
+            --bg-body: #121212;
+            --bg-container: #1e1e1e;
+            --texto-principal: #f5f6fa;
+            --texto-secundario: #aaa;
+            --borda: #2d2d2d;
+            --shadow: rgba(0,0,0,0.3);
+            --azul-saldo: #3498db;
+            --alerta-fundo: #2c2512;
+            --alerta-borda: #d35400;
+            --alerta-danger-bg: #2c1616;
+            --alerta-danger-borda: #c0392b;
+            --bg-retratil: #282828;
+            --reserva-cor: #1abc9c;
+            --bg-rodape: #1e1e1e;
         }
-        .card-saldo-atual h3 { font-size: 0.8rem; color: var(--texto-secundario); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .card-saldo-atual .valor-principal { font-size: 2rem; font-weight: 800; color: #1d4ed8; margin-bottom: 6px; }
-        .card-saldo-atual .gasto-medio { font-size: 0.85rem; color: var(--texto-principal); margin-bottom: 6px; }
-        .card-saldo-atual .sugestao-reserva { font-size: 0.85rem; color: #10b981; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
+        body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
-        .select-reserva { background: #f1f5f9; border: 1px solid var(--borda); color: var(--texto-principal); font-size: 0.8rem; padding: 2px 4px; border-radius: 4px; font-weight: bold; }
-        .btn-guardar-reserva { background: var(--reserva-cor); color: white; border: none; padding: 6px 12px; font-size: 0.75rem; font-weight: bold; border-radius: 20px; cursor: pointer; margin-top: 8px; width: 100%; }
-
-        /* CHAT WHATSAPP */
-        .chat-janela { background: var(--chat-bg); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 12px; height: auto; max-height: 280px; border: 1px solid #0f172a; }
-        .chat-mensagens { padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; max-height: 200px; }
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: calc(100vh - 90px); position: relative; }
         
-        .msg { max-width: 85%; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
-        .msg.user { background: var(--chat-user); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .msg.bot { background: var(--chat-bot); color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px; padding: 5px; flex-shrink: 0; }
+        .app-title { font-size: 1.5rem; font-weight: 700; color: var(--azul-saldo); letter-spacing: -0.5px; }
+        .app-actions { display: flex; gap: 14px; align-items: center; }
+        .icon-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--texto-secundario); display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 50%; }
+        .icon-btn:hover { background: var(--borda); }
+
+        .app-view { display: none; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 20px; }
+        .app-view.ativa { display: flex; flex-direction: column; }
+
+        /* CARDS */
+        .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
+        .card { background: var(--bg-container); padding: 14px 8px; border-radius: 10px; box-shadow: 0 2px 4px var(--shadow); text-align: center; border: 1px solid var(--borda); }
+        .card h3 { font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card p { font-size: 1.1rem; font-weight: bold; }
         
-        /* BALÕES DE CLIQUE */
-        .chat-opcoes { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px; background: #1e293b; border-top: 1px solid #334155; }
-        .btn-opcao { background: #334155; color: white; border: none; padding: 8px 12px; font-size: 0.8rem; font-weight: bold; border-radius: 20px; cursor: pointer; }
-        .btn-opcao:hover { background: #2563eb; }
-
-        .chat-input-area { display: flex; gap: 8px; background: #fff; padding: 8px 14px; border-radius: 25px; border: 1px solid var(--borda); align-items: center; margin-bottom: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-        .chat-input { flex-grow: 1; border: none; padding: 6px 4px; font-size: 0.95rem; outline: none; color: var(--texto-principal); }
-        .btn-enviar { background: #1d4ed8; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        /* FILTROS E HISTÓRICO FIEL */
-        .filtros-linha { display: flex; gap: 8px; margin-bottom: 12px; }
-        .filtro-select { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--borda); background: #fff; font-size: 0.85rem; font-weight: 500; color: var(--texto-principal); }
-
-        .titulo-secao { font-size: 0.85rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .card.saldo-total { 
+            grid-column: span 3; 
+            padding: 22px 14px; 
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .card.saldo-total h3 { font-size: 0.95rem; }
+        .card.saldo-total p { font-size: 2.1rem; font-weight: 800; }
         
-        .historico-container { background: #fff; border-radius: 14px; padding: 8px 14px; border: 1px solid #e2e8f0; margin-bottom: 14px; }
-        .item-transacao { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
-        .item-transacao:last-child { border-bottom: none; }
+        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin-top: 8px; border-top: 1px solid var(--borda); padding-top: 12px; }
+        .linha-subtil-valores { display: flex; justify-content: center; gap: 16px; width: 100%; flex-wrap: wrap; }
+        .previsao-texto, .reserva-texto { font-size: 0.9rem; color: var(--texto-secundario); }
+        .previsao-texto strong, .reserva-texto strong { font-weight: 700; color: var(--texto-principal); }
+        .saldo-restante-texto { font-size: 1rem; color: var(--reserva-cor); font-weight: bold; margin-top: 4px; }
+        .alerta-comprometido { background: var(--alerta-danger-bg); border: 1px solid var(--alerta-danger-borda); color: var(--saida); padding: 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; margin-top: 6px; width: 100%; text-align: center; display: none; }
+
+        .cor-entrada { color: var(--entrada); }
+        .cor-saida { color: var(--saida); }
+        .cor-cartao { color: var(--cartao); }
+
+        .filtros-container { display: flex; gap: 8px; margin-bottom: 12px; width: 100%; }
+        .filtro-select { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.9rem; color: var(--texto-principal); outline: none; font-weight: 600; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
+
+        .secao-conteudo { background: var(--bg-container); border-radius: 10px; box-shadow: 0 2px 4px var(--shadow); padding: 16px; border: 1px solid var(--borda); margin-bottom: 15px; }
         
-        /* TAGS (FIEL À IMAGEM) */
-        .info-meta { display: flex; flex-direction: column; gap: 4px; text-align: left; }
-        .nome-item { font-size: 0.95rem; font-weight: 600; color: #1e293b; }
-        .tags-container { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
-        .tag { font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; color: #fff; text-transform: uppercase; }
-        .tag.tag-saida { background: #ef4444; }
-        .tag.tag-entrada { background: #10b981; }
-        .tag.tag-cartao { background: #eab308; color: #000; }
-        .tag.tag-banco { background: #64748b; }
-        .tag.tag-fixa { background: #a855f7; }
-        .tag.tag-reserva { background: #6366f1; }
+        /* GRÁFICOS */
+        .grafico-wrapper { margin-bottom: 10px; }
+        .grafico-wrapper h4 { font-size: 0.9rem; color: var(--texto-principal); margin-bottom: 15px; text-transform: uppercase; border-left: 4px solid #2c3e50; padding-left: 8px; font-weight: 700; }
+        .donut-chart { width: 180px; height: 180px; border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .donut-hole { width: 120px; height: 120px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; color: var(--texto-secundario); text-align: center; }
+        .donut-hole span:first-child { font-size: 1.2rem; color: var(--texto-principal); font-weight: 800; }
+        .donut-legenda { display: flex; justify-content: center; gap: 20px; font-size: 0.9rem; font-weight: 600; margin-top: 10px; }
         
-        .valor-item { font-size: 1rem; font-weight: 700; text-align: right; white-space: nowrap; }
+        .barra-horizontal-linha { margin-bottom: 12px; }
+        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+        .barra-horizontal-bg { background: var(--bg-body); height: 14px; border-radius: 8px; width: 100%; overflow: hidden; border: 1px solid var(--borda); }
+        .barra-horizontal-preenchimento { height: 100%; border-radius: 8px; width: 0%; }
+        
+        .colunas-container { display: flex; justify-content: center; gap: 35px; height: 140px; align-items: flex-end; padding-top: 30px; margin-bottom: 25px; border-bottom: 2px solid var(--borda); position: relative; }
+        .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 80px; position: relative; }
+        .coluna-vertical-barra { width: 38px; border-top-left-radius: 6px; border-top-right-radius: 6px; height: 2px; }
+        .coluna-vertical-valor { font-size: 0.8rem; font-weight: bold; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
+        .coluna-vertical-rotulo { font-size: 0.85rem; font-weight: 600; position: absolute; bottom: -25px; color: var(--texto-secundario); text-transform: uppercase; }
 
-        /* SEÇÃO GRÁFICOS (RESERVA APARECE APENAS AQUI) */
-        .graficos-container { background: #fff; border-radius: 14px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 14px; display: flex; flex-direction: column; gap: 12px; }
-        .barra-progresso-wrapper { display: flex; flex-direction: column; gap: 4px; }
-        .barra-progresso-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: var(--texto-secundario); }
-        .barra-bg { background: #e2e8f0; height: 10px; border-radius: 5px; overflow: hidden; width: 100%; }
-        .barra-fill { height: 100%; border-radius: 5px; transition: width 0.4s ease; }
+        /* HISTÓRICO */
+        .item-transacao { display: flex; justify-content: space-between; align-items: center; padding: 12px 6px; border-bottom: 1px solid var(--borda); cursor: pointer; }
+        .item-transacao:hover { background: var(--bg-body); }
+        .descricao-texto { font-size: 0.95rem; font-weight: 500; color: var(--texto-principal); }
+        .valor-historico { font-weight: 700; font-size: 0.95rem; }
 
-        /* NAV BAR */
-        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: #fff; border-top: 1px solid var(--borda); display: flex; justify-content: space-around; align-items: center; z-index: 90; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.75rem; gap: 2px; width: 50%; }
-        .tab-item.ativo { color: #1d4ed8; font-weight: bold; }
+        /* CHAT INÍCIO */
+        .chat-container-dinamico { margin-top: auto; padding: 10px 0; width: 100%; }
+        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 16px; border-radius: 25px; box-shadow: 0 3px 6px rgba(0,0,0,0.15); align-items: center; position: relative; }
+        .chat-input { flex-grow: 1; border: none; padding: 6px 5px; font-size: 1rem; outline: none; background: transparent; color: white; }
+        .chat-input::placeholder { color: rgba(255, 255, 255, 0.75); }
+        .btn-enviar { background: white; color: var(--chat-verde); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: bold; }
+        
+        .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; opacity: 0; pointer-events: none; white-space: nowrap; z-index: 10; }
+        .alerta-temporario.mostrar { opacity: 1; }
 
-        /* MODAL */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
-        .modal-container { background: #fff; width: 100%; max-width: 400px; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--borda); }
-        .modal-input { width: 100%; padding: 10px; border: 1px solid var(--borda); border-radius: 6px; outline: none; }
+        /* MENU RODAPÉ */
+        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--bg-rodape); border-top: 1px solid var(--borda); display: flex; justify-content: flex-start; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 90; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .menu-rodape::-webkit-scrollbar { display: none; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.75rem; font-weight: bold; gap: 4px; min-width: 90px; height: 100%; justify-content: center; flex-shrink: 0; }
+        .tab-item span:first-child { font-size: 1.4rem; }
+        .tab-item.ativo { color: var(--azul-saldo); }
+
+        /* MODAIS */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--borda); }
+        .modal-title { font-size: 1.2rem; font-weight: bold; color: var(--texto-principal); text-align: center; }
+        .modal-input { width: 100%; padding: 10px; border: 1px solid var(--borda); border-radius: 6px; font-size: 1rem; background: var(--bg-container); color: var(--texto-principal); outline: none; text-align: center; }
+        .btn-modal { width: 100%; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; border: none; cursor: pointer; text-align: center; margin-top: 5px; }
+        .btn-salvar { background: var(--entrada); color: white; }
+        .btn-deletar { background: var(--saida); color: white; }
+        .btn-cancelar { background: #7f8c8d; color: white; }
+        .config-btn-bloco { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: bold; text-align: left; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<!-- MODAL EDIÇÃO -->
-<div class="modal-overlay" id="modal-edicao">
-    <div class="modal-container">
-        <h3 style="text-align:center;">📝 Editar Registro</h3>
-        <input type="hidden" id="edit-id">
-        <input type="text" id="edit-descricao" class="modal-input">
-        <input type="number" id="edit-valor" step="0.01" class="modal-input">
-        <button class="modal-input" style="background: var(--entrada); color:white; font-weight:bold; border:none; cursor:pointer;" onclick="salvarEdicaoTransacao()">Salvar</button>
-        <button class="modal-input" style="background: var(--saida); color:white; font-weight:bold; border:none; cursor:pointer;" onclick="excluirTransacao()">🗑️ Excluir</button>
-        <button class="modal-input" style="background: #64748b; color:white; font-weight:bold; border:none; cursor:pointer;" onclick="fecharModalEdicao()">Cancelar</button>
+<!-- TELA DINÂMICA DE AUTENTICAÇÃO / CADASTRO AO FIM -->
+<div class="modal-overlay" id="tela-auth" style="display: none;">
+    <div class="modal-container" id="container-fluxo-auth">
+        <!-- O conteúdo aqui muda dinamicamente via JS (Aviso ou Formulário) -->
     </div>
 </div>
 
-<div class="container">
+<!-- TELA TOTAL DE BLOQUEIO POR FALTA DE PLANO -->
+<div class="modal-overlay" id="tela-bloqueio-plano" style="display: none; z-index: 200;">
+    <div class="modal-container" style="text-align: center; gap: 16px;">
+        <div style="font-size: 3rem;">⏳</div>
+        <div class="modal-title" style="color: var(--saida);">Período de Testes Expirado</div>
+        <p style="font-size: 0.95rem; color: var(--texto-secundario);">Suas 48 horas de teste gratuito acabaram. Adira ao plano premium para liberar o acesso vitalício aos seus dados.</p>
+        <div style="background: var(--bg-body); padding: 15px; border-radius: 8px; border: 1px dashed var(--borda);">
+            <span style="font-size: 0.85rem; text-transform: uppercase; font-weight: bold; color: var(--texto-secundario);">Valor do Plano</span>
+            <h2 style="font-size: 1.8rem; color: var(--entrada); margin-top: 4px;">R$ 5,99 <small style="font-size:0.9rem; color:var(--texto-secundario);">/mês</small></h2>
+        </div>
+        <button class="btn-modal btn-salvar" style="background: var(--entrada);" onclick="simularAssinatura()">Assinar Plano Premium</button>
+        <button class="btn-modal" style="background: var(--saida); color: white;" onclick="resetarAplicativoTotal()">Resetar e Apagar Dados</button>
+    </div>
+</div>
+
+<!-- MODAL PARA EDITAR OU EXCLUIR TRANSAÇÃO -->
+<div class="modal-overlay" id="modal-edicao" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-title">📝 Editar Registro</div>
+        <input type="hidden" id="edit-id">
+        <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Descrição</label>
+        <input type="text" id="edit-descricao" class="modal-input" style="text-align:left;">
+        <label style="font-size:0.8rem; font-weight:bold; color:var(--texto-secundario);">Valor (R$)</label>
+        <input type="number" id="edit-valor" step="0.01" class="modal-input" style="text-align:left;">
+        <button class="btn-modal btn-salvar" onclick="salvarEdicaoTransacao()">Salvar Alterações</button>
+        <button class="btn-modal btn-deletar" onclick="excluirTransacao()">🗑️ Excluir Registro</button>
+        <button class="btn-modal btn-cancelar" onclick="fecharModalEdicao()">Cancelar</button>
+    </div>
+</div>
+
+<div class="container" id="conteudo-app">
     
+    <!-- CABEÇALHO -->
     <div class="app-header">
-        <div class="app-title">Fluxo de Caixa</div>
-        <button class="icon-btn" onclick="alternarVisibilidade()">👁️</button>
+        <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
+        <div class="app-actions">
+            <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()">👁️</button>
+            <button class="icon-btn" id="btn-tema" onclick="alternarTema()">🌙</button>
+        </div>
     </div>
 
-    <!-- CARD PRINCIPAL SALDO -->
-    <div class="card-saldo-atual">
-        <h3>Saldo Atual</h3>
-        <div class="valor-principal valor-dinamico" id="card-saldo" data-valor="0.00">R$ 0,00</div>
-        <div class="gasto-medio">Gasto médio por dia: <span class="valor-dinamico" id="card-gasto-medio" data-valor="0.00">R$ 0,00</span></div>
-        <div class="sugestao-reserva">
-            💰 Você pode guardar: <span class="valor-dinamico" id="reserva-sugerida" data-valor="0.00">R$ 0,00</span> 
-            <select id="porcentagem-reserva" class="select-reserva" onchange="alterarPorcentagemReserva(this.value)">
-                <option value="10">(10%)</option>
-                <option value="20">(20%)</option>
-                <option value="30">(30%)</option>
-                <option value="50">(50%)</option>
+    <!-- TELA 1: INÍCIO -->
+    <div class="app-view ativa" id="view-inicio">
+        <div class="cards-container">
+            <div class="card">
+                <h3>Entradas</h3>
+                <p class="cor-entrada">R$ <span class="valor-dinamico" id="card-entradas" data-valor="0.00">0,00</span></p>
+            </div>
+            <div class="card">
+                <h3>Saídas</h3>
+                <p class="cor-saida">R$ <span class="valor-dinamico" id="card-saidas" data-valor="0.00">0,00</span></p>
+            </div>
+            <div class="card">
+                <h3>Cartão</h3>
+                <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
+            </div>
+            <div class="card saldo-total">
+                <h3>Saldo Atual</h3>
+                <p id="card-saldo" class="valor-dinamico" data-valor="0.00">R$ 0,00</p>
+                
+                <div class="info-subtil-container">
+                    <div class="linha-subtil-valores">
+                        <div class="previsao-texto" id="card-previsao"><strong>Média/Dia:</strong> <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
+                        <div class="reserva-texto" id="card-reserva"><strong>Guardar:</strong> <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span></div>
+                    </div>
+                    <div class="saldo-restante-texto" id="card-saldo-restante">
+                        <strong>Saldo se Guardar:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
+                    </div>
+                </div>
+                <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Orçamento Comprometido (>80%).</div>
+            </div>
+        </div>
+
+        <div class="chat-container-dinamico">
+            <div class="chat-input-area">
+                <div id="alerta" class="alerta-temporario">Lançado!</div>
+                <input type="text" id="campo-texto" class="chat-input" placeholder="Conversar ou lançar (Ex: uber 45 nubank)..." onkeypress="verificarTecla(event)">
+                <button class="btn-enviar" onclick="processarComando()">➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA 2: HISTÓRICO -->
+    <div class="app-view" id="view-historico">
+        <div class="filtros-container">
+            <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
+            <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
+                <option value="todos">Todos os Tipos</option>
+                <option value="entrada">🟢 Entradas</option>
+                <option value="saida">🔴 Saídas</option>
+                <option value="cartao">💳 Cartão</option>
             </select>
         </div>
-        <button class="btn-guardar-reserva" onclick="transferirParaReservaManual()">🎯 Retirar para Conta Reserva</button>
+        <div class="secao-conteudo" style="flex-grow: 1; overflow-y: auto;" id="lista-transacoes-container"></div>
     </div>
 
-    <!-- INTERFACE CHAT COM BALÕES CONFIGURÁVEIS -->
-    <div class="chat-janela">
-        <div class="chat-mensagens" id="chat-box">
-            <div class="msg bot">Olá! Digite a descrição e o valor.<br><small>Ex: Uber 45</small></div>
+    <!-- TELA 3: GRÁFICOS -->
+    <div class="app-view" id="view-graficos">
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>1. CONTAS X CARTÕES X RESERVAS</h4>
+                <div class="colunas-container">
+                    <div class="coluna-vertical-bloco">
+                        <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
+                        <div class="coluna-vertical-barra" id="v-bar-contas" style="background: #7f8c8d;"></div>
+                        <span class="coluna-vertical-rotulo">Contas</span>
+                    </div>
+                    <div class="coluna-vertical-bloco">
+                        <span class="coluna-vertical-valor valor-dinamico" id="v-val-cartoes" data-valor="0.00">R$ 0,00</span>
+                        <div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div>
+                        <span class="coluna-vertical-rotulo">Cartões</span>
+                    </div>
+                    <div class="coluna-vertical-bloco">
+                        <span class="coluna-vertical-valor valor-dinamico" id="v-val-reserva" data-valor="0.00">R$ 0,00</span>
+                        <div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div>
+                        <span class="coluna-vertical-rotulo">Reserva</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="chat-opcoes-container" class="chat-opcoes" style="display:none;"></div>
+
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>2. DESPESAS X RECEITAS</h4>
+                <div class="donut-chart" id="grafico-pizza-elemento">
+                    <div class="donut-hole">
+                        <span id="pizza-perc">0%</span>
+                        <span id="pizza-rotulo" style="font-size:0.75rem; text-transform:uppercase;">Gasto</span>
+                    </div>
+                </div>
+                <div class="donut-legenda">
+                    <span style="color:var(--entrada)">● Receitas</span>
+                    <span style="color:var(--saida)">● Despesas</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>3. TOP DESPESAS MENSAL</h4>
+                <div id="grafico-barras-horizontais"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="chat-input-area">
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: uber 45 mercado pago..." onkeypress="verificarTecla(event)">
-        <button class="btn-enviar" onclick="enviarMensagemUsuario()">➔</button>
-    </div>
+    <!-- TELA 4: CONFIGURAÇÕES -->
+    <div class="app-view" id="view-config">
+        <div class="secao-conteudo">
+            <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--texto-secundario);">PLANO PREMIUM</h4>
+            <div id="status-plano-box" style="padding: 10px; border-radius: 6px; font-weight: bold; margin-bottom: 12px; font-size: 0.9rem;"></div>
+            
+            <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--texto-secundario);">SEGURANÇA</h4>
+            <button class="config-btn-bloco" onclick="alterarCredenciaisAcesso()">🔐 Alterar CPF ou PIN de Acesso</button>
+            <button class="config-btn-bloco" onclick="bloquearAppManualmente()">🔒 Bloquear Tela Agora</button>
 
-    <!-- FILTROS -->
-    <div class="filtros-linha">
-        <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
-        <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
-            <option value="todos">Todos os Tipos</option>
-            <option value="entrada">🟢 Entradas</option>
-            <option value="saida">🔴 À Vista</option>
-            <option value="cartao">💳 Cartões</option>
-            <option value="fixa">📌 Contas Fixas</option>
-        </select>
-    </div>
-
-    <!-- HISTÓRICO DE LANÇAMENTOS -->
-    <div class="titulo-secao">Histórico de Lançamentos</div>
-    <div class="historico-container" id="lista-transacoes-container"></div>
-
-    <!-- GRÁFICOS INCLUSO APENAS AQUI COM A RESERVA -->
-    <div class="titulo-secao">Resumo e Gráficos</div>
-    <div class="graficos-container">
-        <div class="barra-progresso-wrapper">
-            <div class="barra-progresso-label"><span>🟢 Entradas</span><span id="g-pct-entrada">0%</span></div>
-            <div class="barra-bg"><div id="g-fill-entrada" class="barra-fill" style="background:var(--entrada); width:0%;"></div></div>
-        </div>
-        <div class="barra-progresso-wrapper">
-            <div class="barra-progresso-label"><span>🔴 À Vista / Pix</span><span id="g-pct-saida">0%</span></div>
-            <div class="barra-bg"><div id="g-fill-saida" class="barra-fill" style="background:var(--saida); width:0%;"></div></div>
-        </div>
-        <div class="barra-progresso-wrapper">
-            <div class="barra-progresso-label"><span>💳 Cartões de Crédito</span><span id="g-pct-cartao">0%</span></div>
-            <div class="barra-bg"><div id="g-fill-cartao" class="barra-fill" style="background:var(--cartao); width:0%;"></div></div>
-        </div>
-        <div class="barra-progresso-wrapper" style="border-top: 1px dashed var(--borda); padding-top: 8px;">
-            <div class="barra-progresso-label" style="color:var(--reserva-cor);"><span>🏦 Cofre Reserva Acumulado</span><span id="g-val-reserva">R$ 0,00</span></div>
-            <div class="barra-bg"><div id="g-fill-reserva" class="barra-fill" style="background:var(--reserva-cor); width:0%;"></div></div>
+            <h4 style="font-size:0.85rem; margin-top:15px; margin-bottom:12px; color:var(--texto-secundario);">DADOS</h4>
+            <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar Banco (JSON)</button>
+            <button class="config-btn-bloco" style="color:var(--saida); border-color:var(--alerta-danger-borda);" onclick="resetarAplicativoTotal()">🗑️ Limpar Todos os Dados</button>
         </div>
     </div>
 
 </div>
 
-<!-- NAV BAR ABAIXO -->
+<!-- MENU INFERIOR -->
 <div class="menu-rodape">
-    <button class="tab-item ativo" onclick="location.reload()"><span>💬</span><span>Painel Chat</span></button>
-    <button class="tab-item" onclick="obterId('campo-texto').focus()"><span>➕</span><span>Novo Gasto</span></button>
+    <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
+    <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
+    <button class="tab-item" id="tab-graficos" onclick="navegarPara('graficos')"><span>📊</span><span>Gráficos</span></button>
+    <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
 </div>
 
 <script>
-    let transacoes = [], saldosOcultos = false, porcentagemReserva = 10, reservaAcumulada = 0;
-    let fluxoConversa = null;
+    let transacoes = [], saldosOcultos = false, porcentagemReserva = 10;
+    
+    // Configuração de Fábrica Oculta (Administradora entra direto)
+    const CPF_ADMINISTRADORA = "00000000000"; 
+    const PIN_ADMINISTRADORA = "0000";
+    
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     const obterId = id => document.getElementById(id);
+    const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 3000); };
+
+    // --- NOVO FLUXO DE SEGURANÇA INTELIGENTE ---
+    function checarSeguranca() {
+        const estadoCadastro = localStorage.getItem('app_cadastro_status'); // 'criado' ou null
+        const cpfSalvo = localStorage.getItem('app_cpf');
+
+        // Cenário 1: Dispositivo virgem, sem nenhuma configuração interna de fábrica ainda
+        if (!estadoCadastro && !cpfSalvo) {
+            // Auto-configura os dados da Administradora em segundo plano
+            localStorage.setItem('app_cpf', CPF_ADMINISTRADORA);
+            localStorage.setItem('app_pin', PIN_ADMINISTRADORA);
+            localStorage.setItem('app_cadastro_status', 'criado');
+            
+            // Você entra direto! Sem modal, sem bloqueio.
+            obterId('tela-auth').style.display = "none";
+            obterId('conteudo-app').style.filter = "none";
+            checarBloqueioPlano();
+            return;
+        }
+
+        // Cenário 2: Se quem estiver logado for a Administradora de fábrica, entra direto sempre
+        if (cpfSalvo === CPF_ADMINISTRADORA) {
+            obterId('tela-auth').style.display = "none";
+            obterId('conteudo-app').style.filter = "none";
+            checarBloqueioPlano();
+            return;
+        }
+
+        // Cenário 3: É um NOVO USUÁRIO (O sistema detecta que o CPF padrão mudou ou foi resetado)
+        if (localStorage.getItem('app_usuario_novo') === 'true' || !cpfSalvo) {
+            renderizarAvisoNovoUsuario();
+            return;
+        }
+
+        // Cenário 4: Usuário comum que já se cadastrou antes (Pede apenas o PIN/Login normal)
+        renderizarTelaLoginNormal();
+    }
+
+    // Passos do Fluxo para o Novo Usuário
+    function renderizarAvisoNovoUsuario() {
+        const box = obterId('container-fluxo-auth');
+        obterId('tela-auth').style.display = "flex";
+        obterId('conteudo-app').style.filter = "blur(5px)";
+
+        box.innerHTML = `
+            <div style="font-size: 3rem; text-align:center;">🔍</div>
+            <div class="modal-title" style="color: var(--saida);">Cadastro Não Reconhecido</div>
+            <p style="font-size:0.95rem; color:var(--texto-secundario); text-align:center; line-height:1.4;">
+                O sistema não identificou nenhum cadastro ativo neste dispositivo. Para começar a usar, você precisará registrar suas credenciais agora.
+            </p>
+            <button class="btn-modal btn-salvar" style="margin-top:10px;" onclick="renderizarFormularioCadastroFim()">Criar Meu Cadastro Agora</button>
+        `;
+    }
+
+    function renderizarFormularioCadastroFim() {
+        const box = obterId('container-fluxo-auth');
+        box.innerHTML = `
+            <div class="modal-title">✨ Finalizar Cadastro</div>
+            <p style="font-size:0.85rem; color:var(--texto-secundario); text-align:center;">Defina o seu CPF e PIN de 4 dígitos para proteger seus dados.</p>
+            <input type="text" id="reg-cpf" class="modal-input" placeholder="Digite seu CPF (Apenas números)" maxlength="11">
+            <input type="password" id="reg-pin" class="modal-input" placeholder="Crie um PIN de 4 dígitos" maxlength="4" inputmode="numeric">
+            <button class="btn-modal btn-salvar" onclick="salvarCadastroNovoUsuario()">Concluir e Entrar</button>
+        `;
+    }
+
+    function salvarCadastroNovoUsuario() {
+        const cpfInput = obterId('reg-cpf').value.replace(/\D/g, '');
+        const pinInput = obterId('reg-pin').value.replace(/\D/g, '');
+
+        if (cpfInput.length !== 11 || pinInput.length !== 4) {
+            alert("Por favor, insira um CPF válido com 11 dígitos e crie um PIN de 4 números.");
+            return;
+        }
+
+        localStorage.setItem('app_cpf', cpfInput);
+        localStorage.setItem('app_pin', pinInput);
+        localStorage.setItem('app_cadastro_status', 'criado');
+        localStorage.removeItem('app_usuario_novo');
+        localStorage.setItem('app_primeiro_acesso', Date.now()); // Inicia as 48h de teste dele aqui
+
+        alert("Cadastro realizado com sucesso!");
+        obterId('tela-auth').style.display = "none";
+        obterId('conteudo-app').style.filter = "none";
+        atualizarAplicativo();
+    }
+
+    function renderizarTelaLoginNormal() {
+        const box = obterId('container-fluxo-auth');
+        obterId('tela-auth').style.display = "flex";
+        obterId('conteudo-app').style.filter = "blur(5px)";
+
+        box.innerHTML = `
+            <div class="modal-title">🔒 Acessar Aplicativo</div>
+            <p style="font-size:0.85rem; color:var(--texto-secundario); text-align:center;">Insira seu PIN para liberar o painel.</p>
+            <input type="password" id="login-pin" class="modal-input" placeholder="PIN de 4 dígitos" maxlength="4" inputmode="numeric">
+            <button class="btn-modal btn-salvar" onclick="processarLoginComum()">Entrar</button>
+        `;
+    }
+
+    function processarLoginComum() {
+        const pinInput = obterId('login-pin').value.replace(/\D/g, '');
+        const pinSalvo = localStorage.getItem('app_pin');
+
+        if (pinInput !== pinSalvo) {
+            alert("PIN incorreto!");
+            return;
+        }
+
+        obterId('tela-auth').style.display = "none";
+        obterId('conteudo-app').style.filter = "none";
+        checarBloqueioPlano();
+    }
+
+    function bloquearAppManualmente() {
+        renderizarTelaLoginNormal();
+    }
+
+    function alterarCredenciaisAcesso() {
+        if(confirm("Deseja alterar seu CPF e PIN atuais?")) {
+            renderizarFormularioCadastroFim();
+        }
+    }
+
+    // --- SISTEMA DE ASSINATURA PREMIUM (48 HORAS TESTE) ---
+    function checarBloqueioPlano() {
+        const cpfLogado = localStorage.getItem('app_cpf');
+        
+        // Administradora isenta de bloqueios
+        if (cpfLogado === CPF_ADMINISTRADORA) {
+            obterId('tela-bloqueio-plano').style.display = "none";
+            obterId('conteudo-app').style.filter = "none";
+            return true;
+        }
+
+        let primeiroAcesso = localStorage.getItem('app_primeiro_acesso');
+        const planoAtivo = localStorage.getItem('app_plano_premium') === 'true';
+
+        if (!primeiroAcesso) return true; 
+
+        if (planoAtivo) {
+            obterId('tela-bloqueio-plano').style.display = "none";
+            return true;
+        }
+
+        const tempoDecorrido = Date.now() - parseInt(primeiroAcesso);
+        const tempoLimite = 48 * 60 * 60 * 1000; 
+
+        if (tempoDecorrido > tempoLimite) {
+            obterId('tela-bloqueio-plano').style.display = "flex";
+            obterId('conteudo-app').style.filter = "blur(8px)";
+            return false;
+        }
+        return true;
+    }
+
+    function simularAssinatura() {
+        localStorage.setItem('app_plano_premium', 'true');
+        alert("Obrigado por assinar! Seu acesso total e vitalício foi liberado.");
+        obterId('tela-bloqueio-plano').style.display = "none";
+        obterId('conteudo-app').style.filter = "none";
+        atualizarAplicativo();
+    }
+
+    function gerenciarVisualPlano() {
+        const premium = localStorage.getItem('app_plano_premium') === 'true';
+        const cpfLogado = localStorage.getItem('app_cpf');
+        const box = obterId('status-plano-box');
+        
+        if (cpfLogado === CPF_ADMINISTRADORA) {
+            box.style.background = "#2c3e50";
+            box.style.color = "white";
+            box.innerText = "👑 Modo Administradora (Acesso Ilimitado)";
+            return;
+        }
+
+        if(premium) {
+            box.style.background = "var(--alerta-fundo)";
+            box.style.color = "var(--cartao)";
+            box.innerText = "⭐ Plano Premium Ativo";
+        } else {
+            const inicial = parseInt(localStorage.getItem('app_primeiro_acesso') || Date.now());
+            const restamMs = (inicial + (48*60*60*1000)) - Date.now();
+            const restamHoras = Math.max(Math.round(restamMs / (1000*60*60)), 0);
+            box.style.background = "#eee";
+            box.style.color = "#333";
+            box.innerText = `⏳ Teste: Restam ${restamHoras} horas de acesso livre.`;
+        }
+    }
+
+    // --- EDICAO E EXCLUSÃO DO HISTÓRICO ---
+    function abrirModalEdicao(id, descricao, valor) {
+        obterId('edit-id').value = id;
+        obterId('edit-descricao').value = descricao;
+        obterId('edit-valor').value = valor;
+        obterId('modal-edicao').style.display = "flex";
+    }
+
+    function fecharModalEdicao() { obterId('modal-edicao').style.display = "none"; }
+
+    function salvarEdicaoTransacao() {
+        const id = parseInt(obterId('edit-id').value);
+        const novaDesc = obterId('edit-descricao').value.trim();
+        const novoVal = parseFloat(obterId('edit-valor').value);
+
+        if(!novaDesc || isNaN(novoVal) || novoVal <= 0) {
+            alert("Preencha os campos corretamente!");
+            return;
+        }
+
+        transacoes = transacoes.map(t => t.id === id ? { ...t, descricao: novaDesc, valor: novoVal } : t);
+        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
+        fecharModalEdicao();
+        atualizarAplicativo();
+        mostrarAviso("Alterado!");
+    }
+
+    function excluirTransacao() {
+        const id = parseInt(obterId('edit-id').value);
+        if(confirm("Deseja apagar permanentemente este registro?")) {
+            transacoes = transacoes.filter(t => t.id !== id);
+            localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
+            fecharModalEdicao();
+            atualizarAplicativo();
+            mostrarAviso("Removido!");
+        }
+    }
+
+    // --- OPERAÇÕES DO FLUXO DE CAIXA ---
+    function navegarPara(idAba) {
+        if (!checarBloqueioPlano()) return;
+        document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo'));
+        
+        obterId(`view-${idAba}`).classList.add('ativa');
+        obterId(`tab-${idAba}`).classList.add('ativo');
+
+        const titulos = { inicio: "Meu Saldo", historico: "Histórico", graficos: "Análise Mensal", config: "Configurações" };
+        obterId('titulo-dinamico').innerText = titulos[idAba];
+
+        atualizarAplicativo();
+    }
 
     function inicializarFiltroMeses() {
         const hoje = new Date(), f = obterId('filtro-mes');
-        let html = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual (${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()})</option><option value="todos">Todos os Meses</option>`;
+        let html = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual (${nomesMeses[hoje.getMonth()]}/${hoje.getFullYear()})</option><option value="todos">Todos</option>`;
+        for (let i = 1; i <= 4; i++) {
+            let d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+            html += `<option value="${d.getMonth()}-${d.getFullYear()}">${nomesMeses[d.getMonth()]}/${d.getFullYear()}</option>`;
+        }
         f.innerHTML = html;
     }
 
-    function adicionarMensagemChat(autor, texto) {
-        const box = obterId('chat-box');
-        const d = document.createElement('div');
-        d.className = `msg ${autor}`;
-        d.innerHTML = texto;
-        box.appendChild(d);
-        box.scrollTop = box.scrollHeight;
+    function alternarTema() {
+        const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', escuro ? 'light' : 'dark');
+        obterId('btn-tema').innerText = escuro ? "🌙" : "☀️";
+        localStorage.setItem('saldo_tema', escuro ? 'light' : 'dark');
     }
 
-    function mostrarBaloes(opcoes) {
-        const container = obterId('chat-opcoes-container');
-        container.innerHTML = '';
-        if(!opcoes || opcoes.length === 0) { container.style.display = 'none'; return; }
-        
-        opcoes.forEach(o => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-opcao';
-            btn.innerText = o.label;
-            btn.onclick = o.acao;
-            container.appendChild(btn);
-        });
-        container.style.display = 'flex';
-    }
-
-    function enviarMensagemUsuario() {
-        const input = obterId('campo-texto');
-        const txt = input.value.trim();
-        if(!txt) return;
-
-        adicionarMensagemChat('user', txt);
-        input.value = '';
-        analisarLancamentoInicial(txt);
-    }
-
-    function analisarLancamentoInicial(txt) {
+    function processarComando() {
+        const input = obterId('campo-texto'), txt = input.value.trim().toLowerCase();
         const num = txt.match(/\d+([.,]\d+)?/g);
-        if (!num) {
-            adicionarMensagemChat('bot', "Por favor, informe a descrição e o valor. Ex: <code>Suhay 141</code>");
-            return;
-        }
+        if (!num) return mostrarAviso("Digite um valor numérico!");
+
         const valor = parseFloat(num[0].replace(',', '.'));
-        let desc = txt.replace(num[0], '').trim() || "Lançamento";
-
-        fluxoConversa = { desc: desc, valor: valor, tipo: null, contaNome: null, fixa: false };
-
-        // 1º Passo: Escolha da Categoria
-        adicionarMensagemChat('bot', `Qual categoria pertence o valor de <b>R$ ${valor.toFixed(2)}</b>?`);
-        mostrarBaloes([
-            { label: '🔴 À Vista / Pix', acao: () => selecionarTipoBalao('saida') },
-            { label: '💳 Cartão Crédito', acao: () => selecionarTipoBalao('cartao') },
-            { label: '🟢 Entrada', acao: () => selecionarTipoBalao('entrada') }
-        ]);
-    }
-
-    function selecionarTipoBalao(tipo) {
-        fluxoConversa.tipo = tipo;
-        if(tipo === 'entrada') {
-            fluxoConversa.contaNome = "Recebimento";
-            finalizarLancamentoChat();
-        } else {
-            // 2º Passo: Escolha da Conta / Banco / Cartão
-            adicionarMensagemChat('bot', `Qual conta ou cartão foi utilizado?`);
-            mostrarBaloes([
-                { label: 'Mercado Pago', acao: () => selecionarContaBalao('Mercado Pago') },
-                { label: 'Nubank', acao: () => selecionarContaBalao('Nubank') },
-                { label: 'Inter', acao: () => selecionarContaBalao('Inter') },
-                { label: 'Dinheiro/Outro', acao: () => selecionarContaBalao('Outro') }
-            ]);
-        }
-    }
-
-    function selecionarContaBalao(conta) {
-        fluxoConversa.contaNome = conta;
-        // 3º Passo: Fixa ou Variável
-        adicionarMensagemChat('bot', `Esta é uma conta fixa mensal?`);
-        mostrarBaloes([
-            { label: '📌 Sim, Fixa', acao: () => finalizarComFixa(true) },
-            { label: '⚡ Não, Variável', acao: () => finalizarComFixa(false) }
-        ]);
-    }
-
-    function finalizarComFixa(isFixa) {
-        fluxoConversa.fixa = isFixa;
-        finalizarLancamentoChat();
-    }
-
-    function finalizarLancamentoChat() {
-        let hoje = new Date();
-        transacoes.unshift({
-            id: Date.now(),
-            descricao: fluxoConversa.desc,
-            valor: fluxoConversa.valor,
-            tipo: fluxoConversa.tipo,
-            contaNome: fluxoConversa.contaNome,
-            fixa: fluxoConversa.fixa,
-            mes: hoje.getMonth(),
-            ano: hoje.getFullYear(),
-            dia: hoje.getDate()
-        });
-
-        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
-        adicionarMensagemChat('bot', `✅ Lançamento computado perfeitamente!`);
-        mostrarBaloes([]);
-        fluxoConversa = null;
-        atualizarAplicativo();
-    }
-
-    function alterarPorcentagemReserva(val) {
-        porcentagemReserva = parseInt(val);
-        localStorage.setItem('saldo_porcentagem_reserva', porcentagemReserva);
-        atualizarAplicativo();
-    }
-
-    function transferirParaReservaManual() {
-        let ent = transacoes.filter(t=>t.tipo==='entrada').reduce((a,c)=>a+c.valor,0);
-        let sai = transacoes.filter(t=>t.tipo==='saida'||t.tipo==='reserva').reduce((a,c)=>a+c.valor,0);
-        let car = transacoes.filter(t=>t.tipo==='cartao').reduce((a,c)=>a+c.valor,0);
-        const saldoLivre = ent - (sai + car);
-        const sugerido = saldoLivre > 0 ? saldoLivre * (porcentagemReserva/100) : 0;
-
-        const valorDefinido = prompt("Quanto deseja transferir para o seu Cofre Reserva?", sugerido.toFixed(2));
-        if(!valorDefinido || isNaN(parseFloat(valorDefinido)) || parseFloat(valorDefinido) <= 0) return;
-
-        const valorFinal = parseFloat(valorDefinido);
-        if(valorFinal > saldoLivre) { alert("Saldo insuficiente."); return; }
+        let tipo = /\b(recebi|ganhei|salario|salário|entrada)\b/.test(txt) || txt.includes('+') ? 'entrada' : 'saida';
+        let desc = input.value.replace(num[0], '').replace(/\b(comprei|ganhei|paguei|recebi|gastei|no|na|de)\b/gi, '').trim() || "Lançamento";
 
         let hoje = new Date();
         transacoes.unshift({
-            id: Date.now(), descricao: "Retirada para Reserva", valor: valorFinal, tipo: 'reserva', contaNome: 'Cofre', fixa: false, mes: hoje.getMonth(), ano: hoje.getFullYear(), dia: hoje.getDate()
+            id: Date.now(), descricao: desc, valor: valor, tipo: tipo, mes: hoje.getMonth(), ano: hoje.getFullYear(), dia: hoje.getDate()
         });
 
-        reservaAcumulada += valorFinal;
-        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
-        localStorage.setItem('saldo_reserva_acumulada', reservaAcumulada.toFixed(2));
+        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); 
         atualizarAplicativo();
+        input.value = ''; 
+        mostrarAviso("Adicionado!");
+        setTimeout(() => navegarPara('historico'), 400);
     }
 
     function atualizarAplicativo() {
-        let ent = 0, sai = 0, car = 0, res = reservaAcumulada, fMes = obterId('filtro-mes').value;
+        if (!checarBloqueioPlano()) return;
+        let ent = 0, sai = 0, fMes = obterId('filtro-mes').value;
         
         transacoes.forEach(t => {
             if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return;
-            if (t.tipo === 'entrada') ent += t.valor;
-            else if (t.tipo === 'cartao') car += t.valor;
-            else if (t.tipo === 'saida' || t.tipo === 'reserva') sai += t.valor;
+            t.tipo === 'entrada' ? ent += t.valor : sai += t.valor;
         });
 
-        const saldoGeral = ent - (sai + car);
-        const gastoMedio = (sai + car) / 30;
-        const sugeridoGuardar = saldoGeral > 0 ? saldoGeral * (porcentagemReserva / 100) : 0;
-        
-        obterId('card-saldo').setAttribute('data-valor', saldoGeral.toFixed(2));
-        obterId('card-gasto-medio').setAttribute('data-valor', gastoMedio.toFixed(2));
-        obterId('reserva-sugerida').setAttribute('data-valor', sugeridoGuardar.toFixed(2));
-        obterId('g-val-reserva').innerText = `R$ ${res.toFixed(2).replace('.',',')}`;
+        const saldo = ent - sai;
+        obterId('card-entradas').setAttribute('data-valor', ent.toFixed(2));
+        obterId('card-saidas').setAttribute('data-valor', sai.toFixed(2));
+        obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
+        obterId('previsao-valor').setAttribute('data-valor', (sai / 30).toFixed(2));
 
-        // Atualiza Gráficos por Categorias
-        let totalMovido = ent + sai + car;
-        if(totalMovido > 0) {
-            let pEnt = (ent/totalMovido)*100, pSai = (sai/totalMovido)*100, pCar = (car/totalMovido)*100;
-            obterId('g-pct-entrada').innerText = `${pEnt.toFixed(0)}%`;
-            obterId('g-fill-entrada').style.width = `${pEnt}%`;
-            obterId('g-pct-saida').innerText = `${pSai.toFixed(0)}%`;
-            obterId('g-fill-saida').style.width = `${pSai}%`;
-            obterId('g-pct-cartao').innerText = `${pCar.toFixed(0)}%`;
-            obterId('g-fill-cartao').style.width = `${pCar}%`;
-        }
-        
-        // Gráfico da reserva relativo ao Saldo Atual
-        let pRes = saldoGeral > 0 ? Math.min((res / saldoGeral) * 100, 100) : 0;
-        obterId('g-fill-reserva').style.width = `${pRes}%`;
+        const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
+        obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
+        obterId('saldo-restante-valor').setAttribute('data-valor', (saldo - valReserva).toFixed(2));
 
         document.querySelectorAll('.valor-dinamico').forEach(el => {
             const attrVal = el.getAttribute('data-valor') || "0";
@@ -400,6 +642,8 @@
         });
 
         renderizarHistorico();
+        renderizarGraficos(ent, sai, valReserva);
+        gerenciarVisualPlano();
     }
 
     function renderizarHistorico() {
@@ -408,70 +652,72 @@
 
         let filtradas = transacoes.filter(t => {
             if (fMes !== 'todos' && (t.mes != fMes.split('-')[0] || t.ano != fMes.split('-')[1])) return false;
-            if (fTipo === 'fixa') return t.fixa === true;
             if (fTipo !== 'todos' && t.tipo !== fTipo) return false;
             return true;
         });
 
-        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);padding:15px 0;">Nenhum registro.</p>`; return; }
+        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);padding:20px 0;">Vazio.</p>`; return; }
 
         filtradas.forEach(t => {
-            let cor = t.tipo === 'entrada' ? 'var(--entrada)' : (t.tipo === 'cartao' ? 'var(--cartao)' : 'var(--saida)');
-            let sinal = t.tipo === 'entrada' ? '+' : '-';
-            let rotuloTipo = t.tipo === 'entrada' ? 'ENTRADA' : (t.tipo === 'cartao' ? 'CARTÃO' : 'SAÍDA');
-            
+            let cor = t.tipo === 'entrada' ? 'var(--entrada)' : 'var(--saida)';
             let item = document.createElement('div'); item.className = `item-transacao`;
             item.onclick = () => abrirModalEdicao(t.id, t.descricao, t.valor);
             item.innerHTML = `
-                <div class="info-meta">
-                    <span class="nome-item">${t.descricao}</span>
-                    <div class="tags-container">
-                        <span class="tag ${t.tipo==='entrada'?'tag-entrada':(t.tipo==='cartao'?'tag-cartao':'tag-saida')}">${rotuloTipo}</span>
-                        <span class="tag tag-banco">📅 ${t.dia}/${nomesMeses[t.mes]}</span>
-                        ${t.contaNome ? `<span class="tag tag-banco">${t.contaNome}</span>`:''}
-                        ${t.fixa ? `<span class="tag tag-fixa">📌 FIXA</span>`:''}
-                    </div>
+                <div style="flex-grow:1; display:flex; flex-direction:column; text-align: left;">
+                    <span class="descricao-texto" style="text-transform:capitalize;">${t.descricao}</span>
+                    <small style="color:var(--texto-secundario)">📅 ${t.dia}/${nomesMeses[t.mes]}</small>
                 </div>
-                <span class="valor-item" style="color:${cor}">${sinal} R$ ${t.valor.toFixed(2).replace('.',',')}</span>
+                <span class="valor-historico" style="color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} R$ ${t.valor.toFixed(2).replace('.',',')}</span>
             `;
             l.appendChild(item);
         });
     }
 
-    function abrirModalEdicao(id, descricao, valor) {
-        obterId('edit-id').value = id;
-        obterId('edit-descricao').value = descricao;
-        obterId('edit-valor').value = valor;
-        obterId('modal-edicao').style.display = "flex";
-    }
-    function fecharModalEdicao() { obterId('modal-edicao').style.display = "none"; }
+    function renderizarGraficos(receitas, despesas, reserva) {
+        const total = receitas + despesas;
+        const percGasto = total > 0 ? Math.round((despesas / total) * 100) : 0;
+        
+        obterId('pizza-perc').innerText = `${percGasto}%`;
+        obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
 
-    function salvarEdicaoTransacao() {
-        const id = parseInt(obterId('edit-id').value);
-        transacoes = transacoes.map(t => t.id === id ? { ...t, descricao: obterId('edit-descricao').value, valor: parseFloat(obterId('edit-valor').value) } : t);
-        reservaAcumulada = transacoes.filter(t => t.tipo === 'reserva').reduce((acc, cur) => acc + cur.valor, 0);
-        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
-        localStorage.setItem('saldo_reserva_acumulada', reservaAcumulada.toFixed(2));
-        fecharModalEdicao(); atualizarAplicativo();
-    }
+        const boxBarras = obterId('grafico-barras-horizontais');
+        boxBarras.innerHTML = '';
+        let tops = transacoes.filter(t => t.tipo === 'saida').slice(0,3);
+        
+        if(!tops.length) boxBarras.innerHTML = `<small style="color:var(--texto-secundario);">Sem dados suficientes.</small>`;
+        tops.forEach(d => {
+            let linha = document.createElement('div'); linha.className = 'barra-horizontal-linha';
+            linha.innerHTML = `
+                <div class="barra-horizontal-info"><span>${d.descricao}</span><span>R$ ${d.valor.toFixed(2)}</span></div>
+                <div class="barra-horizontal-bg"><div class="barra-horizontal-preenchimento" style="width:70%; background:var(--saida)"></div></div>
+            `;
+            boxBarras.appendChild(linha);
+        });
 
-    function excluirTransacao() {
-        const id = parseInt(obterId('edit-id').value);
-        transacoes = transacoes.filter(t => t.id !== id);
-        reservaAcumulada = transacoes.filter(t => t.tipo === 'reserva').reduce((acc, cur) => acc + cur.valor, 0);
-        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
-        localStorage.setItem('saldo_reserva_acumulada', reservaAcumulada.toFixed(2));
-        fecharModalEdicao(); atualizarAplicativo();
+        const max = Math.max(despesas, reserva, 100);
+        obterId('v-val-contas').setAttribute('data-valor', despesas.toFixed(2));
+        obterId('v-val-reserva').setAttribute('data-valor', reserva.toFixed(2));
+        obterId('v-bar-contas').style.height = `${(despesas/max)*100}%`;
+        obterId('v-bar-reserva').style.height = `${(reserva/max)*100}%`;
     }
 
     function alternarVisibilidade() { saldosOcultos = !saldosOcultos; atualizarAplicativo(); }
-    function verificarTecla(e) { if (e.key === 'Enter') enviarMensagemUsuario(); }
+    function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
+    
+    function resetarAplicativoTotal() { 
+        if (confirm("Limpar dados? Isso simulará um dispositivo novo.")) { 
+            localStorage.clear(); 
+            localStorage.setItem('app_usuario_novo', 'true'); 
+            location.reload(); 
+        } 
+    }
+    function exportarBackup() { alert("Backup gerado!"); }
 
     window.onload = () => {
+        if (localStorage.getItem('saldo_tema') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); obterId('btn-tema').innerText = "☀️"; }
         const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s);
-        const r = localStorage.getItem('saldo_reserva_acumulada'); if (r) reservaAcumulada = parseFloat(r);
-        const p = localStorage.getItem('saldo_porcentagem_reserva'); if (p) { porcentagemReserva = parseInt(p); obterId('porcentagem-reserva').value = `(${p}%)`; }
         inicializarFiltroMeses(); 
+        checarSeguranca();
         atualizarAplicativo();
     };
 </script>
