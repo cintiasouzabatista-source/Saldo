@@ -5,188 +5,234 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4f46e5">
+    <meta name="theme-color" content="#6366f1">
     <title>Meu Fluxo de Caixa Inteligente</title>
     <style>
-        /* Paleta Temática Contemporânea / Minimalista */
+        /* DEFINIÇÃO DOS TEMAS SELECIONÁVEIS */
         :root {
-            --bg-body: #f3f4f6; /* Cinza claro e limpo */
+            /* Tema 1: Cyber Pop (Default) */
+            --bg-body: #f4f4f9;
             --bg-container: #ffffff; 
-            --texto-principal: #1f2937; /* Grafite escuro elegante */
+            --texto-principal: #111827;
             --texto-secundario: #6b7280;
-            --borda: #e5e7eb; /* Linhas bem sutis */
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --radius: 16px; /* Cantos arredondados modernos */
+            --borda: #111827; /* Bordas grossas marcantes do Neo-Brutalisme */
+            --espessura-borda: 2px;
+            --shadow: 4px 4px 0px #111827; /* Sombra sólida jovial */
+            --radius: 16px;
             --entrada: #10b981; /* Verde esmeralda */
-            --saida: #ef4444; /* Vermelho vibrante */
-            --cartao: #f59e0b; /* Ambar */
-            --reserva-cor: #6366f1; /* Indigo moderno */
+            --saida: #ff4a5a; /* Vermelho vibrante */
+            --cartao: #ffb800; /* Amarelo Pop */
+            --reserva-cor: #6366f1; /* Roxo Neon */
             --azul-saldo: #3b82f6;
-            --alerta-fundo: #fef3c7;
-            --alerta-borda: #f59e0b;
+            --alerta-fundo: #fee2e2;
+            --alerta-borda: #ff4a5a;
             --alerta-danger-bg: #fee2e2;
-            --alerta-danger-borda: #ef4444;
+            --alerta-danger-borda: #ff4a5a;
             --bg-retratil: #f9fafb;
-            --chat-verde: #4f46e5; /* Roxo/Indigo contemporâneo */
-            --bg-rodape: rgba(255, 255, 255, 0.85); /* Efeito translúcido */
+            --chat-verde: #6366f1; 
+            --bg-rodape: rgba(255, 255, 255, 0.9);
         }
 
-        [data-theme="dark"] {
-            --bg-body: #0b0f19;
-            --bg-container: #151f32;
-            --texto-principal: #f3f4f6;
-            --texto-secundario: #9ca3af;
-            --borda: #223049;
-            --shadow: 0 4px 12px rgba(0,0,0,0.3);
-            --azul-saldo: #60a5fa;
-            --alerta-fundo: #26241c;
-            --alerta-borda: #d97706;
-            --alerta-danger-bg: #2d1f1f;
-            --alerta-danger-borda: #dc2626;
-            --bg-retratil: #1b263b;
-            --reserva-cor: #818cf8;
-            --bg-rodape: rgba(21, 31, 50, 0.85);
+        /* Tema 2: Pastel Soft */
+        [data-theme="pastel"] {
+            --bg-body: #fdf6ec;
+            --bg-container: #ffffff;
+            --texto-principal: #4a3e3d;
+            --texto-secundario: #8c7e7d;
+            --borda: #e8dcd8;
+            --espessura-borda: 1px;
+            --shadow: 0 8px 20px rgba(140, 126, 125, 0.1);
+            --radius: 20px;
+            --entrada: #a8dadc;
+            --saida: #e63946;
+            --cartao: #f4a261;
+            --reserva-cor: #b5e2fa;
+            --chat-verde: #e29578;
+            --bg-rodape: rgba(255, 255, 255, 0.9);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--bg-body); color: var(--texto-principal); padding: 16px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; transition: background 0.3s; }
+        /* Tema 3: Sunset Glow */
+        [data-theme="sunset"] {
+            --bg-body: #fff5f5;
+            --bg-container: #ffffff;
+            --texto-principal: #2d3748;
+            --texto-secundario: #718096;
+            --borda: #2d3748;
+            --espessura-borda: 2px;
+            --shadow: 4px 4px 0px #f6ad55;
+            --radius: 12px;
+            --entrada: #48bb78;
+            --saida: #f56565;
+            --cartao: #ed8936;
+            --reserva-cor: #ed64a6;
+            --chat-verde: #d53f8c;
+            --bg-rodape: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Tema 4: Arcade Neon (Dark) */
+        [data-theme="arcade"] {
+            --bg-body: #0d0e15;
+            --bg-container: #171923;
+            --texto-principal: #00ffff; /* Ciano Neon */
+            --texto-secundario: #a0aec0;
+            --borda: #ff007f; /* Rosa Neon */
+            --espessura-borda: 2px;
+            --shadow: 3px 3px 0px #00ffff;
+            --radius: 12px;
+            --entrada: #39ff14; /* Verde Neon */
+            --saida: #ff003c;
+            --cartao: #ffaa00;
+            --reserva-cor: #9d4edd;
+            --chat-verde: #ff007f;
+            --bg-rodape: rgba(23, 25, 35, 0.95);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-body); color: var(--texto-principal); padding: 16px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; transition: all 0.3s ease; }
         
         /* Container Principal */
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: calc(100vh - 95px); position: relative; }
         
         /* CABEÇALHO DO APP */
-        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 16px; padding: 4px; flex-shrink: 0; }
-        .app-title { font-size: 1.4rem; font-weight: 800; color: var(--texto-principal); letter-spacing: -0.5px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px; padding: 4px; flex-shrink: 0; }
+        .app-title { font-size: 1.6rem; font-weight: 900; color: var(--texto-principal); letter-spacing: -1px; text-transform: lowercase; }
+        .app-title::after { content: '.'; color: var(--saida); }
         .app-actions { display: flex; gap: 10px; align-items: center; }
-        .icon-btn { background: var(--bg-container); border: 1px solid var(--borda); font-size: 1.1rem; cursor: pointer; color: var(--texto-principal); display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; box-shadow: var(--shadow); transition: transform 0.2s; }
-        .icon-btn:active { transform: scale(0.92); }
+        .icon-btn { background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); font-size: 1.2rem; cursor: pointer; color: var(--texto-principal); display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: var(--radius); box-shadow: var(--shadow); transition: all 0.1s; }
+        .icon-btn:active { transform: translate(2px, 2px); box-shadow: none; }
 
         /* VIEWS (TELAS DO APP) */
         .app-view { display: none; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 30px; }
         .app-view.ativa { display: flex; flex-direction: column; }
 
         /* CARDS NO TOPO (INÍCIO) */
-        .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-        .card { background: var(--bg-container); padding: 14px 8px; text-align: center; border-radius: var(--radius); border: 1px solid var(--borda); box-shadow: var(--shadow); }
-        .card h3 { font-size: 0.75rem; color: var(--texto-secundario); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-        .card p { font-size: 1rem; font-weight: 700; letter-spacing: -0.3px; }
+        .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+        .card { background: var(--bg-container); padding: 16px 8px; text-align: center; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); box-shadow: var(--shadow); }
+        .card h3 { font-size: 0.8rem; color: var(--texto-secundario); margin-bottom: 6px; text-transform: lowercase; font-weight: bold; }
+        .card p { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; }
         
         .card.saldo-total { 
             grid-column: span 3; 
-            padding: 20px; 
+            padding: 24px; 
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, var(--bg-container) 0%, var(--bg-body) 100%);
+            background: var(--bg-container);
         }
-        .card.saldo-total h3 { font-size: 0.8rem; letter-spacing: 0.8px; }
-        .card.saldo-total p { font-size: 2rem; font-weight: 800; letter-spacing: -1px; }
+        .card.saldo-total h3 { font-size: 0.9rem; letter-spacing: 0px; }
+        .card.saldo-total p { font-size: 2.4rem; font-weight: 900; letter-spacing: -1.5px; }
         
-        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin-top: 8px; border-top: 1px dashed var(--borda); padding-top: 12px; }
+        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin-top: 12px; border-top: 2px dashed var(--borda); padding-top: 16px; }
         .linha-subtil-valores { display: flex; justify-content: center; gap: 16px; width: 100%; flex-wrap: wrap; }
-        .previsao-texto, .reserva-texto { font-size: 0.8rem; color: var(--texto-secundario); font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
-        .previsao-texto strong, .reserva-texto strong { font-weight: 600; color: var(--texto-principal); }
-        .saldo-restante-texto { font-size: 0.85rem; color: var(--reserva-cor); font-weight: 700; margin-top: 4px; }
-        .config-reserva-inline { cursor: pointer; font-size: 0.75rem; opacity: 0.7; }
+        .previsao-texto, .reserva-texto { font-size: 0.85rem; color: var(--texto-secundario); font-weight: bold; display: inline-flex; align-items: center; gap: 4px; }
+        .previsao-texto strong, .reserva-texto strong { font-weight: 900; color: var(--texto-principal); }
+        .saldo-restante-texto { font-size: 0.95rem; color: var(--texto-principal); font-weight: 900; margin-top: 6px; background: var(--reserva-cor); padding: 4px 12px; border-radius: 8px; border: var(--espessura-borda) solid var(--borda); }
+        .config-reserva-inline { cursor: pointer; font-size: 0.85rem; }
         
-        .alerta-comprometido { background: var(--alerta-danger-bg); border: 1px solid var(--alerta-danger-borda); color: var(--saida); padding: 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-top: 6px; width: 100%; text-align: center; display: none; }
+        .alerta-comprometido { background: var(--alerta-danger-bg); border: var(--espessura-borda) solid var(--alerta-danger-borda); color: var(--texto-principal); padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-top: 6px; width: 100%; text-align: center; display: none; }
 
         .cor-entrada { color: var(--entrada); }
         .cor-saida { color: var(--saida); }
         .cor-cartao { color: var(--cartao); }
 
         /* FILTROS */
-        .filtros-container { display: flex; gap: 10px; margin-bottom: 16px; width: 100%; }
-        .filtro-select { flex: 1; padding: 10px 14px; border-radius: var(--radius); border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.85rem; color: var(--texto-principal); box-shadow: var(--shadow); outline: none; font-weight: 600; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+        .filtros-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; }
+        .filtro-select { flex: 1; padding: 12px 16px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); font-size: 0.9rem; color: var(--texto-principal); box-shadow: var(--shadow); outline: none; font-weight: bold; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 
         /* SEÇÃO DE CONTEÚDO */
-        .secao-conteudo { background: var(--bg-container); padding: 16px; border-radius: var(--radius); border: 1px solid var(--borda); box-shadow: var(--shadow); margin-bottom: 16px; }
+        .secao-conteudo { background: var(--bg-container); padding: 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); box-shadow: var(--shadow); margin-bottom: 20px; }
         
-        /* GRÁFICOS */
+        /* GRÁFICOS POP */
         .grafico-wrapper { margin-bottom: 8px; }
-        .grafico-wrapper h4 { font-size: 0.8rem; color: var(--texto-secundario); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
-        .donut-chart { width: 130px; height: 130px; border-radius: 50%; margin: 12px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-        .donut-hole { width: 92px; height: 92px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; color: var(--texto-secundario); text-align: center; padding: 4px; box-shadow: var(--shadow); }
-        .donut-hole span:first-child { font-size: 1rem; font-weight: 800; color: var(--texto-principal); letter-spacing: -0.5px; }
-        .donut-legenda { display: flex; justify-content: center; gap: 16px; font-size: 0.8rem; font-weight: 600; margin-top: 8px; }
+        .grafico-wrapper h4 { font-size: 0.9rem; color: var(--texto-principal); margin-bottom: 16px; text-transform: lowercase; font-weight: 900; }
+        .donut-chart { width: 140px; height: 140px; border-radius: 50%; margin: 12px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; border: var(--espessura-borda) solid var(--borda); box-shadow: var(--shadow); }
+        .donut-hole { width: 96px; height: 96px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; color: var(--texto-secundario); text-align: center; border: var(--espessura-borda) solid var(--borda); }
+        .donut-hole span:first-child { font-size: 1.2rem; font-weight: 900; color: var(--texto-principal); }
+        .donut-legenda { display: flex; justify-content: center; gap: 16px; font-size: 0.85rem; font-weight: bold; margin-top: 14px; }
         
-        .barra-horizontal-linha { margin-bottom: 12px; }
-        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; }
-        .barra-horizontal-bg { background: var(--bg-body); height: 8px; width: 100%; border-radius: 4px; overflow: hidden; }
-        .barra-horizontal-preenchimento { height: 100%; width: 0%; border-radius: 4px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .barra-horizontal-linha { margin-bottom: 14px; }
+        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: bold; margin-bottom: 6px; }
+        .barra-horizontal-bg { background: var(--bg-body); height: 14px; width: 100%; border-radius: 6px; border: var(--espessura-borda) solid var(--borda); overflow: hidden; }
+        .barra-horizontal-preenchimento { height: 100%; width: 0%; transition: width 0.5s ease; }
         
-        .colunas-container { display: flex; justify-content: center; gap: 32px; height: 110px; align-items: flex-end; padding-top: 25px; margin-bottom: 20px; border-bottom: 1px solid var(--borda); position: relative; }
+        .colunas-container { display: flex; justify-content: center; gap: 36px; height: 120px; align-items: flex-end; padding-top: 25px; margin-bottom: 20px; border-bottom: var(--espessura-borda) solid var(--borda); position: relative; }
         .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 65px; position: relative; }
-        .coluna-vertical-barra { width: 24px; border-radius: 6px 6px 0 0; height: 2px; min-height: 2px; transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .coluna-vertical-valor { font-size: 0.72rem; font-weight: 700; position: absolute; top: -20px; white-space: nowrap; text-align: center; width: 100%; }
-        .coluna-vertical-rotulo { font-size: 0.75rem; font-weight: 600; position: absolute; bottom: -24px; color: var(--texto-secundario); white-space: nowrap; }
+        .coluna-vertical-barra { width: 28px; border-radius: 6px 6px 0 0; border: var(--espessura-borda) solid var(--borda); border-bottom: none; height: 2px; min-height: 2px; transition: height 0.5s ease; }
+        .coluna-vertical-valor { font-size: 0.75rem; font-weight: 900; position: absolute; top: -20px; white-space: nowrap; text-align: center; }
+        .coluna-vertical-rotulo { font-size: 0.8rem; font-weight: bold; position: absolute; bottom: -24px; color: var(--texto-secundario); }
 
-        /* HISTÓRICO CONTEMPORÂNEO */
-        .item-transacao { display: flex; flex-direction: column; padding: 12px 4px; border-bottom: 1px solid var(--borda); cursor: pointer; transition: background 0.2s; }
-        .item-transacao:hover { background-color: var(--bg-body); border-radius: 8px; }
+        /* HISTÓRICO */
+        .item-transacao { display: flex; flex-direction: column; padding: 14px 4px; border-bottom: 2px dashed var(--borda); cursor: pointer; }
         .item-transacao:last-child { border-bottom: none; }
         .linha-principal { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .detalhes-item { display: flex; flex-direction: column; gap: 4px; }
-        .descricao-texto { font-size: 0.9rem; font-weight: 600; color: var(--texto-principal); }
+        .detalhes-item { display: flex; flex-direction: column; gap: 6px; }
+        .descricao-texto { font-size: 1rem; font-weight: 800; color: var(--texto-principal); }
         .tags-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-        .tipo-tag { font-size: 0.65rem; padding: 2px 6px; color: white; font-weight: 700; border-radius: 4px; }
+        .tipo-tag { font-size: 0.7rem; padding: 3px 8px; color: #111827; font-weight: 900; border-radius: 6px; border: 1px solid var(--borda); }
         .tag-entrada { background: var(--entrada); }
         .tag-saida { background: var(--saida); }
         .tag-cartao { background: var(--cartao); }
-        .tag-conta { background: #9ca3af; color: white; font-size: 0.65rem; padding: 2px 6px; font-weight: 600; border-radius: 4px; }
-        [data-theme="dark"] .tag-conta { background: #374151; }
-        .tag-cartao-especifico { background: #4b5563; color: white; font-size: 0.65rem; padding: 2px 6px; font-weight: 600; border-radius: 4px; }
-        .tag-fixa { background: #8b5cf6; color: white; font-size: 0.65rem; padding: 2px 6px; font-weight: 600; border-radius: 4px; }
-        .valor-historico { font-weight: 700; font-size: 0.9rem; letter-spacing: -0.3px; }
+        .tag-conta { background: #e5e7eb; color: #111827; font-size: 0.7rem; padding: 3px 8px; font-weight: bold; border-radius: 6px; border: 1px solid var(--borda); }
+        .tag-cartao-especifico { background: #fed7aa; color: #111827; border: 1px solid var(--borda); font-size: 0.7rem; padding: 3px 8px; font-weight: bold; border-radius: 6px; }
+        .tag-fixa { background: #c084fc; color: #111827; border: 1px solid var(--borda); font-size: 0.7rem; padding: 3px 8px; font-weight: bold; border-radius: 6px; }
+        .valor-historico { font-weight: 900; font-size: 1rem; letter-spacing: -0.5px; }
 
-        .item-transacao.pendente { background: var(--bg-body); border-left: 4px solid var(--alerta-borda); padding-left: 10px; border-radius: 0 8px 8px 0; }
-        .container-pergunta { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--borda); width: 100%; }
-        .texto-pergunta { font-size: 0.78rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: 6px; display: block; }
+        .item-transacao.pendente { background: var(--bg-body); border: var(--espessura-borda) solid var(--cartao); padding: 12px; border-radius: var(--radius); margin: 6px 0; box-shadow: 3px 3px 0 var(--borda); }
+        .container-pergunta { margin-top: 10px; padding-top: 10px; border-top: 2px dashed var(--borda); width: 100%; }
+        .texto-pergunta { font-size: 0.85rem; font-weight: bold; color: var(--texto-principal); margin-bottom: 8px; display: block; }
         .botoes-resposta { display: flex; gap: 6px; flex-wrap: wrap; }
-        .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); box-shadow: var(--shadow); }
-        .btn-resposta:hover { background: var(--borda); }
+        .btn-resposta { background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); padding: 6px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; color: var(--texto-principal); box-shadow: 2px 2px 0 var(--borda); }
+        .btn-resposta:hover { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--borda); }
 
-        /* ÁREA DE LANÇAMENTO COMPACTA */
-        .chat-container-dinamico { margin-top: auto; padding: 12px 0; margin-bottom: 55px; width: 100%; }
-        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 8px 8px 8px 16px; border-radius: 30px; align-items: center; position: relative; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); }
-        .chat-input { flex-grow: 1; border: none; padding: 8px 0; font-size: 0.95rem; outline: none; background: transparent; color: white; font-weight: 500; }
-        .chat-input::placeholder { color: rgba(255, 255, 255, 0.65); }
-        .btn-enviar { background: white; color: var(--chat-verde); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: bold; box-shadow: var(--shadow); transition: transform 0.2s; }
-        .btn-enviar:active { transform: scale(0.9); }
+        /* INPUT DE LANÇAMENTO JOVIAL */
+        .chat-container-dinamico { margin-top: auto; padding: 12px 0; margin-bottom: 60px; width: 100%; }
+        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 10px 10px 18px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); align-items: center; position: relative; box-shadow: var(--shadow); }
+        .chat-input { flex-grow: 1; border: none; padding: 8px 0; font-size: 1rem; outline: none; background: transparent; color: #ffffff; font-weight: bold; }
+        .chat-input::placeholder { color: rgba(255, 255, 255, 0.8); }
+        [data-theme="arcade"] .chat-input { color: var(--texto-principal); }
+        .btn-enviar { background: var(--bg-container); color: var(--texto-principal); border: var(--espessura-borda) solid var(--borda); width: 42px; height: 42px; border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; box-shadow: 2px 2px 0 var(--borda); }
+        .btn-enviar:active { transform: translate(2px, 2px); box-shadow: none; }
         
-        .alerta-temporario { position: absolute; top: -48px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10; box-shadow: var(--shadow); }
+        .alerta-temporario { position: absolute; top: -54px; left: 50%; transform: translateX(-50%); background: var(--texto-principal); color: var(--bg-container); padding: 8px 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); font-size: 0.9rem; font-weight: 900; opacity: 0; transition: opacity 0.2s ease; pointer-events: none; white-space: nowrap; z-index: 10; box-shadow: var(--shadow); }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* MENU INFERIOR CONTEMPORÂNEO COM SCROLL HORIZONTAL */
-        .menu-rodape-wrapper { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-rodape); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--borda); z-index: 99; padding: 10px 0; }
+        /* MENU INFERIOR COM SCROLL LATERAL */
+        .menu-rodape-wrapper { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-rodape); border-top: var(--espessura-borda) solid var(--borda); z-index: 99; padding: 12px 0; }
         .menu-rodape { display: flex; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding: 2px 16px; gap: 12px; }
-        /* Esconde a barra de rolagem visualmente, mantendo a funcionalidade */
         .menu-rodape::-webkit-scrollbar { display: none; }
         .menu-rodape { -ms-overflow-style: none; scrollbar-width: none; }
         
         /* Botões do Carrossel */
-        .tab-item { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bg-container); border: 1px solid var(--borda); color: var(--texto-secundario); padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 700; white-space: nowrap; flex-shrink: 0; box-shadow: var(--shadow); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .tab-item span:first-child { font-size: 1.1rem; }
-        .tab-item:hover { background: var(--bg-body); }
-        .tab-item.ativo { color: #ffffff; background: var(--chat-verde); border-color: var(--chat-verde); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+        .tab-item { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); color: var(--texto-principal); padding: 10px 22px; border-radius: var(--radius); cursor: pointer; font-size: 0.9rem; font-weight: 900; white-space: nowrap; flex-shrink: 0; box-shadow: var(--shadow); transition: all 0.1s ease; }
+        .tab-item span:first-child { font-size: 1.2rem; }
+        .tab-item.ativo { color: #ffffff; background: var(--texto-principal); border-color: var(--borda); box-shadow: none; transform: translate(2px, 2px); }
+        [data-theme="arcade"] .tab-item.ativo { color: var(--bg-body); }
 
         /* MODAIS */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
-        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: var(--radius); border: 1px solid var(--borda); padding: 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15); }
-        .modal-title { font-size: 1.1rem; font-weight: 800; color: var(--texto-principal); border-bottom: 1px solid var(--borda); padding-bottom: 8px; letter-spacing: -0.3px; }
-        .modal-label { font-size: 0.78rem; font-weight: 700; color: var(--texto-secundario); margin-bottom: -8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .modal-input, .modal-select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--borda); font-size: 0.95rem; background: var(--bg-body); color: var(--texto-principal); outline: none; font-weight: 600; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); padding: 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: 8px 8px 0px var(--borda); }
+        .modal-title { font-size: 1.3rem; font-weight: 900; color: var(--texto-principal); border-bottom: var(--espessura-borda) solid var(--borda); padding-bottom: 8px; letter-spacing: -0.5px; }
+        .modal-label { font-size: 0.85rem; font-weight: bold; color: var(--texto-secundario); margin-bottom: -8px; }
+        .modal-input, .modal-select { width: 100%; padding: 12px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); font-size: 1rem; background: var(--bg-body); color: var(--texto-principal); outline: none; font-weight: bold; }
         .modal-botoes { display: flex; gap: 8px; margin-top: 8px; }
-        .btn-modal { flex: 1; padding: 12px; font-size: 0.9rem; font-weight: 700; border-radius: 10px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: var(--shadow); transition: transform 0.1s; }
-        .btn-modal:active { transform: scale(0.97); }
-        .btn-salvar { background: var(--entrada); color: white; }
+        .btn-modal { flex: 1; padding: 14px; font-size: 0.95rem; font-weight: 900; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 3px 3px 0 var(--borda); }
+        .btn-modal:active { transform: translate(2px, 2px); box-shadow: none; }
+        .btn-salvar { background: var(--entrada); color: #111827; }
         .btn-excluir { background: var(--saida); color: white; }
-        .btn-cancelar { background: #e5e7eb; color: #4b5563; }
-        [data-theme="dark"] .btn-cancelar { background: #374151; color: #d1d5db; }
-        .config-btn-bloco { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 12px; border: 1px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: 600; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow); }
+        .btn-cancelar { background: #e5e7eb; color: #111827; }
+        
+        .config-btn-bloco { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: bold; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow); }
+        .config-btn-bloco:active { transform: translate(2px, 2px); box-shadow: none; }
+        
+        /* SELETOR DE TEMAS JOVIAL */
+        .seletor-temas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .btn-tema-opcao { padding: 14px; font-size: 0.9rem; font-weight: 900; border: var(--espessura-borda) solid var(--borda); border-radius: var(--radius); cursor: pointer; background: white; text-align: center; box-shadow: 3px 3px 0 var(--borda); }
+        .btn-tema-opcao:active { transform: translate(2px, 2px); box-shadow: none; }
     </style>
+    <!-- Fonte Descontraída Pop -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -194,30 +240,29 @@
     
     <!-- CABEÇALHO -->
     <div class="app-header">
-        <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
+        <div class="app-title" id="titulo-dinamico">meu saldo</div>
         <div class="app-actions">
             <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">👁️</button>
-            <button class="icon-btn" id="btn-tema" onclick="alternarTema()" title="Mudar Tema">🌙</button>
         </div>
     </div>
 
     <!-- TELA 1: INÍCIO -->
     <div class="app-view ativa" id="view-inicio">
         <div class="cards-container">
-            <div class="card">
-                <h3>Entradas</h3>
+            <div class="card" style="background: #e0f2fe;">
+                <h3>entradas</h3>
                 <p class="cor-entrada">R$ <span class="valor-dinamico" id="card-entradas" data-valor="0.00">0,00</span></p>
             </div>
-            <div class="card">
-                <h3>Saídas</h3>
+            <div class="card" style="background: #fee2e2;">
+                <h3>saídas</h3>
                 <p class="cor-saida">R$ <span class="valor-dinamico" id="card-saidas" data-valor="0.00">0,00</span></p>
             </div>
-            <div class="card">
-                <h3>Cartão</h3>
+            <div class="card" style="background: #fef3c7;">
+                <h3>cartão</h3>
                 <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
             </div>
             <div class="card saldo-total">
-                <h3>Saldo Atual</h3>
+                <h3>saldo livre atual</h3>
                 <p id="card-saldo" class="valor-dinamico" data-valor="0.00" style="color: var(--texto-principal);">R$ 0,00</p>
                 
                 <div class="info-subtil-container">
@@ -232,14 +277,14 @@
                         <strong>Saldo Livre:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
                     </div>
                 </div>
-                <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Orçamento Comprometido (>80%).</div>
+                <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Eita! Orçamento Comprometido (>80%).</div>
             </div>
         </div>
 
         <div class="chat-container-dinamico">
             <div class="chat-input-area">
-                <div id="alerta" class="alerta-temporario">Lançado!</div>
-                <input type="text" id="campo-texto" class="chat-input" placeholder="O que você comprou hoje?..." onkeypress="verificarTecla(event)">
+                <div id="alerta" class="alerta-temporario">Salvo na gaveta! 📁</div>
+                <input type="text" id="campo-texto" class="chat-input" placeholder="O que você gastou ou ganhou hoje?..." onkeypress="verificarTecla(event)">
                 <button class="btn-enviar" onclick="processarComando()">➔</button>
             </div>
         </div>
@@ -264,11 +309,11 @@
     <div class="app-view" id="view-graficos">
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
-                <h4>Categorias Gerais</h4>
+                <h4>categorias gerais</h4>
                 <div class="colunas-container">
                     <div class="coluna-vertical-bloco">
                         <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
-                        <div class="coluna-vertical-barra" id="v-bar-contas" style="background: #9ca3af;"></div>
+                        <div class="coluna-vertical-barra" id="v-bar-contas" style="background: #cbd5e1;"></div>
                         <span class="coluna-vertical-rotulo">Contas</span>
                     </div>
                     <div class="coluna-vertical-bloco">
@@ -287,23 +332,23 @@
 
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
-                <h4>Proporção de Fluxo</h4>
+                <h4>proporção de fluxo</h4>
                 <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
                     <div class="donut-hole">
                         <span id="pizza-perc">0%</span>
-                        <span id="pizza-rotulo" style="font-size:0.65rem; font-weight:600; text-transform:uppercase;">Gasto</span>
+                        <span id="pizza-rotulo" style="font-size:0.7rem; font-weight:900; text-transform:lowercase;">gasto</span>
                     </div>
                 </div>
                 <div class="donut-legenda">
-                    <span style="color:var(--entrada)">● Receitas</span>
-                    <span style="color:var(--saida)">● Despesas</span>
+                    <span style="color:var(--entrada)">● Ganhei</span>
+                    <span style="color:var(--saida)">● Gastei</span>
                 </div>
             </div>
         </div>
 
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
-                <h4>Maiores Gastos do Mês</h4>
+                <h4>maiores gastos do mês</h4>
                 <div id="grafico-barras-horizontais"></div>
             </div>
         </div>
@@ -312,13 +357,21 @@
     <!-- TELA 4: CONFIGURAÇÕES -->
     <div class="app-view" id="view-config">
         <div class="secao-conteudo">
-            <h4 style="font-size:0.8rem; margin-bottom:12px; color:var(--texto-secundario);">Gerenciamento de Dados</h4>
+            <h4 style="margin-bottom:14px;">mudar o visual (vibe)</h4>
+            <div class="seletor-temas-grid">
+                <button class="btn-tema-opcao" style="background:#6366f1; color:white;" onclick="mudarTemaAtivo('cyber')">👾 Cyber Pop</button>
+                <button class="btn-tema-opcao" style="background:#fdf6ec; color:#4a3e3d;" onclick="mudarTemaAtivo('pastel')">🌸 Pastel Soft</button>
+                <button class="btn-tema-opcao" style="background:#ed8936; color:white;" onclick="mudarTemaAtivo('sunset')">🌇 Sunset Glow</button>
+                <button class="btn-tema-opcao" style="background:#171923; color:#00ffff;" onclick="mudarTemaAtivo('arcade')">🕹️ Neon Arcade</button>
+            </div>
+
+            <h4 style="margin-top:20px; margin-bottom:12px;">gerenciamento de dados</h4>
             <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar Banco de Dados (JSON)</button>
             <button class="config-btn-bloco" onclick="document.getElementById('input-file-backup').click()">📤 Importar Banco de Dados (JSON)</button>
             <input type="file" id="input-file-backup" accept=".json" style="display: none;" onchange="importarBackup(event)">
             
-            <h4 style="font-size:0.8rem; margin-top:24px; margin-bottom:12px; color:var(--texto-secundario);">Ações Críticas</h4>
-            <button class="config-btn-bloco" style="color:var(--saida); border-color: rgba(239,68,68,0.2);" onclick="resetarAplicativoTotal()">🗑️ Limpar Todos os Dados Permanentemente</button>
+            <h4 style="margin-top:24px; margin-bottom:12px; color:var(--saida);">ações críticas</h4>
+            <button class="config-btn-bloco" style="color:var(--saida); border-color: var(--saida);" onclick="resetarAplicativoTotal()">🗑️ Limpar Tudo Permanentemente</button>
         </div>
     </div>
 
@@ -330,14 +383,14 @@
         <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
         <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
         <button class="tab-item" id="tab-graficos" onclick="navegarPara('graficos')"><span>📊</span><span>Gráficos</span></button>
-        <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Configurações</span></button>
+        <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Ajustes</span></button>
     </div>
 </div>
 
 <!-- MODAIS -->
 <div class="modal-overlay" id="modal-edicao">
     <div class="modal-container">
-        <div class="modal-title">Editar Lançamento</div>
+        <div class="modal-title">Editar Registro</div>
         <div class="modal-label">Descrição</div>
         <input type="text" id="modal-desc" class="modal-input">
         <div class="modal-label">Valor (R$)</div>
@@ -352,8 +405,8 @@
         <input type="text" id="modal-conta" class="modal-input">
         <div class="modal-label">Cartão Utilizado</div>
         <input type="text" id="modal-cartao-id" class="modal-input">
-        <div class="modal-label" style="display: flex; align-items: center; gap: 8px; margin-top: 4px; font-weight:600;">
-            <input type="checkbox" id="modal-fixa" style="width: 16px; height: 16px;"> Definir como Conta Fixa?
+        <div class="modal-label" style="display: flex; align-items: center; gap: 8px; margin-top: 4px; font-weight:bold;">
+            <input type="checkbox" id="modal-fixa" style="width: 18px; height: 18px;"> Conta Fixa Mensal?
         </div>
         <div class="modal-botoes">
             <button class="btn-modal btn-excluir" onclick="acaoExcluir()">Excluir</button>
@@ -365,8 +418,8 @@
 
 <div class="modal-overlay" id="modal-reserva">
     <div class="modal-container">
-        <div class="modal-title">💰 Definir Meta de Reserva</div>
-        <div class="modal-label">Porcentagem para poupar das entradas:</div>
+        <div class="modal-title">💰 Porcentagem de Reserva</div>
+        <div class="modal-label">Quanto quer poupar das entradas?</div>
         <input type="number" id="modal-reserva-pct" class="modal-input" min="1" max="100" value="10">
         <div class="modal-botoes">
             <button class="btn-modal btn-cancelar" onclick="fecharConfigReserva()">Cancelar</button>
@@ -396,14 +449,23 @@
         obterId(`view-${idAba}`).classList.add('ativa');
         obterId(`tab-${idAba}`).classList.add('ativo');
 
-        // Garante que o botão ativo fique visível no centro do carrossel ao clicar
         const elementoAtivo = obterId(`tab-${idAba}`);
         elementoAtivo.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
-        const titulos = { inicio: "Meu Saldo", historico: "Histórico", graficos: "Análises", config: "Configurações" };
+        const titulos = { inicio: "meu saldo", historico: "histórico", graficos: "análises", config: "ajustes" };
         obterId('titulo-dinamico').innerText = titulos[idAba];
 
         atualizarAplicativo();
+    }
+
+    function mudarTemaAtivo(tema) {
+        if (tema === 'cyber') {
+            document.documentElement.removeAttribute('data-theme');
+        } else {
+            document.documentElement.setAttribute('data-theme', tema);
+        }
+        localStorage.setItem('vibe_tema_escolhido', tema);
+        mostrarAviso("Visual alterado! 🎨");
     }
 
     function inicializarFiltroMeses() {
@@ -416,21 +478,10 @@
         f.innerHTML = html;
     }
 
-    function alternarTema() {
-        const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
-        if (escuro) {
-            document.documentElement.removeAttribute('data-theme');
-        } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-        obterId('btn-tema').innerText = escuro ? "🌙" : "☀️";
-        localStorage.setItem('saldo_tema', escuro ? 'light' : 'dark');
-    }
-
     function processarComando() {
         const input = obterId('campo-texto'), txt = input.value.trim().toLowerCase();
         const num = txt.match(/\d+([.,]\d+)?/g);
-        if (!num) return mostrarAviso("Digite um valor numérico!");
+        if (!num) return mostrarAviso("Cadê o valor numérico? 🧐");
 
         const valor = parseFloat(num[0].replace(',', '.'));
         let conta = "", cartao = "", tipo = 'saida';
@@ -445,7 +496,7 @@
         const mParc = txt.match(/(\d+)\s*x/i);
         if (mParc && tipo === 'cartao') { parcelas = parseInt(mParc[1]); desc = desc.replace(mParc[0], ''); gId = Date.now(); }
 
-        desc = desc.replace(/\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|pix|no|na|de|com|o|a|cartao|credito|saldo)\b/gi, '').replace(/\s+/g, ' ').trim() || "Lançamento Avulso";
+        desc = desc.replace(/\b(comprei|ganhei|paguei|recebi|gastei|fiz|transferencia|pix|no|na|de|com|o|a|cartao|credito|saldo)\b/gi, '').replace(/\s+/g, ' ').trim() || "Gasto Avulso";
 
         for (let p = 1; p <= parcelas; p++) {
             let d = new Date(hoje.getFullYear(), hoje.getMonth() + (p - 1), hoje.getDate());
@@ -458,7 +509,7 @@
         
         atualizarAplicativo();
         input.value = ''; 
-        mostrarAviso("Adicionado!");
+        mostrarAviso("Lançado! 🚀");
         setTimeout(() => navegarPara('historico'), 400);
     }
 
@@ -466,7 +517,7 @@
         const t = transacoes.find(i => i.id === id);
         if (t) {
             transacoes.forEach(i => { if (t.grupoParcelas ? i.grupoParcelas === t.grupoParcelas : i.id === id) { i[objChave] = valor; if(objChave==='fixa') i.perguntaFixaRespondida = true; } });
-            localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Atualizado!");
+            localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Salvo! 🎯");
         }
     }
 
@@ -520,7 +571,7 @@
             return true;
         });
 
-        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);font-size:0.85rem;padding:30px 0;">Nenhum registro encontrado.</p>`; return; }
+        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);font-size:0.9rem;padding:30px 0;">Vazio por aqui... 📭</p>`; return; }
 
         filtradas.forEach(t => {
             let cls = t.tipo === 'entrada' ? 'tag-entrada' : t.tipo === 'cartao' ? 'tag-cartao' : 'tag-saida';
@@ -543,10 +594,10 @@
                     </div>
                     <span class="valor-historico" style="color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} ${saldosOcultos ? '•••' : 'R$ '+t.valor.toFixed(2).replace('.',',')}</span>
                 </div>
-                ${pen ? `<div class="container-pergunta"><span class="texto-pergunta">💬 ${!t.conta && t.tipo!=='cartao' ? 'Qual conta usou?' : !t.cartao ? 'Qual cartão usou?' : 'É uma despesa fixa mensal?'}</span><div class="botoes-resposta">
+                ${pen ? `<div class="container-pergunta"><span class="texto-pergunta">⚡ Completa aí rapidão: ${!t.conta && t.tipo!=='cartao' ? 'Qual conta usou?' : !t.cartao ? 'Qual cartão usou?' : 'É um boleto fixo todo mês?'}</span><div class="botoes-resposta">
                     ${!t.conta && t.tipo!=='cartao' ? ['Mercado Pago','Nubank','Itaú','Inter','PicPay'].map(b => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'conta','${b}')">${b}</button>`).join('') :
                       !t.cartao ? ['Mercado Pago','Nubank','Itaú','Inter','C6 Bank','Bradesco'].map(c => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'cartao','${c}')">${c}</button>`).join('') :
-                      `<button class="btn-resposta" style="color:#8b5cf6;" onclick="responderAtributo(${t.id},'fixa',true)">📌 Sim</button><button class="btn-resposta" onclick="responderAtributo(${t.id},'fixa',false)">Não</button>`}
+                      `<button class="btn-resposta" style="background:var(--reserva-cor); color:white;" onclick="responderAtributo(${t.id},'fixa',true)">📌 Sim</button><button class="btn-resposta" onclick="responderAtributo(${t.id},'fixa',false)">Não</button>`}
                 </div></div>` : ''}
             `;
             l.appendChild(item);
@@ -560,16 +611,16 @@
         
         if (saldosOcultos) {
             obterId('pizza-perc').innerText = "••••";
-            obterId('pizza-rotulo').innerText = "Oculto";
+            obterId('pizza-rotulo').innerText = "oculto";
         } else if (modoGraficoRosca === 0) {
             obterId('pizza-perc').innerText = `${percGasto}%`;
-            obterId('pizza-rotulo').innerText = "Gasto";
+            obterId('pizza-rotulo').innerText = "gasto";
         } else if (modoGraficoRosca === 1) {
             obterId('pizza-perc').innerText = `R$ ${totalGastos.toFixed(0)}`;
-            obterId('pizza-rotulo').innerText = "Despesas";
+            obterId('pizza-rotulo').innerText = "total gasto";
         } else {
             obterId('pizza-perc').innerText = `R$ ${receitas.toFixed(0)}`;
-            obterId('pizza-rotulo').innerText = "Receitas";
+            obterId('pizza-rotulo').innerText = "total ganho";
         }
         
         obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
@@ -585,7 +636,7 @@
         const maiorGastoUnico = despesasOrdenadas.length > 0 ? despesasOrdenadas[0].valor : 1;
 
         if(!despesasOrdenadas.length) {
-            boxBarras.innerHTML = `<p style="font-size:0.8rem;color:var(--texto-secundario);text-align:center;padding:10px 0;">Nenhum gasto registrado.</p>`;
+            boxBarras.innerHTML = `<p style="font-size:0.85rem;color:var(--texto-secundario);text-align:center;padding:10px 0;">Sem despesas salvas.</p>`;
         } else {
             despesasOrdenadas.forEach(d => {
                 let pBarra = (d.valor / maiorGastoUnico) * 100;
@@ -595,11 +646,11 @@
                 linha.className = 'barra-horizontal-linha';
                 linha.innerHTML = `
                     <div class="barra-horizontal-info">
-                        <span>${d.descricao} <small style="color:var(--texto-secundario); font-weight:normal;">(${pDoTotal}%)</small></span>
+                        <span>${d.descricao} <small style="color:var(--texto-secundario);">(${pDoTotal}%)</small></span>
                         <span>R$ ${d.valor.toFixed(2).replace('.', ',')}</span>
                     </div>
                     <div class="barra-horizontal-bg">
-                        <div class="barra-horizontal-preenchimento" style="width: ${pBarra}%; background:${d.tipo==='cartao'?'var(--cartao)':'var(--saida)'}"></div>
+                        <div class="barra-horizontal-preenchimento" style="width: ${pBarra}%; background:${d.tipo=='cartao'?'var(--cartao)':'var(--saida)'}"></div>
                     </div>
                 `;
                 boxBarras.appendChild(linha);
@@ -636,7 +687,7 @@
             localStorage.setItem('saldo_reserva_pct', p); 
             fecharConfigReserva(); 
             atualizarAplicativo(); 
-            mostrarAviso(`Meta: ${p}%`); 
+            mostrarAviso(`Salvo: ${p}%`); 
         }
     }
 
@@ -651,25 +702,27 @@
             t.fixa = obterId('modal-fixa').checked; 
             t.perguntaFixaRespondida = true;
         }
-        fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Salvo!");
+        fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Salvo! ✨");
     }
 
-    function acaoExcluir() { transacoes = transacoes.filter(i => i.id !== idEdicaoAtual); fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Excluído!"); }
-    function resetarAplicativoTotal() { if (confirm("Deseja apagar todos os registros definitivamente?")) { transacoes = []; localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Resetado!"); } }
-    function exportarBackup() { if (!transacoes.length) return alert("Sem dados."); const dl = document.createElement('a'); dl.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transacoes))); dl.setAttribute("download", `backup_saldo.json`); dl.click(); }
+    function acaoExcluir() { transacoes = transacoes.filter(i => i.id !== idEdicaoAtual); fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Deletado! 🔥"); }
+    function resetarAplicativoTotal() { if (confirm("Quer mesmo deletar absolutamente tudo do app?")) { transacoes = []; localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Limpo!"); } }
+    function exportarBackup() { if (!transacoes.length) return alert("Sem dados para exportar."); const dl = document.createElement('a'); dl.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transacoes))); dl.setAttribute("download", `meu_saldo_backup.json`); dl.click(); }
 
     function importarBackup(e) {
         const f = e.target.files[0]; if (!f) return;
         const r = new FileReader(); r.onload = ev => {
             try {
                 const d = JSON.parse(ev.target.result);
-                if (Array.isArray(d)) { transacoes = [...transacoes, ...d]; const ids = new Set(); transacoes = transacoes.filter(t => !ids.has(t.id) && ids.add(t.id)); transacoes.sort((a,b) => b.id - a.id); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Importado!"); }
-            } catch (err) { alert("Erro ao importar."); }
+                if (Array.isArray(d)) { transacoes = [...transacoes, ...d]; const ids = new Set(); transacoes = transacoes.filter(t => !ids.has(t.id) && ids.add(t.id)); transacoes.sort((a,b) => b.id - a.id); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Importado com sucesso!"); }
+            } catch (err) { alert("Arquivo corrompido."); }
         }; r.readAsText(f);
     }
 
     window.onload = () => {
-        if (localStorage.getItem('saldo_tema') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); obterId('btn-tema').innerText = "☀️"; }
+        const tGuardado = localStorage.getItem('vibe_tema_escolhido');
+        if (tGuardado) mudarTemaAtivo(tGuardado);
+        
         porcentagemReserva = parseInt(localStorage.getItem('saldo_reserva_pct')) || 10;
         const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s);
         inicializarFiltroMeses(); 
