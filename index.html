@@ -335,28 +335,42 @@
 
 <script>
     let transacoes = [], saldosOcultos = false, porcentagemReserva = 10;
-    const CPF_ADMINISTRADORA = "00000000000"; // Defina o seu CPF aqui para nunca ser bloqueada
+    
+    // CONFIGURAÇÃO DE FÁBRICA DA ADMINISTRADORA
+    const CPF_ADMINISTRADORA = "00000000000"; 
+    const PIN_ADMINISTRADORA = "0000";
+    
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
     const obterId = id => document.getElementById(id);
     const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 3000); };
 
-    // --- CONTROLE DE LOGIN E SEGURANÇA ---
+    // --- CONTROLE DE LOGIN E SEGURANÇA CORRIGIDO ---
     function checarSeguranca() {
-        const cpfSalvo = localStorage.getItem('app_cpf');
-        const pinSalvo = localStorage.getItem('app_pin');
+        let cpfSalvo = localStorage.getItem('app_cpf');
+        let pinSalvo = localStorage.getItem('app_pin');
 
+        // Se estiver totalmente sem cadastro, auto-configura você como Administradora de fábrica
         if (!cpfSalvo || !pinSalvo) {
-            obterId('auth-titulo').innerText = "✨ Criar Acesso";
-            obterId('auth-sub').innerText = "Cadastre seu CPF e um PIN de 4 números para proteger seus dados.";
-            obterId('tela-auth').style.display = "flex";
-            obterId('conteudo-app').style.filter = "blur(5px)";
-        } else {
-            obterId('auth-titulo').innerText = "🔒 Tela de Login";
-            obterId('auth-sub').innerText = "Insira suas credenciais cadastradas.";
-            obterId('tela-auth').style.display = "flex";
-            obterId('conteudo-app').style.filter = "blur(5px)";
+            localStorage.setItem('app_cpf', CPF_ADMINISTRADORA);
+            localStorage.setItem('app_pin', PIN_ADMINISTRADORA);
+            cpfSalvo = CPF_ADMINISTRADORA;
+            pinSalvo = PIN_ADMINISTRADORA;
         }
+
+        // Se for a Administradora, entra direto sem exibir modal ou borrões!
+        if (cpfSalvo === CPF_ADMINISTRADORA) {
+            obterId('tela-auth').style.display = "none";
+            obterId('conteudo-app').style.filter = "none";
+            checarBloqueioPlano();
+            return;
+        }
+
+        // Caso mude o CPF para um usuário comum no futuro, pede o login normalmente
+        obterId('auth-titulo').innerText = "🔒 Tela de Login";
+        obterId('auth-sub').innerText = "Insira suas credenciais cadastradas.";
+        obterId('tela-auth').style.display = "flex";
+        obterId('conteudo-app').style.filter = "blur(5px)";
     }
 
     function processarAutenticacao() {
@@ -370,15 +384,9 @@
             return;
         }
 
-        if (!cpfSalvo || !pinSalvo) {
-            localStorage.setItem('app_cpf', cpfInput);
-            localStorage.setItem('app_pin', pinInput);
-            alert("Acesso configurado com sucesso!");
-        } else {
-            if (cpfInput !== cpfSalvo || pinInput !== pinSalvo) {
-                alert("CPF ou PIN incorretos!");
-                return;
-            }
+        if (cpfInput !== cpfSalvo || pinInput !== pinSalvo) {
+            alert("CPF ou PIN incorretos!");
+            return;
         }
 
         obterId('tela-auth').style.display = "none";
@@ -390,14 +398,22 @@
     }
 
     function bloquearAppManualmente() {
-        checarSeguranca();
+        // Remove os dados temporariamente para forçar a tela de login ao clicar no botão
+        localStorage.removeItem('app_cpf');
+        localStorage.removeItem('app_pin');
+        obterId('auth-titulo').innerText = "🔒 Tela de Login";
+        obterId('tela-auth').style.display = "flex";
+        obterId('conteudo-app').style.filter = "blur(5px)";
     }
 
     function alterarCredenciaisAcesso() {
         if(confirm("Deseja reconfigurar seu CPF e PIN de segurança?")) {
             localStorage.removeItem('app_cpf');
             localStorage.removeItem('app_pin');
-            checarSeguranca();
+            obterId('auth-titulo').innerText = "✨ Criar Acesso";
+            obterId('auth-sub').innerText = "Cadastre as novas credenciais do dispositivo.";
+            obterId('tela-auth').style.display = "flex";
+            obterId('conteudo-app').style.filter = "blur(5px)";
         }
     }
 
@@ -405,9 +421,10 @@
     function checarBloqueioPlano() {
         const cpfLogado = localStorage.getItem('app_cpf');
         
-        // REGRA DA ADMINISTRADORA: Se for o seu CPF, ignora o bloqueio completamente
+        // REGRA DA ADMINISTRADORA: Se for você, ignora o bloqueio completamente
         if (cpfLogado === CPF_ADMINISTRADORA) {
             obterId('tela-bloqueio-plano').style.display = "none";
+            obterId('conteudo-app').style.filter = "none";
             return true;
         }
 
@@ -450,7 +467,7 @@
         
         if (cpfLogado === CPF_ADMINISTRADORA) {
             box.style.background = "#2c3e50";
-            box.style.color = "#white";
+            box.style.color = "white";
             box.innerText = "👑 Modo Administradora (Acesso Ilimitado e Isento)";
             return;
         }
@@ -608,7 +625,6 @@
             let cor = t.tipo === 'entrada' ? 'var(--entrada)' : 'var(--saida)';
             let item = document.createElement('div'); item.className = `item-transacao`;
             
-            // Evento de clique para disparar o Modal de Edição
             item.onclick = () => abrirModalEdicao(t.id, t.descricao, t.valor);
             
             item.innerHTML = `
