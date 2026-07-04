@@ -51,7 +51,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.2s, color 0.2s; }
         body { background-color: var(--bg-body); color: var(--texto-principal); padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
-        /* Container Principal esticado para preencher a tela, descontando o rodapé */
+        /* Container Principal */
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; height: calc(100vh - 90px); position: relative; }
         
         /* CABEÇALHO DO APP */
@@ -97,7 +97,7 @@
         .cor-saida { color: var(--saida); }
         .cor-cartao { color: var(--cartao); }
 
-        /* FILTROS (MUDADOS PARA O TOPO DO HISTÓRICO) */
+        /* FILTROS */
         .filtros-container { display: flex; gap: 8px; margin-bottom: 12px; width: 100%; }
         .filtro-select { flex: 1; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-container); font-size: 0.82rem; color: var(--texto-principal); outline: none; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px var(--shadow); appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 
@@ -147,7 +147,7 @@
         .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 4px 8px; border-radius: 8px; font-size: 0.72rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); }
         .btn-resposta:hover { background: #2c3e50; color: white; }
 
-        /* NOVA ÁREA DE CHAT - SUBIU MAIS UM POUCO COM MARGEM INFERIOR MAIOR */
+        /* ÁREA DE CHAT */
         .chat-container-dinamico { margin-top: auto; padding: 10px 0; margin-bottom: 50px; width: 100%; }
         .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 16px; border-radius: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); align-items: center; position: relative; }
         .chat-input { flex-grow: 1; border: none; padding: 6px 5px; font-size: 0.95rem; outline: none; background: transparent; color: white; font-weight: 500; }
@@ -157,7 +157,7 @@
         .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10; }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* NOVO MENU INFERIOR ROBUSTO E ESPAÇADO */
+        /* MENU INFERIOR (TAB BAR ROBUSTO) */
         .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--bg-rodape); border-top: 1px solid var(--borda); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -3px 12px rgba(0,0,0,0.08); z-index: 99; }
         .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.78rem; font-weight: 700; gap: 5px; width: 23%; height: 100%; justify-content: center; transition: all 0.2s ease; }
         .tab-item span:first-child { font-size: 1.5rem; line-height: 1; }
@@ -183,6 +183,7 @@
 
 <div class="container">
     
+    <!-- CABEÇALHO -->
     <div class="app-header">
         <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
         <div class="app-actions">
@@ -191,6 +192,7 @@
         </div>
     </div>
 
+    <!-- TELA 1: INÍCIO -->
     <div class="app-view ativa" id="view-inicio">
         <div class="cards-container">
             <div class="card">
@@ -234,6 +236,7 @@
         </div>
     </div>
 
+    <!-- TELA 2: HISTÓRICO -->
     <div class="app-view" id="view-historico">
         <div class="filtros-container">
             <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
@@ -248,8 +251,10 @@
         <div class="secao-conteudo" style="flex-grow: 1; overflow-y: auto;" id="lista-transacoes-container"></div>
     </div>
 
+    <!-- TELA 3: GRÁFICOS (ORDEM ATUALIZADA) -->
     <div class="app-view" id="view-graficos">
         
+        <!-- 1. CONTAS X CARTÕES X RESERVAS -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
                 <h4>1. CONTAS X CARTÕES X RESERVAS</h4>
@@ -273,6 +278,7 @@
             </div>
         </div>
 
+        <!-- 2. DESPESAS X RECEITAS -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
                 <h4>2. DESPESAS X RECEITAS</h4>
@@ -289,6 +295,7 @@
             </div>
         </div>
 
+        <!-- 3. TOP DESPESAS -->
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
                 <h4>3. TOP DESPESAS MENSAL</h4>
@@ -297,6 +304,7 @@
         </div>
     </div>
 
+    <!-- TELA 4: CONFIGURAÇÕES -->
     <div class="app-view" id="view-config">
         <div class="secao-conteudo">
             <h4 style="font-size:0.8rem; margin-bottom:12px; color:var(--texto-secundario);">DADOS E BACKUP</h4>
@@ -311,6 +319,7 @@
 
 </div>
 
+<!-- MENU FIXO DO RODAPÉ -->
 <div class="menu-rodape">
     <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
     <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
@@ -318,6 +327,7 @@
     <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
 </div>
 
+<!-- MODAIS -->
 <div class="modal-overlay" id="modal-edicao">
     <div class="modal-container">
         <div class="modal-title">Editar Lançamento</div>
@@ -482,7 +492,7 @@
         obterId('card-saldo').style.color = saldo >= 0 ? (escuro ? '#3498db' : '#2c3e50') : 'var(--saida)';
 
         document.querySelectorAll('.valor-dinamico').forEach(el => {
-            const attrVal = el.getAttribute('data-valor'] || "0";
+            const attrVal = el.getAttribute('data-valor') || "0";
             const v = parseFloat(parseFloat(attrVal).toFixed(2)).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             el.innerText = saldosOcultos ? (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes','v-val-reserva'].includes(el.id) ? "R$ ••••" : "••••") : (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes','v-val-reserva'].includes(el.id) ? `R$ ${v}` : v);
         });
