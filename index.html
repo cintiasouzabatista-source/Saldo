@@ -147,9 +147,9 @@
         .btn-resposta { background: var(--bg-container); border: 1px solid var(--borda); padding: 4px 8px; border-radius: 8px; font-size: 0.72rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); }
         .btn-resposta:hover { background: #2c3e50; color: white; }
 
-        /* NOVA ÁREA DE CHAT FIXADA APENAS NA TELA INICIAL */
-        .chat-container-dinamico { margin-top: auto; padding: 10px 0; width: 100%; }
-        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 8px 14px; border-radius: 25px; box-shadow: 0 3px 6px rgba(0,0,0,0.15); align-items: center; position: relative; }
+        /* NOVA ÁREA DE CHAT - SUBIU MAIS UM POUCO COM MARGEM INFERIOR MAIOR */
+        .chat-container-dinamico { margin-top: auto; padding: 10px 0; margin-bottom: 50px; width: 100%; }
+        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 16px; border-radius: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); align-items: center; position: relative; }
         .chat-input { flex-grow: 1; border: none; padding: 6px 5px; font-size: 0.95rem; outline: none; background: transparent; color: white; font-weight: 500; }
         .chat-input::placeholder { color: rgba(255, 255, 255, 0.75); }
         .btn-enviar { background: white; color: var(--chat-verde); border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
@@ -157,12 +157,13 @@
         .alerta-temporario { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 6px 15px; border-radius: 15px; font-size: 0.85rem; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10; }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* NOVO MENU INFERIOR (TAB BAR RODAPÉ) */
-        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--bg-rodape); border-top: 1px solid var(--borda); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 90; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.7rem; font-weight: bold; gap: 4px; width: 22%; height: 100%; justify-content: center; }
-        .tab-item span:first-child { font-size: 1.3rem; }
-        .tab-item.ativo { color: var(--azul-saldo); }
-        [data-theme="dark"] .tab-item.ativo { color: var(--azul-saldo); }
+        /* NOVO MENU INFERIOR ROBUSTO E ESPAÇADO */
+        .menu-rodape { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--bg-rodape); border-top: 1px solid var(--borda); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -3px 12px rgba(0,0,0,0.08); z-index: 99; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); cursor: pointer; font-size: 0.78rem; font-weight: 700; gap: 5px; width: 23%; height: 100%; justify-content: center; transition: all 0.2s ease; }
+        .tab-item span:first-child { font-size: 1.5rem; line-height: 1; }
+        .tab-item:active { transform: scale(0.95); }
+        .tab-item.ativo { color: var(--azul-saldo); border-top: 3px solid var(--azul-saldo); padding-top: 0px; }
+        [data-theme="dark"] .tab-item.ativo { color: var(--azul-saldo); border-top: 3px solid var(--azul-saldo); }
 
         /* MODAIS */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
@@ -182,7 +183,6 @@
 
 <div class="container">
     
-    <!-- CABEÇALHO COMUM A TODOS -->
     <div class="app-header">
         <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
         <div class="app-actions">
@@ -191,7 +191,6 @@
         </div>
     </div>
 
-    <!-- TELA 1: INÍCIO (CHATS E CARDS) -->
     <div class="app-view ativa" id="view-inicio">
         <div class="cards-container">
             <div class="card">
@@ -226,7 +225,6 @@
             </div>
         </div>
 
-        <!-- O Campo de Chat estilo WhatsApp fica estrategicamente fixado no fim da tela Inicial -->
         <div class="chat-container-dinamico">
             <div class="chat-input-area">
                 <div id="alerta" class="alerta-temporario">Lançado!</div>
@@ -236,7 +234,6 @@
         </div>
     </div>
 
-    <!-- TELA 2: HISTÓRICO -->
     <div class="app-view" id="view-historico">
         <div class="filtros-container">
             <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
@@ -251,34 +248,11 @@
         <div class="secao-conteudo" style="flex-grow: 1; overflow-y: auto;" id="lista-transacoes-container"></div>
     </div>
 
-    <!-- TELA 3: GRÁFICOS -->
     <div class="app-view" id="view-graficos">
+        
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
-                <h4>1. DESPESAS X RECEITAS</h4>
-                <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
-                    <div class="donut-hole">
-                        <span id="pizza-perc">0%</span>
-                        <span id="pizza-rotulo" style="font-size:0.55rem; font-weight:normal; text-transform:uppercase;">Gasto</span>
-                    </div>
-                </div>
-                <div class="donut-legenda">
-                    <span style="color:var(--entrada)">● Receitas</span>
-                    <span style="color:var(--saida)">● Despesas</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="secao-conteudo">
-            <div class="grafico-wrapper">
-                <h4>2. TOP DESPESAS</h4>
-                <div id="grafico-barras-horizontais"></div>
-            </div>
-        </div>
-
-        <div class="secao-conteudo">
-            <div class="grafico-wrapper">
-                <h4>3. CONTAS X CARTÕES</h4>
+                <h4>1. CONTAS X CARTÕES X RESERVAS</h4>
                 <div class="colunas-container">
                     <div class="coluna-vertical-bloco">
                         <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
@@ -298,9 +272,31 @@
                 </div>
             </div>
         </div>
+
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>2. DESPESAS X RECEITAS</h4>
+                <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
+                    <div class="donut-hole">
+                        <span id="pizza-perc">0%</span>
+                        <span id="pizza-rotulo" style="font-size:0.55rem; font-weight:normal; text-transform:uppercase;">Gasto</span>
+                    </div>
+                </div>
+                <div class="donut-legenda">
+                    <span style="color:var(--entrada)">● Receitas</span>
+                    <span style="color:var(--saida)">● Despesas</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="secao-conteudo">
+            <div class="grafico-wrapper">
+                <h4>3. TOP DESPESAS MENSAL</h4>
+                <div id="grafico-barras-horizontais"></div>
+            </div>
+        </div>
     </div>
 
-    <!-- TELA 4: CONFIGURAÇÕES -->
     <div class="app-view" id="view-config">
         <div class="secao-conteudo">
             <h4 style="font-size:0.8rem; margin-bottom:12px; color:var(--texto-secundario);">DADOS E BACKUP</h4>
@@ -315,7 +311,6 @@
 
 </div>
 
-<!-- MENU FIXO DO RODAPÉ (TAB BAR) -->
 <div class="menu-rodape">
     <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
     <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
@@ -323,7 +318,6 @@
     <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
 </div>
 
-<!-- MODAIS -->
 <div class="modal-overlay" id="modal-edicao">
     <div class="modal-container">
         <div class="modal-title">Editar Lançamento</div>
@@ -378,17 +372,13 @@
     const toggleModal = (id, abrir) => obterId(id).style.display = abrir ? 'flex' : 'none';
     const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 3000); };
 
-    // MECANISMO DE NAVEGAÇÃO ENTRE AS ABAS DO RODAPÉ
     function navegarPara(idAba) {
-        // Desativa todas as views e abas
         document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
         document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo'));
         
-        // Ativa a view e aba selecionada
         obterId(`view-${idAba}`).classList.add('ativa');
         obterId(`tab-${idAba}`).classList.add('ativo');
 
-        // Altera dinamicamente o título do topo para contextualizar
         const titulos = { inicio: "Meu Saldo", historico: "Histórico", graficos: "Análise Mensal", config: "Configurações" };
         obterId('titulo-dinamico').innerText = titulos[idAba];
 
@@ -449,7 +439,6 @@
         input.value = ''; 
         mostrarAviso("Adicionado!");
 
-        // Se o usuário lançar algo por texto, joga ele direto pro Histórico para ver a mágica acontecer
         setTimeout(() => navegarPara('historico'), 400);
     }
 
@@ -493,7 +482,7 @@
         obterId('card-saldo').style.color = saldo >= 0 ? (escuro ? '#3498db' : '#2c3e50') : 'var(--saida)';
 
         document.querySelectorAll('.valor-dinamico').forEach(el => {
-            const attrVal = el.getAttribute('data-valor') || "0";
+            const attrVal = el.getAttribute('data-valor'] || "0";
             const v = parseFloat(parseFloat(attrVal).toFixed(2)).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             el.innerText = saldosOcultos ? (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes','v-val-reserva'].includes(el.id) ? "R$ ••••" : "••••") : (['card-saldo','previsao-valor','reserva-valor','saldo-restante-valor','v-val-contas','v-val-cartoes','v-val-reserva'].includes(el.id) ? `R$ ${v}` : v);
         });
