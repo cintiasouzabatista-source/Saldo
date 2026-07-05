@@ -31,6 +31,42 @@
             --bg-rodape: rgba(255, 255, 255, 0.9);
         }
 
+        /* TEMA ESCURO (DARK MODE) */
+        [data-theme="escuro"] {
+            --bg-body: #0f172a;
+            --bg-container: #1e293b;
+            --texto-principal: #f8fafc;
+            --texto-secundario: #94a3b8;
+            --borda: #334155;
+            --espessura-borda: 1px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --radius: 16px;
+            --entrada: #34d399;
+            --saida: #f87171;
+            --cartao: #fbbf24;
+            --reserva-cor: #818cf8;
+            --chat-verde: #4f46e5;
+            --bg-rodape: rgba(30, 41, 59, 0.95);
+        }
+
+        /* TEMA ESTILO WHATSAPP (ZAP VIBE) */
+        [data-theme="whats"] {
+            --bg-body: #efeae2; /* Fundo clássico das conversas */
+            --bg-container: #ffffff;
+            --texto-principal: #111b21;
+            --texto-secundario: #667781;
+            --borda: #e9edef;
+            --espessura-borda: 1px;
+            --shadow: 0 1px 3px rgba(11,20,26,0.08);
+            --radius: 12px;
+            --entrada: #00a884; /* Verde clássico do Zap */
+            --saida: #ea0038;
+            --cartao: #e1a200;
+            --reserva-cor: #53bdeb;
+            --chat-verde: #008069; /* Cabeçalho/Botão enviar oficial */
+            --bg-rodape: rgba(240, 242, 245, 0.95);
+        }
+
         [data-theme="pastel"] {
             --bg-body: #fdf6ec;
             --bg-container: #ffffff;
@@ -84,7 +120,6 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         
-        /* CORREÇÃO: Espaço inferior adicionado para o conteúdo não sumir atrás do menu fixado */
         body { 
             background-color: var(--bg-body); 
             color: var(--texto-principal); 
@@ -145,6 +180,9 @@
         .filtros-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; }
         .filtro-select { flex: 1; padding: 12px 16px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); font-size: 0.9rem; color: var(--texto-principal); box-shadow: var(--shadow); outline: none; font-weight: bold; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 
+        /* Ajuste do ícone do select para temas escuros */
+        [data-theme="escuro"] .filtro-select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f8fafc' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); }
+
         .secao-conteudo { background: var(--bg-container); padding: 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); box-shadow: var(--shadow); margin-bottom: 20px; width: 100%; }
         
         .grafico-wrapper { margin-bottom: 8px; }
@@ -172,11 +210,16 @@
         .descricao-texto { font-size: 1rem; font-weight: 800; color: var(--texto-principal); }
         .tags-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
         .tipo-tag { font-size: 0.7rem; padding: 3px 8px; color: var(--texto-principal); font-weight: 900; border-radius: 6px; border: 1px solid var(--borda); }
+        
         .tag-entrada { background: var(--entrada); color: white; }
-        [data-theme="pastel"] .tag-entrada, [data-theme="contemporaneo"] .tag-entrada { color: var(--texto-principal); }
+        [data-theme="pastel"] .tag-entrada, [data-theme="contemporaneo"] .tag-entrada, [data-theme="escuro"] .tag-entrada, [data-theme="whats"] .tag-entrada { color: var(--texto-principal); }
+        
         .tag-saida { background: var(--saida); color: white; }
         .tag-cartao { background: var(--cartao); color: #111827; }
+        
         .tag-conta { background: #e5e7eb; color: #111827; font-size: 0.7rem; padding: 3px 8px; font-weight: bold; border-radius: 6px; border: 1px solid var(--borda); }
+        [data-theme="escuro"] .tag-conta { background: #334155; color: #f8fafc; }
+        
         .tag-cartao-especifico { background: #fed7aa; color: #111827; border: 1px solid var(--borda); font-size: 0.7rem; padding: 3px 8px; font-weight: bold; border-radius: 6px; }
         .tag-fixa { background: #c084fc; color: #111827; border: 1px solid var(--borda); font-size: 0.7rem; padding: 3px 8px; font-weight: bold; border-radius: 6px; }
         .valor-historico { font-weight: 900; font-size: 1rem; letter-spacing: -0.5px; }
@@ -192,14 +235,13 @@
         .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 10px 10px 18px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); align-items: center; position: relative; box-shadow: var(--shadow); }
         .chat-input { flex-grow: 1; border: none; padding: 8px 0; font-size: 1rem; outline: none; background: transparent; color: #ffffff; font-weight: bold; }
         .chat-input::placeholder { color: rgba(255, 255, 255, 0.8); }
-        [data-theme="retro"] .chat-input, [data-theme="contemporaneo"] .chat-input { color: #ffffff; }
+        [data-theme="retro"] .chat-input, [data-theme="contemporaneo"] .chat-input, [data-theme="escuro"] .chat-input { color: #ffffff; }
         .btn-enviar { background: var(--bg-container); color: var(--texto-principal); border: var(--espessura-borda) solid var(--borda); width: 42px; height: 42px; border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; box-shadow: 2px 2px 0 var(--borda); }
         .btn-enviar:active { transform: translate(2px, 2px); box-shadow: none; }
         
         .alerta-temporario { position: absolute; top: -54px; left: 50%; transform: translateX(-50%); background: var(--texto-principal); color: var(--bg-container); padding: 8px 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); font-size: 0.9rem; font-weight: 900; opacity: 0; transition: opacity 0.2s ease; pointer-events: none; white-space: nowrap; z-index: 10; box-shadow: var(--shadow); }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* CORREÇÃO: Menu fixado, centralizado perfeitamente e adaptável sem estourar limites */
         .menu-rodape-wrapper { 
             position: fixed;
             bottom: 0;
@@ -214,7 +256,6 @@
             box-sizing: border-box;
         }
         
-        /* CORREÇÃO: Grid de 4 colunas perfeitamente idênticas e iguais */
         .menu-rodape { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr);
@@ -222,7 +263,6 @@
             width: 100%; 
         }
         
-        /* CORREÇÃO: Ícones na vertical para encaixar bem em telas pequenas sem sumir com o texto */
         .tab-item { 
             display: flex; 
             flex-direction: column;
@@ -243,6 +283,7 @@
         }
         .tab-item span:first-child { font-size: 1.1rem; }
         .tab-item.ativo { color: #ffffff; background: var(--texto-principal); border-color: var(--borda); box-shadow: none; transform: translate(2px, 2px); }
+        [data-theme="escuro"] .tab-item.ativo { color: #0f172a; background: var(--texto-principal); }
 
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
         .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); padding: 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); }
@@ -253,7 +294,7 @@
         .btn-modal { flex: 1; padding: 14px; font-size: 0.95rem; font-weight: 900; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: var(--shadow); }
         .btn-modal:active { transform: translate(2px, 2px); box-shadow: none; }
         .btn-salvar { background: var(--entrada); color: white; }
-        [data-theme="pastel"] .btn-salvar, [data-theme="retro"] .btn-salvar { color: var(--texto-principal); }
+        [data-theme="pastel"] .btn-salvar, [data-theme="retro"] .btn-salvar, [data-theme="escuro"] .btn-salvar, [data-theme="whats"] .btn-salvar { color: var(--texto-principal); }
         .btn-excluir { background: var(--saida); color: white; }
         .btn-cancelar { background: #e5e7eb; color: #111827; }
         
@@ -261,7 +302,7 @@
         .config-btn-bloco:active { transform: translate(2px, 2px); box-shadow: none; }
         
         .secur-temas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-        .btn-tema-opcao { padding: 14px; font-size: 0.9rem; font-weight: 900; border: var(--espessura-borda) solid var(--borda); border-radius: var(--radius); cursor: pointer; background: white; text-align: center; box-shadow: var(--shadow); }
+        .btn-tema-opcao { padding: 14px; font-size: 0.9rem; font-weight: 900; border: var(--espessura-borda) solid var(--borda); border-radius: var(--radius); cursor: pointer; background: white; text-align: center; box-shadow: var(--shadow); color: #111827; }
         .btn-tema-opcao:active { transform: translate(2px, 2px); box-shadow: none; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
@@ -309,7 +350,7 @@
                         <strong>Saldo Livre:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
                     </div>
                 </div>
-                <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Eita! Orçamento Compreuometido (>80%).</div>
+                <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Eita! Orçamento Comprometido (>80%).</div>
             </div>
         </div>
 
@@ -391,10 +432,12 @@
         <div class="secao-conteudo">
             <h4 style="margin-bottom:14px;">mudar o visual (vibe)</h4>
             <div class="secur-temas-grid">
-                <button class="btn-tema-opcao" style="background:#ffffff; color:#111827;" onclick="mudarTemaAtivo('cyber')">⚡ Pop Clean</button>
-                <button class="btn-tema-opcao" style="background:#fdf6ec; color:#4a3e3d;" onclick="mudarTemaAtivo('pastel')">🌸 Pastel Soft</button>
-                <button class="btn-tema-opcao" style="background:#f4eae1; color:#432c1d;" onclick="mudarTemaAtivo('retro')">📻 Warm Retro</button>
-                <button class="btn-tema-opcao" style="background:#0f172a; color:#f8fafc;" onclick="mudarTemaAtivo('contemporaneo')">📱 Contemporâneo</button>
+                <button class="btn-tema-opcao" style="background:#ffffff; border-color:#111827;" onclick="mudarTemaAtivo('cyber')">⚡ Pop Clean</button>
+                <button class="btn-tema-opcao" style="background:#1e293b; color:#f8fafc; border-color:#334155;" onclick="mudarTemaAtivo('escuro')">🌙 Modo Escuro</button>
+                <button class="btn-tema-opcao" style="background:#008069; color:#ffffff; border-color:#e9edef;" onclick="mudarTemaAtivo('whats')">💬 Vibe Zap</button>
+                <button class="btn-tema-opcao" style="background:#fdf6ec; color:#4a3e3d; border-color:#e8dcd8;" onclick="mudarTemaAtivo('pastel')">🌸 Pastel Soft</button>
+                <button class="btn-tema-opcao" style="background:#f4eae1; color:#432c1d; border-color:#432c1d;" onclick="mudarTemaAtivo('retro')">📻 Warm Retro</button>
+                <button class="btn-tema-opcao" style="background:#0f172a; color:#f8fafc; border-color:#cbd5e1;" onclick="mudarTemaAtivo('contemporaneo')">📱 Minimalista</button>
             </div>
 
             <h4 style="margin-top:20px; margin-bottom:12px;">gerenciamento de dados</h4>
@@ -499,7 +542,7 @@
             document.documentElement.setAttribute('data-theme', tema);
         }
         localStorage.setItem('vibe_tema_escolhido', tema);
-        mostrarAviso("Vibe visual updated! ✨");
+        mostrarAviso("Vibe visual mudada! ✨");
     }
 
     function inicializarFiltroMeses() {
