@@ -5,120 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#6366f1">
+    <meta name="theme-color" content="#2563eb">
     <title>Meu Fluxo de Caixa Inteligente</title>
     <style>
+        /* DEFINIÇÃO DOS TEMAS */
         :root {
-            --bg-body: #f4f4f9;
-            --bg-container: #ffffff; 
-            --texto-principal: #111827;
-            --texto-secundario: #6b7280;
-            --borda: #111827;
-            --espessura-borda: 2px;
-            --shadow: 4px 4px 0px #111827;
-            --radius: 16px;
+            /* Tema Padrão (Claro) */
+            --bg-body: #f1f5f9;
+            --bg-container: #ffffff;
+            --texto-principal: #0f172a;
+            --texto-secundario: #64748b;
+            --borda: #e2e8f0;
+            --espessura-borda: 1px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02);
+            --radius: 12px;
             --entrada: #10b981;
-            --saida: #ff4a5a;
-            --cartao: #ffb800;
-            --reserva-cor: #6366f1;
+            --saida: #ef4444;
+            --cartao: #f59e0b;
+            --reserva-cor: #06b6d4;
             --azul-saldo: #3b82f6;
             --alerta-fundo: #fee2e2;
-            --alerta-borda: #ff4a5a;
-            --alerta-danger-bg: #fee2e2;
-            --alerta-danger-borda: #ff4a5a;
-            --bg-retratil: #f9fafb;
-            --chat-verde: #6366f1; 
-            --bg-rodape: rgba(255, 255, 255, 0.9);
+            --alerta-borda: #fca5a5;
+            --bg-retratil: #f8fafc;
+            --bg-rodape: rgba(255, 255, 255, 0.92);
+            --header-bg: #2563eb;
+            --header-txt: #ffffff;
+            --saldo-box-bg: #ffffff;
         }
 
-        /* TEMA ESCURO (DARK MODE) */
-        [data-theme="escuro"] {
+        body.theme-escuro {
             --bg-body: #0f172a;
             --bg-container: #1e293b;
             --texto-principal: #f8fafc;
             --texto-secundario: #94a3b8;
             --borda: #334155;
-            --espessura-borda: 1px;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            --radius: 16px;
-            --entrada: #34d399;
-            --saida: #f87171;
-            --cartao: #fbbf24;
-            --reserva-cor: #818cf8;
-            --chat-verde: #4f46e5;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+            --bg-retratil: #0f172a;
             --bg-rodape: rgba(30, 41, 59, 0.95);
+            --header-bg: #1e293b;
+            --header-txt: #3b82f6;
+            --saldo-box-bg: #1e293b;
         }
 
-        /* TEMA ESTILO WHATSAPP (ZAP VIBE) */
-        [data-theme="whats"] {
-            --bg-body: #efeae2; /* Fundo clássico das conversas */
+        body.theme-pastel {
+            --bg-body: #fdf6ec;
             --bg-container: #ffffff;
-            --texto-principal: #111b21;
+            --texto-principal: #4a3e3d;
+            --texto-secundario: #a89a93;
+            --borda: #f5eae4;
+            --entrada: #a3b899;
+            --saida: #eebbaf;
+            --cartao: #f1e3a4;
+            --reserva-cor: #b2d6df;
+            --azul-saldo: #b2c9df;
+            --header-bg: #eebbaf;
+            --header-txt: #4a3e3d;
+            --saldo-box-bg: #ffffff;
+        }
+
+        body.theme-retro {
+            --bg-body: #fffae0;
+            --bg-container: #fffdf5;
+            --texto-principal: #2b2b2b;
+            --texto-secundario: #706f68;
+            --borda: #2b2b2b;
+            --espessura-borda: 2px;
+            --radius: 0px;
+            --shadow: 4px 4px 0px #2b2b2b;
+            --entrada: #49a078;
+            --saida: #d64933;
+            --cartao: #f3a712;
+            --reserva-cor: #2a6f97;
+            --header-bg: #2b2b2b;
+            --header-txt: #fffae0;
+            --saldo-box-bg: #fffdf5;
+        }
+
+        body.theme-whatsapp {
+            --bg-body: #efeae2; 
+            --bg-container: #ffffff; 
+            --texto-principal: #111b21; 
             --texto-secundario: #667781;
             --borda: #e9edef;
             --espessura-borda: 1px;
             --shadow: 0 1px 3px rgba(11,20,26,0.08);
             --radius: 12px;
-            --entrada: #00a884; /* Verde clássico do Zap */
+            --entrada: #00a884; 
             --saida: #ea0038;
             --cartao: #e1a200;
             --reserva-cor: #53bdeb;
-            --chat-verde: #008069; /* Cabeçalho/Botão enviar oficial */
+            --azul-saldo: #3b82f6;
+            --bg-retratil: #f0f2f5;
             --bg-rodape: rgba(240, 242, 245, 0.95);
+            --header-bg: #008069; 
+            --header-txt: #ffffff;
+            --saldo-box-bg: #d9fdd3; 
         }
 
-        [data-theme="pastel"] {
-            --bg-body: #fdf6ec;
-            --bg-container: #ffffff;
-            --texto-principal: #4a3e3d;
-            --texto-secundario: #8c7e7d;
-            --borda: #e8dcd8;
-            --espessura-borda: 1px;
-            --shadow: 0 8px 20px rgba(140, 126, 125, 0.1);
-            --radius: 20px;
-            --entrada: #a8dadc;
-            --saida: #e63946;
-            --cartao: #f4a261;
-            --reserva-cor: #b5e2fa;
-            --chat-verde: #e29578;
-            --bg-rodape: rgba(255, 255, 255, 0.9);
-        }
-
-        [data-theme="retro"] {
-            --bg-body: #f4eae1; 
-            --bg-container: #fcf8f2;
-            --texto-principal: #432c1d; 
-            --texto-secundario: #876f5e;
-            --borda: #432c1d;
-            --espessura-borda: 2px;
-            --shadow: 4px 4px 0px #d4a373; 
-            --radius: 12px;
-            --entrada: #6b705c; 
-            --saida: #b56576; 
-            --cartao: #dda15e; 
-            --reserva-cor: #cb997e;
-            --chat-verde: #876f5e;
-            --bg-rodape: rgba(244, 234, 225, 0.95);
-        }
-
-        [data-theme="contemporaneo"] {
-            --bg-body: #f8fafc; 
-            --bg-container: #ffffff;
-            --texto-principal: #0f172a; 
-            --texto-secundario: #64748b;
-            --borda: #cbd5e1; 
-            --espessura-borda: 1px;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05); 
-            --radius: 12px;
-            --entrada: #0ea5e9; 
-            --saida: #f43f5e;
-            --cartao: #f59e0b;
-            --reserva-cor: #64748b;
-            --chat-verde: #0f172a;
-            --bg-rodape: rgba(255, 255, 255, 0.9);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
         body { 
             background-color: var(--bg-body); 
@@ -130,7 +114,7 @@
             min-height: 100vh;
             overflow-y: auto;
             overflow-x: hidden;
-            transition: all 0.3s ease; 
+            transition: background-color 0.2s, color 0.2s;
         }
         
         .container { 
@@ -142,170 +126,124 @@
             position: relative;
         }
         
-        .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 16px; padding: 4px; }
-        .app-title { font-size: 1.6rem; font-weight: 900; color: var(--texto-principal); letter-spacing: -1px; text-transform: lowercase; }
-        .app-title::after { content: '.'; color: var(--saida); }
-        .app-actions { display: flex; gap: 10px; align-items: center; }
-        .icon-btn { background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); font-size: 1.2rem; cursor: pointer; color: var(--texto-principal); display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: var(--radius); box-shadow: var(--shadow); transition: all 0.1s; }
-        .icon-btn:active { transform: translate(2px, 2px); box-shadow: none; }
+        .app-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            width: 100%; 
+            margin-bottom: 16px; 
+            padding: 12px; 
+            background: var(--header-bg); 
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: var(--espessura-borda) solid var(--borda);
+        }
+        .app-title { font-size: 1.3rem; font-weight: 700; color: var(--header-txt); letter-spacing: -0.5px; }
+        .app-actions { display: flex; gap: 6px; align-items: center; }
+        .icon-btn { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: var(--header-txt); display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; }
 
         .app-view { display: none; width: 100%; }
-        .app-view.ativa { 
-            display: flex; 
-            flex-direction: column; 
-        }
+        .app-view.ativa { display: flex; flex-direction: column; }
 
         .cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
         .card { background: var(--bg-container); padding: 16px 8px; text-align: center; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); box-shadow: var(--shadow); }
-        .card h3 { font-size: 0.8rem; color: var(--texto-secundario); margin-bottom: 6px; text-transform: lowercase; font-weight: bold; }
-        .card p { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; }
+        .card h3 { font-size: 0.8rem; color: var(--texto-secundario); margin-bottom: 6px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card p { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.5px; }
         
-        .card.saldo-total { grid-column: span 3; padding: 24px; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; background: var(--bg-container); }
-        .card.saldo-total h3 { font-size: 0.9rem; letter-spacing: 0px; }
-        .card.saldo-total p { font-size: 2.4rem; font-weight: 900; letter-spacing: -1.5px; }
+        .card.saldo-total { grid-column: span 3; padding: 24px; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; background: var(--saldo-box-bg); }
+        .card.saldo-total h3 { font-size: 0.85rem; color: var(--texto-secundario); }
+        .card.saldo-total p { font-size: 2.2rem; font-weight: 700; }
         
-        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin-top: 12px; border-top: 2px dashed var(--borda); padding-top: 16px; }
+        .info-subtil-container { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin-top: 12px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; }
         .linha-subtil-valores { display: flex; justify-content: center; gap: 16px; width: 100%; flex-wrap: wrap; }
-        .previsao-texto, .reserva-texto { font-size: 0.85rem; color: var(--texto-secundario); font-weight: bold; display: inline-flex; align-items: center; gap: 4px; }
-        .previsao-texto strong, .reserva-texto strong { font-weight: 900; color: var(--texto-principal); }
-        .saldo-restante-texto { font-size: 0.95rem; color: var(--texto-principal); font-weight: 900; margin-top: 6px; background: var(--reserva-cor); padding: 4px 12px; border-radius: 8px; border: var(--espessura-borda) solid var(--borda); }
+        .previsao-texto, .reserva-texto { font-size: 0.85rem; color: var(--texto-secundario); font-weight: normal; display: inline-flex; align-items: center; gap: 4px; }
+        .previsao-texto strong, .reserva-texto strong { font-weight: 700; color: var(--texto-principal); }
+        .saldo-restante-texto { font-size: 0.95rem; color: var(--header-txt); font-weight: 700; margin-top: 6px; background: var(--header-bg); padding: 6px 14px; border-radius: 20px; box-shadow: var(--shadow); border: var(--espessura-borda) solid var(--borda); }
         .config-reserva-inline { cursor: pointer; font-size: 0.85rem; }
         
-        .alerta-comprometido { background: var(--alerta-danger-bg); border: var(--espessura-borda) solid var(--alerta-danger-borda); color: var(--texto-principal); padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-top: 6px; width: 100%; text-align: center; display: none; }
+        .alerta-comprometido { background: var(--alerta-fundo); border: var(--espessura-borda) solid var(--alerta-borda); color: var(--texto-principal); padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-top: 6px; width: 100%; text-align: center; display: none; }
 
         .cor-entrada { color: var(--entrada); }
         .cor-saida { color: var(--saida); }
         .cor-cartao { color: var(--cartao); }
 
         .filtros-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; }
-        .filtro-select { flex: 1; padding: 12px 16px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); font-size: 0.9rem; color: var(--texto-principal); box-shadow: var(--shadow); outline: none; font-weight: bold; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-
-        /* Ajuste do ícone do select para temas escuros */
-        [data-theme="escuro"] .filtro-select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f8fafc' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); }
+        .filtro-select { flex: 1; padding: 12px 16px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); font-size: 0.9rem; color: var(--texto-principal); box-shadow: var(--shadow); outline: none; font-weight: 600; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 
         .secao-conteudo { background: var(--bg-container); padding: 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); box-shadow: var(--shadow); margin-bottom: 20px; width: 100%; }
         
         .grafico-wrapper { margin-bottom: 8px; }
-        .grafico-wrapper h4 { font-size: 0.9rem; color: var(--texto-principal); margin-bottom: 16px; text-transform: lowercase; font-weight: 900; }
-        .donut-chart { width: 140px; height: 140px; border-radius: 50%; margin: 12px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; border: var(--espessura-borda) solid var(--borda); box-shadow: var(--shadow); }
-        .donut-hole { width: 96px; height: 96px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; color: var(--texto-secundario); text-align: center; border: var(--espessura-borda) solid var(--borda); }
-        .donut-hole span:first-child { font-size: 1.2rem; font-weight: 900; color: var(--texto-principal); }
+        .grafico-wrapper h4 { font-size: 0.9rem; color: var(--texto-principal); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+        .donut-chart { width: 140px; height: 140px; border-radius: 50%; margin: 12px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; box-shadow: var(--shadow); }
+        .donut-hole { width: 96px; height: 96px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; color: var(--texto-secundario); text-align: center; }
+        .donut-hole span:first-child { font-size: 1.2rem; font-weight: 700; color: var(--texto-principal); }
         .donut-legenda { display: flex; justify-content: center; gap: 16px; font-size: 0.85rem; font-weight: bold; margin-top: 14px; }
         
         .barra-horizontal-linha { margin-bottom: 14px; }
-        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: bold; margin-bottom: 6px; }
-        .barra-horizontal-bg { background: var(--bg-body); height: 14px; width: 100%; border-radius: 6px; border: var(--espessura-borda) solid var(--borda); overflow: hidden; }
+        .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+        .barra-horizontal-bg { background: var(--bg-retratil); height: 12px; width: 100%; border-radius: 6px; overflow: hidden; border: var(--espessura-borda) solid var(--borda); }
         .barra-horizontal-preenchimento { height: 100%; width: 0%; transition: width 0.5s ease; }
         
         .colunas-container { display: flex; justify-content: center; gap: 36px; height: 120px; align-items: flex-end; padding-top: 25px; margin-bottom: 20px; border-bottom: var(--espessura-borda) solid var(--borda); position: relative; }
         .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 65px; position: relative; }
-        .coluna-vertical-barra { width: 28px; border-radius: 6px 6px 0 0; border: var(--espessura-borda) solid var(--borda); border-bottom: none; height: 2px; min-height: 2px; transition: height 0.5s ease; }
-        .coluna-vertical-valor { font-size: 0.75rem; font-weight: 900; position: absolute; top: -20px; white-space: nowrap; text-align: center; }
+        .coluna-vertical-barra { width: 28px; border-radius: 6px 6px 0 0; height: 2px; min-height: 2px; transition: height 0.5s ease; }
+        .coluna-vertical-valor { font-size: 0.75rem; font-weight: 700; position: absolute; top: -20px; white-space: nowrap; text-align: center; }
         .coluna-vertical-rotulo { font-size: 0.8rem; font-weight: bold; position: absolute; bottom: -24px; color: var(--texto-secundario); }
 
-        .item-transacao { display: flex; flex-direction: column; padding: 14px 4px; border-bottom: 2px dashed var(--borda); cursor: pointer; }
+        .item-transacao { display: flex; flex-direction: column; padding: 14px 4px; border-bottom: 1px solid var(--borda); cursor: pointer; }
         .item-transacao:last-child { border-bottom: none; }
         .linha-principal { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .detalhes-item { display: flex; flex-direction: column; gap: 6px; }
-        .descricao-texto { font-size: 1rem; font-weight: 800; color: var(--texto-principal); }
+        .descricao-texto { font-size: 1rem; font-weight: 600; color: var(--texto-principal); }
         .tags-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-        .tipo-tag { font-size: 0.7rem; padding: 3px 8px; color: var(--texto-principal); font-weight: 900; border-radius: 6px; border: 1px solid var(--borda); }
+        .tipo-tag { font-size: 0.7rem; padding: 3px 8px; font-weight: 700; border-radius: 6px; text-transform: uppercase; }
         
-        .tag-entrada { background: var(--entrada); color: white; }
-        [data-theme="pastel"] .tag-entrada, [data-theme="contemporaneo"] .tag-entrada, [data-theme="escuro"] .tag-entrada, [data-theme="whats"] .tag-entrada { color: var(--texto-principal); }
+        .tag-entrada { background: rgba(16, 185, 129, 0.1); color: var(--entrada); }
+        .tag-saida { background: rgba(239, 68, 68, 0.1); color: var(--saida); }
+        .tag-cartao { background: rgba(245, 158, 12b, 0.1); color: var(--cartao); }
         
-        .tag-saida { background: var(--saida); color: white; }
-        .tag-cartao { background: var(--cartao); color: #111827; }
-        
-        .tag-conta { background: #e5e7eb; color: #111827; font-size: 0.7rem; padding: 3px 8px; font-weight: bold; border-radius: 6px; border: 1px solid var(--borda); }
-        [data-theme="escuro"] .tag-conta { background: #334155; color: #f8fafc; }
-        
-        .tag-cartao-especifico { background: #fed7aa; color: #111827; border: 1px solid var(--borda); font-size: 0.7rem; padding: 3px 8px; font-weight: bold; border-radius: 6px; }
-        .tag-fixa { background: #c084fc; color: #111827; border: 1px solid var(--borda); font-size: 0.7rem; padding: 3px 8px; font-weight: bold; border-radius: 6px; }
-        .valor-historico { font-weight: 900; font-size: 1rem; letter-spacing: -0.5px; }
+        .tag-conta { background: var(--bg-retratil); color: var(--texto-secundario); font-size: 0.7rem; padding: 3px 8px; font-weight: 600; border-radius: 6px; border: var(--espessura-borda) solid var(--borda); }
+        .tag-cartao-especifico { background: rgba(245, 158, 12b, 0.08); color: var(--cartao); font-size: 0.7rem; padding: 3px 8px; font-weight: 600; border-radius: 6px; }
+        .tag-fixa { background: rgba(142, 36, 170, 0.1); color: #8e24aa; font-size: 0.7rem; padding: 3px 8px; font-weight: 600; border-radius: 6px; }
+        .valor-historico { font-weight: 700; font-size: 1rem; letter-spacing: -0.5px; }
 
-        .item-transacao.pendente { background: var(--bg-body); border: var(--espessura-borda) solid var(--cartao); padding: 12px; border-radius: var(--radius); margin: 6px 0; box-shadow: 3px 3px 0 var(--borda); }
-        .container-pergunta { margin-top: 10px; padding-top: 10px; border-top: 2px dashed var(--borda); width: 100%; }
-        .texto-pergunta { font-size: 0.85rem; font-weight: bold; color: var(--texto-principal); margin-bottom: 8px; display: block; }
+        .item-transacao.pendente { background: rgba(245, 158, 12b, 0.15); border-left: 4px solid var(--cartao); padding: 12px; border-radius: var(--radius); margin: 6px 0; }
+        .container-pergunta { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(0,0,0,0.1); width: 100%; }
+        .texto-pergunta { font-size: 0.85rem; font-weight: 600; color: var(--texto-principal); margin-bottom: 8px; display: block; }
         .botoes-resposta { display: flex; gap: 6px; flex-wrap: wrap; }
-        .btn-resposta { background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); padding: 6px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; color: var(--texto-principal); box-shadow: 2px 2px 0 var(--borda); }
-        .btn-resposta:hover { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--borda); }
-
-        .chat-container-dinamico { margin-top: 20px; margin-bottom: 20px; width: 100%; }
-        .chat-input-area { display: flex; gap: 8px; background: var(--chat-verde); padding: 10px 10px 10px 18px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); align-items: center; position: relative; box-shadow: var(--shadow); }
-        .chat-input { flex-grow: 1; border: none; padding: 8px 0; font-size: 1rem; outline: none; background: transparent; color: #ffffff; font-weight: bold; }
-        .chat-input::placeholder { color: rgba(255, 255, 255, 0.8); }
-        [data-theme="retro"] .chat-input, [data-theme="contemporaneo"] .chat-input, [data-theme="escuro"] .chat-input { color: #ffffff; }
-        .btn-enviar { background: var(--bg-container); color: var(--texto-principal); border: var(--espessura-borda) solid var(--borda); width: 42px; height: 42px; border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; box-shadow: 2px 2px 0 var(--borda); }
-        .btn-enviar:active { transform: translate(2px, 2px); box-shadow: none; }
+        .btn-resposta { background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); box-shadow: var(--shadow); }
         
-        .alerta-temporario { position: absolute; top: -54px; left: 50%; transform: translateX(-50%); background: var(--texto-principal); color: var(--bg-container); padding: 8px 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); font-size: 0.9rem; font-weight: 900; opacity: 0; transition: opacity 0.2s ease; pointer-events: none; white-space: nowrap; z-index: 10; box-shadow: var(--shadow); }
+        .chat-container-dinamico { margin-top: 20px; margin-bottom: 20px; width: 100%; }
+        .chat-input-area { display: flex; gap: 8px; background: var(--bg-container); padding: 6px 6px 6px 16px; border-radius: 24px; border: var(--espessura-borda) solid var(--borda); align-items: center; position: relative; box-shadow: var(--shadow); }
+        .chat-input { flex-grow: 1; border: none; padding: 8px 0; font-size: 1rem; outline: none; background: transparent; color: var(--texto-principal); }
+        .chat-input::placeholder { color: var(--texto-secundario); }
+        .btn-enviar { background: var(--header-bg); color: var(--header-txt); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; border: var(--espessura-borda) solid var(--borda); }
+        
+        .alerta-temporario { position: absolute; top: -54px; left: 50%; transform: translateX(-50%); background: #111b21; color: #ffffff; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; opacity: 0; transition: opacity 0.2s ease; pointer-events: none; white-space: nowrap; z-index: 10; box-shadow: var(--shadow); }
         .alerta-temporario.mostrar { opacity: 1; }
 
         .menu-rodape-wrapper { 
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%; 
-            max-width: 500px;
-            background: var(--bg-body);
-            padding: 12px 16px; 
-            border-top: var(--espessura-borda) solid var(--borda); 
-            z-index: 90;
-            box-sizing: border-box;
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px;
+            background: var(--bg-rodape); padding: 10px 16px; border-top: var(--espessura-borda) solid var(--borda); z-index: 90; box-sizing: border-box; backdrop-filter: blur(8px);
         }
-        
-        .menu-rodape { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px; 
-            width: 100%; 
-        }
-        
-        .tab-item { 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
-            justify-content: center; 
-            gap: 4px; 
-            background: var(--bg-container); 
-            border: var(--espessura-borda) solid var(--borda); 
-            color: var(--texto-principal); 
-            padding: 8px 2px; 
-            border-radius: var(--radius); 
-            cursor: pointer; 
-            font-size: 0.75rem; 
-            font-weight: 900; 
-            white-space: nowrap; 
-            box-shadow: var(--shadow); 
-            transition: all 0.1s ease; 
-        }
-        .tab-item span:first-child { font-size: 1.1rem; }
-        .tab-item.ativo { color: #ffffff; background: var(--texto-principal); border-color: var(--borda); box-shadow: none; transform: translate(2px, 2px); }
-        [data-theme="escuro"] .tab-item.ativo { color: #0f172a; background: var(--texto-principal); }
+        .menu-rodape { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: none; color: var(--texto-secundario); padding: 6px 2px; cursor: pointer; font-size: 0.75rem; font-weight: 600; white-space: nowrap; transition: all 0.2s ease; }
+        .tab-item span:first-child { font-size: 1.3rem; }
+        .tab-item.ativo { color: var(--header-bg); }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
-        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); padding: 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); }
-        .modal-title { font-size: 1.3rem; font-weight: 900; color: var(--texto-principal); border-bottom: var(--espessura-borda) solid var(--borda); padding-bottom: 8px; letter-spacing: -0.5px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal-container { background: var(--bg-container); width: 100%; max-width: 400px; border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); border: var(--espessura-borda) solid var(--borda); }
+        .modal-title { font-size: 1.2rem; font-weight: 700; color: var(--texto-principal); border-bottom: var(--espessura-borda) solid var(--borda); padding-bottom: 8px; }
         .modal-label { font-size: 0.85rem; font-weight: bold; color: var(--texto-secundario); margin-bottom: -8px; }
-        .modal-input, .modal-select { width: 100%; padding: 12px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); font-size: 1rem; background: var(--bg-body); color: var(--texto-principal); outline: none; font-weight: bold; }
+        .modal-input, .modal-select { width: 100%; padding: 12px; border-radius: 8px; border: var(--espessura-borda) solid var(--borda); font-size: 1rem; background: var(--bg-body); color: var(--texto-principal); outline: none; }
         .modal-botoes { display: flex; gap: 8px; margin-top: 8px; }
-        .btn-modal { flex: 1; padding: 14px; font-size: 0.95rem; font-weight: 900; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: var(--shadow); }
-        .btn-modal:active { transform: translate(2px, 2px); box-shadow: none; }
-        .btn-salvar { background: var(--entrada); color: white; }
-        [data-theme="pastel"] .btn-salvar, [data-theme="retro"] .btn-salvar, [data-theme="escuro"] .btn-salvar, [data-theme="whats"] .btn-salvar { color: var(--texto-principal); }
+        .btn-modal { flex: 1; padding: 12px; font-size: 0.95rem; font-weight: 600; border-radius: 20px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-salvar { background: var(--header-bg); color: var(--header-txt); border: var(--espessura-borda) solid var(--borda); }
         .btn-excluir { background: var(--saida); color: white; }
-        .btn-cancelar { background: #e5e7eb; color: #111827; }
+        .btn-cancelar { background: var(--bg-retratil); color: var(--texto-principal); border: var(--espessura-borda) solid var(--borda); }
         
-        .config-btn-bloco { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: bold; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow); }
-        .config-btn-bloco:active { transform: translate(2px, 2px); box-shadow: none; }
-        
-        .secur-temas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-        .btn-tema-opcao { padding: 14px; font-size: 0.9rem; font-weight: 900; border: var(--espessura-borda) solid var(--borda); border-radius: var(--radius); cursor: pointer; background: white; text-align: center; box-shadow: var(--shadow); color: #111827; }
-        .btn-tema-opcao:active { transform: translate(2px, 2px); box-shadow: none; }
+        .config-btn-bloco { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); color: var(--texto-principal); font-weight: 600; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow); }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -313,30 +251,31 @@
     
     <!-- CABEÇALHO -->
     <div class="app-header">
-        <div class="app-title" id="titulo-dinamico">meu saldo</div>
+        <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
         <div class="app-actions">
             <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">👁️</button>
+            <button class="icon-btn" onclick="alternarTema()" title="Mudar Estilo">🎨</button>
         </div>
     </div>
 
     <!-- TELA 1: INÍCIO -->
     <div class="app-view ativa" id="view-inicio">
         <div class="cards-container">
-            <div class="card" style="background: rgba(16, 185, 129, 0.15);">
+            <div class="card">
                 <h3>entradas</h3>
                 <p class="cor-entrada">R$ <span class="valor-dinamico" id="card-entradas" data-valor="0.00">0,00</span></p>
             </div>
-            <div class="card" style="background: rgba(255, 74, 90, 0.15);">
+            <div class="card">
                 <h3>saídas</h3>
                 <p class="cor-saida">R$ <span class="valor-dinamico" id="card-saidas" data-valor="0.00">0,00</span></p>
             </div>
-            <div class="card" style="background: rgba(255, 184, 0, 0.15);">
+            <div class="card">
                 <h3>cartão</h3>
                 <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
             </div>
             <div class="card saldo-total">
-                <h3>saldo livre atual</h3>
-                <p id="card-saldo" class="valor-dinamico" data-valor="0.00" style="color: var(--texto-principal);">R$ 0,00</p>
+                <h3>Saldo Disponível Atual</h3>
+                <p id="card-saldo" class="valor-dinamico" data-valor="0.00">R$ 0,00</p>
                 
                 <div class="info-subtil-container">
                     <div class="linha-subtil-valores">
@@ -350,14 +289,14 @@
                         <strong>Saldo Livre:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
                     </div>
                 </div>
-                <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Eita! Orçamento Comprometido (>80%).</div>
+                <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Orçamento Comprometido (>80%).</div>
             </div>
         </div>
 
         <div class="chat-container-dinamico">
             <div class="chat-input-area">
-                <div id="alerta" class="alerta-temporario">Salvo na gaveta! 📁</div>
-                <input type="text" id="campo-texto" class="chat-input" placeholder="O que você gastou ou ganhou hoje?..." onkeypress="verificarTecla(event)">
+                <div id="alerta" class="alerta-temporario">Salvo com sucesso! 📁</div>
+                <input type="text" id="campo-texto" class="chat-input" placeholder="Mensagem: o que você gastou hoje?..." onkeypress="verificarTecla(event)">
                 <button class="btn-enviar" onclick="processarComando()">➔</button>
             </div>
         </div>
@@ -382,11 +321,11 @@
     <div class="app-view" id="view-graficos">
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
-                <h4>categorias gerais</h4>
+                <h4>Categorias Gerais</h4>
                 <div class="colunas-container">
                     <div class="coluna-vertical-bloco">
                         <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
-                        <div class="coluna-vertical-barra" id="v-bar-contas" style="background: #cbd5e1;"></div>
+                        <div class="coluna-vertical-barra" id="v-bar-contas" style="background: var(--saida);"></div>
                         <span class="coluna-vertical-rotulo">Contas</span>
                     </div>
                     <div class="coluna-vertical-bloco">
@@ -405,11 +344,11 @@
 
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
-                <h4>proporção de fluxo</h4>
+                <h4>Proporção de Fluxo</h4>
                 <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
                     <div class="donut-hole">
                         <span id="pizza-perc">0%</span>
-                        <span id="pizza-rotulo" style="font-size:0.7rem; font-weight:900; text-transform:lowercase;">gasto</span>
+                        <span id="pizza-rotulo" style="font-size:0.7rem; font-weight:700; text-transform:uppercase;">gasto</span>
                     </div>
                 </div>
                 <div class="donut-legenda">
@@ -421,7 +360,7 @@
 
         <div class="secao-conteudo">
             <div class="grafico-wrapper">
-                <h4>maiores gastos do mês</h4>
+                <h4>Maiores Gastos do Mês</h4>
                 <div id="grafico-barras-horizontais"></div>
             </div>
         </div>
@@ -430,22 +369,12 @@
     <!-- TELA 4: CONFIGURAÇÕES -->
     <div class="app-view" id="view-config">
         <div class="secao-conteudo">
-            <h4 style="margin-bottom:14px;">mudar o visual (vibe)</h4>
-            <div class="secur-temas-grid">
-                <button class="btn-tema-opcao" style="background:#ffffff; border-color:#111827;" onclick="mudarTemaAtivo('cyber')">⚡ Pop Clean</button>
-                <button class="btn-tema-opcao" style="background:#1e293b; color:#f8fafc; border-color:#334155;" onclick="mudarTemaAtivo('escuro')">🌙 Modo Escuro</button>
-                <button class="btn-tema-opcao" style="background:#008069; color:#ffffff; border-color:#e9edef;" onclick="mudarTemaAtivo('whats')">💬 Vibe Zap</button>
-                <button class="btn-tema-opcao" style="background:#fdf6ec; color:#4a3e3d; border-color:#e8dcd8;" onclick="mudarTemaAtivo('pastel')">🌸 Pastel Soft</button>
-                <button class="btn-tema-opcao" style="background:#f4eae1; color:#432c1d; border-color:#432c1d;" onclick="mudarTemaAtivo('retro')">📻 Warm Retro</button>
-                <button class="btn-tema-opcao" style="background:#0f172a; color:#f8fafc; border-color:#cbd5e1;" onclick="mudarTemaAtivo('contemporaneo')">📱 Minimalista</button>
-            </div>
-
-            <h4 style="margin-top:20px; margin-bottom:12px;">gerenciamento de dados</h4>
+            <h4 style="margin-bottom:12px;">Gerenciamento de Dados</h4>
             <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar Banco de Dados (JSON)</button>
             <button class="config-btn-bloco" onclick="document.getElementById('input-file-backup').click()">📤 Importar Banco de Dados (JSON)</button>
             <input type="file" id="input-file-backup" accept=".json" style="display: none;" onchange="importarBackup(event)">
             
-            <h4 style="margin-top:24px; margin-bottom:12px; color:var(--saida);">ações críticas</h4>
+            <h4 style="margin-top:24px; margin-bottom:12px; color:var(--saida);">Ações Críticas</h4>
             <button class="config-btn-bloco" style="color:var(--saida); border-color: var(--saida);" onclick="resetarAplicativoTotal()">🗑️ Limpar Tudo Permanentemente</button>
         </div>
     </div>
@@ -453,10 +382,10 @@
     <!-- MENU INFERIOR FIXO -->
     <div class="menu-rodape-wrapper">
         <div class="menu-rodape">
-            <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
+            <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>💬</span><span>Conversa</span></button>
             <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
-            <button class="tab-item" id="tab-graficos" onclick="navegarPara('graficos')"><span>📊</span><span>Gráficos</span></button>
-            <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Ajustes</span></button>
+            <button class="tab-item" id="tab-graficos" onclick="navegarPara('graficos')"><span>📊</span><span>Status</span></button>
+            <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
         </div>
     </div>
 
@@ -506,6 +435,8 @@
 <script>
     let transacoes = [], idEdicaoAtual = null, saldosOcultos = false, porcentagemReserva = 10;
     let modoGraficoRosca = 0; 
+    let temasDisponiveis = ['padrao', 'escuro', 'pastel', 'retro', 'whatsapp'];
+    let temaAtualIndex = 0;
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
     const MAPA_ENTIDADES = {
@@ -516,6 +447,22 @@
     const obterId = id => document.getElementById(id);
     const toggleModal = (id, abrir) => obterId(id).style.display = abrir ? 'flex' : 'none';
     const mostrarAviso = txt => { const a = obterId('alerta'); a.innerText = txt; a.classList.add('mostrar'); setTimeout(() => a.classList.remove('mostrar'), 3000); };
+
+    function alternarTema() {
+        temaAtualIndex = (temaAtualIndex + 1) % temasDisponiveis.length;
+        const novoTema = temasDisponiveis[temaAtualIndex];
+        
+        document.body.className = ''; 
+        if (novoTema !== 'padrao') {
+            document.body.classList.add(`theme-${novoTema}`);
+        }
+        
+        const coresMeta = { padrao: '#2563eb', escuro: '#1e293b', pastel: '#eebbaf', retro: '#2b2b2b', whatsapp: '#008069' };
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', coresMeta[novoTema]);
+        
+        localStorage.setItem('app_tema_index', temaAtualIndex);
+        atualizarAplicativo();
+    }
 
     function navegarPara(idAba) {
         document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
@@ -528,21 +475,11 @@
         const elementoAtivo = obterId(`tab-${idAba}`);
         elementoAtivo.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
-        const titulos = { inicio: "meu saldo", historico: "histórico", graficos: "análises", config: "ajustes" };
+        const titulos = { inicio: "Meu Saldo", historico: "Histórico", graficos: "Status de Gastos", config: "Configurações" };
         obterId('titulo-dinamico').innerText = titulos[idAba];
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
         atualizarAplicativo();
-    }
-
-    function mudarTemaAtivo(tema) {
-        if (tema === 'cyber') {
-            document.documentElement.removeAttribute('data-theme');
-        } else {
-            document.documentElement.setAttribute('data-theme', tema);
-        }
-        localStorage.setItem('vibe_tema_escolhido', tema);
-        mostrarAviso("Vibe visual mudada! ✨");
     }
 
     function inicializarFiltroMeses() {
@@ -594,7 +531,20 @@
         const t = transacoes.find(i => i.id === id);
         if (t) {
             transacoes.forEach(i => { if (t.grupoParcelas ? i.grupoParcelas === t.grupoParcelas : i.id === id) { i[objChave] = valor; if(objChave==='fixa') i.perguntaFixaRespondida = true; } });
-            localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); mostrarAviso("Salvo! 🎯");
+            localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); 
+            atualizarAplicativo(); 
+            mostrarAviso("Salvo! 🎯");
+            
+            // VERIFICA SE O ITEM DO HISTÓRICO RESOLVEU TODAS AS PENDÊNCIAS
+            let aindaPendente = (t.tipo === 'entrada' && !t.conta) || 
+                                 (t.tipo === 'saida' && !t.conta) || 
+                                 (t.tipo === 'cartao' && !t.cartao) || 
+                                 ((t.tipo === 'saida' || t.tipo === 'cartao') && !t.perguntaFixaRespondida);
+            
+            // SE TUDO FOI RESPONDIDO, VOLTA AUTOMATICAMENTE PARA A TELA INICIAL
+            if (!aindaPendente) {
+                setTimeout(() => navegarPara('inicio'), 500);
+            }
         }
     }
 
@@ -625,7 +575,6 @@
         obterId('saldo-restante-valor').setAttribute('data-valor', saldoSeGuardar.toFixed(2));
 
         obterId('card-alerta-comprometido').style.display = ent > 0 && (gastos / ent) >= 0.8 ? 'block' : 'none';
-        obterId('card-saldo').style.color = saldo >= 0 ? 'var(--texto-principal)' : 'var(--saida)';
 
         document.querySelectorAll('.valor-dinamico').forEach(el => {
             const attrVal = el.getAttribute('data-valor') || "0";
@@ -647,15 +596,41 @@
             return true;
         });
 
-        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);font-size:0.9rem;padding:30px 0;">Vazio por aqui... 📭</p>`; return; }
+        if(!filtradas.length) { l.innerHTML = `<p style="text-align:center;color:var(--texto-secundario);font-size:0.9rem;padding:30px 0;">Nenhum registro por aqui... 📭</p>`; return; }
 
         filtradas.forEach(t => {
             let cls = t.tipo === 'entrada' ? 'tag-entrada' : t.tipo === 'cartao' ? 'tag-cartao' : 'tag-saida';
             let txt = t.tipo === 'entrada' ? 'Entrada' : t.tipo === 'cartao' ? 'Cartão' : 'Saída';
             let cor = t.tipo === 'entrada' ? 'var(--entrada)' : t.tipo === 'cartao' ? 'var(--cartao)' : 'var(--saida)';
-            let pen = ((t.tipo === 'saida' || t.tipo === 'entrada') && !t.conta) || (t.tipo === 'cartao' && !t.cartao) || ((t.tipo === 'saida' || t.tipo === 'cartao') && !t.perguntaFixaRespondida);
+            
+            // CORREÇÃO LOGIC: Só considera pendente o que faz sentido para o tipo de transação
+            let pen = (t.tipo === 'entrada' && !t.conta) || 
+                      (t.tipo === 'saida' && !t.conta) || 
+                      (t.tipo === 'cartao' && !t.cartao) || 
+                      ((t.tipo === 'saida' || t.tipo === 'cartao') && !t.perguntaFixaRespondida);
 
             let item = document.createElement('div'); item.className = `item-transacao ${pen ? 'pendente' : ''}`;
+            
+            // LÓGICA DINÂMICA DE PERGUNTA CONTEXTUAL
+            let conteudoPergunta = '';
+            if (pen) {
+                let textoPergunta = "";
+                let botoesHtml = "";
+                
+                if ((t.tipo === 'entrada' || t.tipo === 'saida') && !t.conta) {
+                    textoPergunta = "Qual conta/banco utilizou no Pix ou Débito?";
+                    botoesHtml = ['Mercado Pago','Nubank','Itaú','Inter','PicPay'].map(b => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'conta','${b}')">${b}</button>`).join('');
+                } else if (t.tipo === 'cartao' && !t.cartao) {
+                    textoPergunta = "Qual cartão de crédito você usou?";
+                    botoesHtml = ['Mercado Pago','Nubank','Itaú','Inter','C6 Bank','Bradesco'].map(c => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'cartao','${c}')">${c}</button>`).join('');
+                } else if ((t.tipo === 'saida' || t.tipo === 'cartao') && !t.perguntaFixaRespondida) {
+                    textoPergunta = "É uma despesa fixa todo mês?";
+                    botoesHtml = `<button class="btn-resposta" style="background:var(--header-bg); color:var(--header-txt);" onclick="responderAtributo(${t.id},'fixa',true)">📌 Sim</button><button class="btn-resposta" onclick="responderAtributo(${t.id},'fixa',false)">Não</button>`;
+                }
+
+                conteudoPergunta = `<div class="container-pergunta"><span class="texto-pergunta">⚡ ${textoPergunta}</span><div class="botoes-resposta">${botoesHtml}</div></div>`;
+            }
+
             item.innerHTML = `
                 <div class="linha-principal" onclick="abrirModal(${t.id})">
                     <div class="detalhes-item">
@@ -670,11 +645,7 @@
                     </div>
                     <span class="valor-historico" style="color:${cor}">${t.tipo === 'entrada' ? '+' : '-'} ${saldosOcultos ? '•••' : 'R$ '+t.valor.toFixed(2).replace('.',',')}</span>
                 </div>
-                ${pen ? `<div class="container-pergunta"><span class="texto-pergunta">⚡ Completa aí rapidão: ${!t.conta && t.tipo!=='cartao' ? 'Qual conta usou?' : !t.cartao ? 'Qual cartão usou?' : 'É um boleto fixo todo mês?'}</span><div class="botoes-resposta">
-                    ${!t.conta && t.tipo!=='cartao' ? ['Mercado Pago','Nubank','Itaú','Inter','PicPay'].map(b => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'conta','${b}')">${b}</button>`).join('') :
-                      !t.cartao ? ['Mercado Pago','Nubank','Itaú','Inter','C6 Bank','Bradesco'].map(c => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'cartao','${c}')">${c}</button>`).join('') :
-                      `<button class="btn-resposta" style="background:var(--reserva-cor); color:white;" onclick="responderAtributo(${t.id},'fixa',true)">📌 Sim</button><button class="btn-resposta" onclick="responderAtributo(${t.id},'fixa',false)">Não</button>`}
-                </div></div>` : ''}
+                ${conteudoPergunta}
             `;
             l.appendChild(item);
         });
@@ -796,11 +767,17 @@
     }
 
     window.onload = () => {
-        const tGuardado = localStorage.getItem('vibe_tema_escolhido');
-        if (tGuardado) mudarTemaAtivo(tGuardado);
-        
         porcentagemReserva = parseInt(localStorage.getItem('saldo_reserva_pct')) || 10;
         const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s);
+        
+        temaAtualIndex = parseInt(localStorage.getItem('app_tema_index')) || 0;
+        const novoTema = temasDisponiveis[temaAtualIndex];
+        if (novoTema !== 'padrao') {
+            document.body.classList.add(`theme-${novoTema}`);
+            const coresMeta = { padrao: '#2563eb', escuro: '#1e293b', pastel: '#eebbaf', retro: '#2b2b2b', whatsapp: '#008069' };
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', coresMeta[novoTema]);
+        }
+
         inicializarFiltroMeses(); 
         atualizarAplicativo();
     };
