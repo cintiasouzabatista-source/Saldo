@@ -10,7 +10,6 @@
     <style>
         /* DEFINIÇÃO DOS TEMAS */
         :root {
-            /* Tema Padrão (Claro) */
             --bg-body: #f1f5f9;
             --bg-container: #ffffff;
             --texto-principal: #0f172a;
@@ -209,8 +208,9 @@
 
         .item-transacao.pendente { background: rgba(245, 158, 12b, 0.15); border-left: 4px solid var(--cartao); padding: 12px; border-radius: var(--radius); margin: 6px 0; }
         .container-pergunta { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(0,0,0,0.1); width: 100%; }
-        .texto-pergunta { font-size: 0.85rem; font-weight: 600; color: var(--texto-principal); margin-bottom: 8px; display: block; }
-        .botoes-resposta { display: flex; gap: 6px; flex-wrap: wrap; }
+        .secao-pergunta-grupo { margin-bottom: 8px; }
+        .texto-pergunta { font-size: 0.85rem; font-weight: 700; color: var(--texto-principal); margin-bottom: 6px; display: block; }
+        .botoes-resposta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
         .btn-resposta { background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); box-shadow: var(--shadow); }
         
         .chat-container-dinamico { margin-top: 20px; margin-bottom: 20px; width: 100%; }
@@ -535,13 +535,11 @@
             atualizarAplicativo(); 
             mostrarAviso("Salvo! 🎯");
             
-            // VERIFICA SE O ITEM DO HISTÓRICO RESOLVEU TODAS AS PENDÊNCIAS
             let aindaPendente = (t.tipo === 'entrada' && !t.conta) || 
                                  (t.tipo === 'saida' && !t.conta) || 
                                  (t.tipo === 'cartao' && !t.cartao) || 
                                  ((t.tipo === 'saida' || t.tipo === 'cartao') && !t.perguntaFixaRespondida);
             
-            // SE TUDO FOI RESPONDIDO, VOLTA AUTOMATICAMENTE PARA A TELA INICIAL
             if (!aindaPendente) {
                 setTimeout(() => navegarPara('inicio'), 500);
             }
@@ -603,7 +601,6 @@
             let txt = t.tipo === 'entrada' ? 'Entrada' : t.tipo === 'cartao' ? 'Cartão' : 'Saída';
             let cor = t.tipo === 'entrada' ? 'var(--entrada)' : t.tipo === 'cartao' ? 'var(--cartao)' : 'var(--saida)';
             
-            // CORREÇÃO LOGIC: Só considera pendente o que faz sentido para o tipo de transação
             let pen = (t.tipo === 'entrada' && !t.conta) || 
                       (t.tipo === 'saida' && !t.conta) || 
                       (t.tipo === 'cartao' && !t.cartao) || 
@@ -611,24 +608,36 @@
 
             let item = document.createElement('div'); item.className = `item-transacao ${pen ? 'pendente' : ''}`;
             
-            // LÓGICA DINÂMICA DE PERGUNTA CONTEXTUAL
+            // FORMATAÇÃO DO BALÃO CONTEXTUAL DE PERGUNTA
             let conteudoPergunta = '';
             if (pen) {
-                let textoPergunta = "";
-                let botoesHtml = "";
-                
-                if ((t.tipo === 'entrada' || t.tipo === 'saida') && !t.conta) {
-                    textoPergunta = "Qual conta/banco utilizou no Pix ou Débito?";
-                    botoesHtml = ['Mercado Pago','Nubank','Itaú','Inter','PicPay'].map(b => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'conta','${b}')">${b}</button>`).join('');
-                } else if (t.tipo === 'cartao' && !t.cartao) {
-                    textoPergunta = "Qual cartão de crédito você usou?";
-                    botoesHtml = ['Mercado Pago','Nubank','Itaú','Inter','C6 Bank','Bradesco'].map(c => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'cartao','${c}')">${c}</button>`).join('');
+                if (((t.tipo === 'entrada' || t.tipo === 'saida') && !t.conta) || (t.tipo === 'cartao' && !t.cartao)) {
+                    let listaContas = ['Mercado Pago','Nubank','Itaú','Inter','PicPay'].map(b => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'conta','${b}')">${b}</button>`).join('');
+                    let listaCartoes = ['Mercado Pago','Nubank','Itaú','Inter','C6 Bank','Bradesco'].map(c => `<button class="btn-resposta" onclick="responderAtributo(${t.id},'cartao','${c}')">${c}</button>`).join('');
+                    
+                    conteudoPergunta = `
+                        <div class="container-pergunta">
+                            <div class="secao-pergunta-grupo">
+                                <span class="texto-pergunta">Qual Conta</span>
+                                <div class="botoes-resposta">${listaContas}</div>
+                            </div>
+                            <div class="secao-pergunta-grupo">
+                                <span class="texto-pergunta">Ou qual cartão</span>
+                                <div class="botoes-resposta">${listaCartoes}</div>
+                            </div>
+                        </div>
+                    `;
                 } else if ((t.tipo === 'saida' || t.tipo === 'cartao') && !t.perguntaFixaRespondida) {
-                    textoPergunta = "É uma despesa fixa todo mês?";
-                    botoesHtml = `<button class="btn-resposta" style="background:var(--header-bg); color:var(--header-txt);" onclick="responderAtributo(${t.id},'fixa',true)">📌 Sim</button><button class="btn-resposta" onclick="responderAtributo(${t.id},'fixa',false)">Não</button>`;
+                    conteudoPergunta = `
+                        <div class="container-pergunta">
+                            <span class="texto-pergunta">É uma despesa fixa todo mês?</span>
+                            <div class="botoes-resposta">
+                                <button class="btn-resposta" style="background:var(--header-bg); color:var(--header-txt);" onclick="responderAtributo(${t.id},'fixa',true)">📌 Sim</button>
+                                <button class="btn-resposta" onclick="responderAtributo(${t.id},'fixa',false)">Não</button>
+                            </div>
+                        </div>
+                    `;
                 }
-
-                conteudoPergunta = `<div class="container-pergunta"><span class="texto-pergunta">⚡ ${textoPergunta}</span><div class="botoes-resposta">${botoesHtml}</div></div>`;
             }
 
             item.innerHTML = `
@@ -724,7 +733,7 @@
     function fecharModal() { toggleModal('modal-edicao', false); }
     function abrirConfigReserva() { obterId('modal-reserva-pct').value = porcentagemReserva; toggleModal('modal-reserva', true); }
     function fecharConfigReserva() { toggleModal('modal-reserva', false); }
-    function alternarVisibilidade() { saldosOcultos = !saldosOcultos; obterId('btn-visibilidade').innerText = saldosOcultos ? "🙈" : "👁️"; atualizarAplicativo(); }
+    function alternarVisibilidade() { saldosOcultos = !saldosOcultos; obterId('btn-visibilidade').innerText = saldosOcultOcultos ? "🙈" : "👁️"; atualizarAplicativo(); }
     function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
 
     function salvarConfigReserva() {
