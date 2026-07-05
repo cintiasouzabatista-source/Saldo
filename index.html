@@ -1,53 +1,78 @@
-    <!-- ATUALIZAÇÃO DO CABEÇALHO NO SEU CÓDIGO -->
-    <div class="app-header">
-        <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
-        <div class="app-actions">
-            <!-- Ícone de olho mais minimalista (U+1F441 U+FE0F) -->
-            <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">👁</button>
-            <!-- Ícone de paleta mais moderno (U+1F3A8) -->
-            <button class="icon-btn" onclick="alternarTema()" title="Mudar Estilo">🎨</button>
-        </div>
-    </div>
-
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Ajuste fino para alinhar os botões na mesma linha do título */
+        /* Estilos Base */
+        body { font-family: sans-serif; margin: 0; padding: 20px; background: #fffdf5; }
+        
+        /* Cabeçalho Alinhado */
         .app-header { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            width: 100%; 
-            margin-bottom: 16px; 
-            padding: 12px 16px; /* Ajustado para dar respiro */
-            background: var(--header-bg); 
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: var(--espessura-borda) solid var(--borda);
+            background: #2b2b2b; 
+            color: white; 
+            padding: 15px; 
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
-        .app-actions { display: flex; gap: 4px; align-items: center; }
+        .app-title { font-size: 1.2rem; font-weight: bold; }
+        .app-actions { display: flex; gap: 15px; }
+        
         .icon-btn { 
-            background: rgba(255,255,255,0.15); /* Leve destaque para o botão */
+            background: transparent; 
             border: none; 
-            font-size: 1.1rem; 
             cursor: pointer; 
-            color: var(--header-txt); 
-            width: 36px; 
-            height: 36px; 
-            border-radius: 50%; /* Botões redondos ficam mais elegantes */
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            transition: background 0.2s;
+            font-size: 1.4rem; 
         }
-        .icon-btn:active { background: rgba(255,255,255,0.3); }
+
+        /* Área de Conteúdo */
+        .card { border: 2px solid #000; padding: 15px; border-radius: 8px; }
     </style>
+</head>
+<body>
+
+    <div class="app-header">
+        <div class="app-title">Histórico</div>
+        <div class="app-actions">
+            <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()">👁</button>
+            <button class="icon-btn" onclick="alternarTema()">🎨</button>
+        </div>
+    </div>
+
+    <div class="card" id="lista-movimentacoes">
+        <!-- Seus itens de movimentação virão aqui -->
+    </div>
 
     <script>
-        // CORREÇÃO DA LÓGICA DE VISIBILIDADE
+        let saldosOcultos = false;
+        let temaAtualIndex = 0;
+        const temas = ['padrao', 'escuro', 'pastel'];
+
+        // Função de Visibilidade
         function alternarVisibilidade() {
             saldosOcultos = !saldosOcultos;
-            const btn = obterId('btn-visibilidade');
-            // Muda o ícone entre olho aberto e olho riscado (ou fechado)
-            btn.innerText = saldosOcultos ? "👁️‍🗨️" : "👁"; 
+            const btn = document.getElementById('btn-visibilidade');
+            btn.innerText = saldosOcultos ? "👁️‍🗨️" : "👁";
             atualizarAplicativo();
         }
+
+        // Função de Tema
+        function alternarTema() {
+            temaAtualIndex = (temaAtualIndex + 1) % temas.length;
+            document.body.className = 'theme-' + temas[temaAtualIndex];
+        }
+
+        // Função principal que redesenha a tela
+        function atualizarAplicativo() {
+            // Exemplo de lógica para esconder valores
+            const elementosValor = document.querySelectorAll('.valor');
+            elementosValor.forEach(el => {
+                el.innerText = saldosOcultos ? "R$ ---" : el.dataset.valorOriginal;
+            });
+        }
     </script>
+</body>
+</html>
