@@ -84,11 +84,11 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         
-        /* ALTERAÇÃO: Body agora rola naturalmente na vertical */
+        /* CORREÇÃO: Espaço inferior adicionado para o conteúdo não sumir atrás do menu fixado */
         body { 
             background-color: var(--bg-body); 
             color: var(--texto-principal); 
-            padding: 16px; 
+            padding: 16px 16px 95px 16px; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
@@ -98,13 +98,13 @@
             transition: all 0.3s ease; 
         }
         
-        /* ALTERAÇÃO: Container segue o fluxo natural da página */
         .container { 
             width: 100%; 
             max-width: 500px; 
             display: flex; 
             flex-direction: column; 
             height: auto;
+            position: relative;
         }
         
         .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 16px; padding: 4px; }
@@ -114,7 +114,6 @@
         .icon-btn { background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); font-size: 1.2rem; cursor: pointer; color: var(--texto-principal); display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: var(--radius); box-shadow: var(--shadow); transition: all 0.1s; }
         .icon-btn:active { transform: translate(2px, 2px); box-shadow: none; }
 
-        /* ALTERAÇÃO: Telas não controlam mais rolagem interna própria */
         .app-view { display: none; width: 100%; }
         .app-view.ativa { 
             display: flex; 
@@ -200,20 +199,49 @@
         .alerta-temporario { position: absolute; top: -54px; left: 50%; transform: translateX(-50%); background: var(--texto-principal); color: var(--bg-container); padding: 8px 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); font-size: 0.9rem; font-weight: 900; opacity: 0; transition: opacity 0.2s ease; pointer-events: none; white-space: nowrap; z-index: 10; box-shadow: var(--shadow); }
         .alerta-temporario.mostrar { opacity: 1; }
 
-        /* ALTERAÇÃO: Menu agora fica no fluxo normal do app. Vai rolar para cima junto com a página */
+        /* CORREÇÃO: Menu fixado, centralizado perfeitamente e adaptável sem estourar limites */
         .menu-rodape-wrapper { 
-            margin-top: 20px; 
-            margin-bottom: 20px;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%; 
-            padding: 12px 0; 
+            max-width: 500px;
+            background: var(--bg-body);
+            padding: 12px 16px; 
             border-top: var(--espessura-borda) solid var(--borda); 
+            z-index: 90;
+            box-sizing: border-box;
         }
-        .menu-rodape { display: flex; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding: 2px; gap: 12px; width: 100%; }
-        .menu-rodape::-webkit-scrollbar { display: none; }
-        .menu-rodape { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .tab-item { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); color: var(--texto-principal); padding: 10px 22px; border-radius: var(--radius); cursor: pointer; font-size: 0.9rem; font-weight: 900; white-space: nowrap; flex-shrink: 0; box-shadow: var(--shadow); transition: all 0.1s ease; }
-        .tab-item span:first-child { font-size: 1.2rem; }
+        /* CORREÇÃO: Grid de 4 colunas perfeitamente idênticas e iguais */
+        .menu-rodape { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px; 
+            width: 100%; 
+        }
+        
+        /* CORREÇÃO: Ícones na vertical para encaixar bem em telas pequenas sem sumir com o texto */
+        .tab-item { 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            gap: 4px; 
+            background: var(--bg-container); 
+            border: var(--espessura-borda) solid var(--borda); 
+            color: var(--texto-principal); 
+            padding: 8px 2px; 
+            border-radius: var(--radius); 
+            cursor: pointer; 
+            font-size: 0.75rem; 
+            font-weight: 900; 
+            white-space: nowrap; 
+            box-shadow: var(--shadow); 
+            transition: all 0.1s ease; 
+        }
+        .tab-item span:first-child { font-size: 1.1rem; }
         .tab-item.ativo { color: #ffffff; background: var(--texto-principal); border-color: var(--borda); box-shadow: none; transform: translate(2px, 2px); }
 
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
@@ -281,7 +309,7 @@
                         <strong>Saldo Livre:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
                     </div>
                 </div>
-                <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Eita! Orçamento Comprometido (>80%).</div>
+                <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Eita! Orçamento Compreuometido (>80%).</div>
             </div>
         </div>
 
@@ -379,7 +407,7 @@
         </div>
     </div>
 
-    <!-- ALTERAÇÃO: Menu agora fica inserido nativamente no fim do container, subindo quando a página rolar -->
+    <!-- MENU INFERIOR FIXO -->
     <div class="menu-rodape-wrapper">
         <div class="menu-rodape">
             <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>🏠</span><span>Início</span></button>
@@ -460,7 +488,6 @@
         const titulos = { inicio: "meu saldo", historico: "histórico", graficos: "análises", config: "ajustes" };
         obterId('titulo-dinamico').innerText = titulos[idAba];
 
-        // Rola a janela global para o topo ao alternar as abas
         window.scrollTo({ top: 0, behavior: 'smooth' });
         atualizarAplicativo();
     }
@@ -734,41 +761,35 @@
         inicializarFiltroMeses(); 
         atualizarAplicativo();
     };
-    // Permite trocar de tela deslizando para esquerda/direita
-let touchStartX = 0;
-let touchEndX = 0;
 
-const abas = ["inicio", "historico", "graficos", "config"];
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const abas = ["inicio", "historico", "graficos", "config"];
 
-document.addEventListener("touchstart", (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-}, { passive: true });
+    document.addEventListener("touchstart", (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
 
-document.addEventListener("touchend", (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    trocarTelaSwipe();
-}, { passive: true });
+    document.addEventListener("touchend", (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        trocarTelaSwipe();
+    }, { passive: true });
 
-function trocarTelaSwipe() {
-    const diferenca = touchStartX - touchEndX;
+    function trocarTelaSwipe() {
+        const diferenca = touchStartX - touchEndX;
+        if (Math.abs(diferenca) < 60) return;
 
-    // ignora movimentos pequenos
-    if (Math.abs(diferenca) < 60) return;
+        const atual = abas.findIndex(a =>
+            document.getElementById(`view-${a}`).classList.contains("ativa")
+        );
 
-    const atual = abas.findIndex(a =>
-        document.getElementById(`view-${a}`).classList.contains("ativa")
-    );
-
-    if (diferenca > 0 && atual < abas.length - 1) {
-        // Arrastou para a esquerda
-        navegarPara(abas[atual + 1]);
+        if (diferenca > 0 && atual < abas.length - 1) {
+            navegarPara(abas[atual + 1]);
+        }
+        if (diferenca < 0 && atual > 0) {
+            navegarPara(abas[atual - 1]);
+        }
     }
-
-    if (diferenca < 0 && atual > 0) {
-        // Arrastou para a direita
-        navegarPara(abas[atual - 1]);
-    }
-                    }
 </script>
 </body>
 </html>
