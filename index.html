@@ -288,15 +288,7 @@
                 <div class="info-subtil-container">
                     <div class="linha-subtil-valores">
                         <div class="previsao-texto" id="card-previsao"><strong>Média/Dia:</strong> <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
-                        <div class="reserva-texto" id="card-reserva">
-                            <strong>Guardar</strong> (<span id="reserva-porcentagem-label">10</span>%): <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span> 
-                            <span class="config-reserva-inline" onclick="abrirConfigReserva()" title="Mudar porcentagem">⚙️</span>
-                        </div>
-                    </div>
-                    <div class="saldo-restante-texto" id="card-saldo-restante">
-                        <strong>Saldo Livre:</strong> <span class="valor-dinamico" id="saldo-restante-valor" data-valor="0.00">R$ 0,00</span>
-                    </div>
-                </div>
+                    
                 <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Orçamento Comprometido (>80%).</div>
             </div>
         </div>
@@ -562,14 +554,16 @@
         obterId('card-cartao').setAttribute('data-valor', car.toFixed(2));
         obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
         obterId('previsao-valor').setAttribute('data-valor', (gastos / 30).toFixed(2));
+const saldoSeGuardar = saldo;
+      
+        const valReserva = transacoes
+    .filter(t => t.conta === "Reserva")
+    .reduce((total, t) => {
+        if (t.tipo === "entrada") return total + t.valor;
+        return total - t.valor;
+    }, 0);
 
-        const valReserva = saldo > 0 ? saldo * (porcentagemReserva / 100) : 0;
-        obterId('reserva-valor').setAttribute('data-valor', valReserva.toFixed(2));
-        obterId('reserva-porcentagem-label').innerText = porcentagemReserva;
-
-        const saldoSeGuardar = saldo - valReserva;
-        obterId('saldo-restante-valor').setAttribute('data-valor', saldoSeGuardar.toFixed(2));
-
+       
         obterId('card-alerta-comprometido').style.display = ent > 0 && (gastos / ent) >= 0.8 ? 'block' : 'none';
 
         document.querySelectorAll('.valor-dinamico').forEach(el => {
