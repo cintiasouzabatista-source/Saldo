@@ -739,9 +739,8 @@
     }
     
     function fecharModal() { toggleModal('modal-edicao', false); }
-    function abrirConfigReserva() { obterId('modal-reserva-pct').value = porcentagemReserva; toggleModal('modal-reserva', true); }
-    function fecharConfigReserva() { toggleModal('modal-reserva', false); }
-    function alternarVisibilidade() { saldosOcultos = !saldosOcultos; obterId('btn-visibilidade').innerText = saldosOcultOcultos ? "🙈" : "👁️"; atualizarAplicativo(); }
+    
+    function alternarVisibilidade() { saldosOcultos = !saldosOcultos; obterId('btn-visibilidade').innerText = saldosOcultOcultos ? "🫟" : "🔐"; atualizarAplicativo(); }
     function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
 
     function salvarConfigReserva() {
