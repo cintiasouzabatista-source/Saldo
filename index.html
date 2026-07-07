@@ -189,49 +189,7 @@
         .coluna-vertical-valor { font-size: 0.75rem; font-weight: 700; position: absolute; top: -20px; white-space: nowrap; text-align: center; }
         .coluna-vertical-rotulo { font-size: 0.8rem; font-weight: bold; position: absolute; bottom: -24px; color: var(--texto-secundario); }
 
-        .item-transacao { 
-    disp/* Container principal da linha */
-.item-transacao {
-    display: flex;
-    flex-direction: column;
-    padding: 12px;
-    border-bottom: 1px solid var(--borda);
-    gap: 8px; /* Espaçamento melhor entre o topo e a pergunta (se houver) */
-}
-
-/* Linha principal com o nome e valor */
-.linha-principal {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start; /* Alinha tudo ao topo */
-    width: 100%;
-    gap: 12px; /* Espaço entre texto e valor */
-}
-
-/* Garante que o texto ocupe o espaço mas não quebre o layout */
-.detalhes-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1; /* Ocupa o espaço restante */
-    min-width: 0; /* Essencial para evitar que o texto 'empurre' a caixa */
-}
-
-/* Valor fica fixo à direita e não encolhe */
-.valor-historico {
-    font-weight: 700;
-    font-size: 1rem;
-    white-space: nowrap; /* Impede que o valor quebre em duas linhas */
-    flex-shrink: 0; /* Garante que o preço nunca diminua */
-}
-
-/* Tags mais organizadas */
-.tags-row {
-    display: flex;
-    flex-wrap: wrap; /* Permite quebrar se necessário, mas com espaçamento */
-    gap: 6px;
-    align-items: center;
-}
+        .item-transacao { display: flex; flex-direction: column; padding: 14px 4px; border-bottom: 1px solid var(--borda); cursor: pointer; } .item-transacao:last-child { border-bottom: none; } .linha-principal { display: flex; justify-content: space-between; align-items: center; width: 100%; } .detalhes-item { display: flex; flex-direction: column; gap: 6px; } .descricao-texto { font-size: 1rem; font-weight: 600; color: var(--textoprincipal); } .tags-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; } .tipo-tag { font-size: 0.7rem; padding: 3px 8px; font-weight: 700; border-radius: 6px; text-transform: uppercase; }
 
 
         
