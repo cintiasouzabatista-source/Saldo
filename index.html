@@ -190,42 +190,49 @@
         .coluna-vertical-rotulo { font-size: 0.8rem; font-weight: bold; position: absolute; bottom: -24px; color: var(--texto-secundario); }
 
         .item-transacao { 
-    display: flex; 
-    flex-direction: column; 
-    padding: 12px; 
-    border-bottom: 1px solid var(--borda); 
-    gap: 8px; 
+    disp/* Container principal da linha */
+.item-transacao {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    border-bottom: 1px solid var(--borda);
+    gap: 8px; /* Espaçamento melhor entre o topo e a pergunta (se houver) */
 }
 
-.linha-principal { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: flex-start; 
-    width: 100%; 
-    gap: 12px; 
+/* Linha principal com o nome e valor */
+.linha-principal {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alinha tudo ao topo */
+    width: 100%;
+    gap: 12px; /* Espaço entre texto e valor */
 }
 
-.detalhes-item { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 4px; 
-    flex: 1; 
-    min-width: 0; 
+/* Garante que o texto ocupe o espaço mas não quebre o layout */
+.detalhes-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1; /* Ocupa o espaço restante */
+    min-width: 0; /* Essencial para evitar que o texto 'empurre' a caixa */
 }
 
-.valor-historico { 
-    font-weight: 700; 
-    font-size: 1rem; 
-    white-space: nowrap; 
-    flex-shrink: 0; 
+/* Valor fica fixo à direita e não encolhe */
+.valor-historico {
+    font-weight: 700;
+    font-size: 1rem;
+    white-space: nowrap; /* Impede que o valor quebre em duas linhas */
+    flex-shrink: 0; /* Garante que o preço nunca diminua */
 }
 
-.tags-row { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 6px; 
-    align-items: center; 
+/* Tags mais organizadas */
+.tags-row {
+    display: flex;
+    flex-wrap: wrap; /* Permite quebrar se necessário, mas com espaçamento */
+    gap: 6px;
+    align-items: center;
 }
+
 
         
         .tag-entrada { background: rgba(16, 185, 129, 0.1); color: var(--entrada); }
