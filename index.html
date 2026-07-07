@@ -189,57 +189,36 @@
         .coluna-vertical-valor { font-size: 0.75rem; font-weight: 700; position: absolute; top: -20px; white-space: nowrap; text-align: center; }
         .coluna-vertical-rotulo { font-size: 0.8rem; font-weight: bold; position: absolute; bottom: -24px; color: var(--texto-secundario); }
 
-        .item-transacao { 
-    display: flex; 
-    flex-direction: column; 
-    padding: 10px 5px; /* Reduzi o padding para as linhas ficarem mais finas */
-    border-bottom: 1px solid var(--borda); 
-    cursor: pointer; 
-    gap: 4px; /* Espaçamento menor entre a linha de cima e a de tags */
-} 
-
-.item-transacao:last-child { 
-    border-bottom: none; 
-} 
-
-.linha-principal { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    width: 100%; 
-} 
-
-.detalhes-item { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 2px; 
-} 
-
-.descricao-texto { 
-    font-size: 0.9rem; /* Texto levemente menor */
-    font-weight: 600; 
-    color: var(--textoprincipal); 
-} 
-
-/* Adicionei esta classe para garantir que o valor também diminua junto */
-.valor-historico {
-    font-size: 0.9rem;
-    font-weight: 700;
+        .item-transacao {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 5px;
+    border-bottom: 1px solid var(--borda);
+    gap: 6px; /* Espaço entre a linha 1 e a linha 2 */
 }
 
-.tags-row { 
-    display: flex; 
-    gap: 4px; /* Tags mais próximas */
-    align-items: center; 
-    flex-wrap: wrap; 
-} 
+/* Linha 1: Data, Descrição e Valor */
+.linha-1 {
+    display: flex;
+    justify-content: space-between; /* Espalha os itens */
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
 
-.tipo-tag { 
-    font-size: 0.65rem; /* Tags menores */
-    padding: 2px 6px; 
-    font-weight: 700; 
-    border-radius: 4px; 
-    text-transform: uppercase; 
+/* Linha 2: Tags e detalhes extras */
+.linha-2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: center;
+}
+
+/* Estilização específica para os textos */
+.data { font-size: 0.75rem; color: #888; white-space: nowrap; }
+.descricao { font-size: 0.95rem; font-weight: 600; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.valor { font-size: 0.95rem; font-weight: 700; white-space: nowrap; }
+ 
 }
 
         .chat-container-dinamico { margin-top: 20px; margin-bottom: 20px; width: 100%; }
@@ -282,8 +261,8 @@
     <div class="app-header">
         <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
         <div class="app-actions">
-            <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">👁️</button>
-            <button class="icon-btn" onclick="alternarTema()" title="Mudar Estilo">🎨</button>
+            <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()" title="Esconder valores">🔓</button>
+            <button class="icon-btn" onclick="alternarTema()" title="Mudar Estilo">🫟</button>
         </div>
     </div>
 
@@ -337,8 +316,8 @@
             <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
             <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
                 <option value="todos">Todos os Tipos</option>
-                <option value="entrada">🟢 Entradas</option>
-                <option value="saida">🔴 Saídas</option>
+                <option value="entrada">✅ Entradas</option>
+                <option value="saida">⛔ Saídas</option>
                 <option value="cartao">💳 Cartão</option>
                 <option value="fixa">📌 Contas Fixas</option>
             </select>
@@ -451,7 +430,7 @@
 
 <div class="modal-overlay" id="modal-reserva">
     <div class="modal-container">
-        <div class="modal-title">💰 Porcentagem de Reserva</div>
+        <div class="modal-title">💰Porcentagem de Reserva</div>
         <div class="modal-label">Quanto quer poupar das entradas?</div>
         <input type="number" id="modal-reserva-pct" class="modal-input" min="1" max="100" value="10">
         <div class="modal-botoes">
