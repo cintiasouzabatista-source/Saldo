@@ -189,26 +189,59 @@
         .coluna-vertical-valor { font-size: 0.75rem; font-weight: 700; position: absolute; top: -20px; white-space: nowrap; text-align: center; }
         .coluna-vertical-rotulo { font-size: 0.8rem; font-weight: bold; position: absolute; bottom: -24px; color: var(--texto-secundario); }
 
-        .item-transacao { display: flex; flex-direction: column; padding: 14px 4px; border-bottom: 1px solid var(--borda); cursor: pointer; } .item-transacao:last-child { border-bottom: none; } .linha-principal { display: flex; justify-content: space-between; align-items: center; width: 100%; } .detalhes-item { display: flex; flex-direction: column; gap: 6px; } .descricao-texto { font-size: 1rem; font-weight: 600; color: var(--textoprincipal); } .tags-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; } .tipo-tag { font-size: 0.7rem; padding: 3px 8px; font-weight: 700; border-radius: 6px; text-transform: uppercase; }
+        .item-transacao { 
+    display: flex; 
+    flex-direction: column; 
+    padding: 10px 5px; /* Reduzi o padding para as linhas ficarem mais finas */
+    border-bottom: 1px solid var(--borda); 
+    cursor: pointer; 
+    gap: 4px; /* Espaçamento menor entre a linha de cima e a de tags */
+} 
 
+.item-transacao:last-child { 
+    border-bottom: none; 
+} 
 
-        
-        .tag-entrada { background: rgba(16, 185, 129, 0.1); color: var(--entrada); }
-        .tag-saida { background: rgba(239, 68, 68, 0.1); color: var(--saida); }
-        .tag-cartao { background: rgba(245, 158, 12b, 0.1); color: var(--cartao); }
-        
-        .tag-conta { background: var(--bg-retratil); color: var(--texto-secundario); font-size: 0.7rem; padding: 3px 8px; font-weight: 600; border-radius: 6px; border: var(--espessura-borda) solid var(--borda); }
-        .tag-cartao-especifico { background: rgba(245, 158, 12b, 0.08); color: var(--cartao); font-size: 0.7rem; padding: 3px 8px; font-weight: 600; border-radius: 6px; }
-        .tag-fixa { background: rgba(142, 36, 170, 0.1); color: #8e24aa; font-size: 0.7rem; padding: 3px 8px; font-weight: 600; border-radius: 6px; }
-        .valor-historico { font-weight: 700; font-size: 1rem; letter-spacing: -0.5px; }
+.linha-principal { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%; 
+} 
 
-        .item-transacao.pendente { background: rgba(245, 158, 12b, 0.15); border-left: 4px solid var(--cartao); padding: 12px; border-radius: var(--radius); margin: 6px 0; }
-        .container-pergunta { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(0,0,0,0.1); width: 100%; }
-        .secao-pergunta-grupo { margin-bottom: 8px; }
-        .texto-pergunta { font-size: 0.85rem; font-weight: 700; color: var(--texto-principal); margin-bottom: 6px; display: block; }
-        .botoes-resposta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
-        .btn-resposta { background: var(--bg-container); border: var(--espessura-borda) solid var(--borda); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--texto-principal); box-shadow: var(--shadow); }
-        
+.detalhes-item { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 2px; 
+} 
+
+.descricao-texto { 
+    font-size: 0.9rem; /* Texto levemente menor */
+    font-weight: 600; 
+    color: var(--textoprincipal); 
+} 
+
+/* Adicionei esta classe para garantir que o valor também diminua junto */
+.valor-historico {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.tags-row { 
+    display: flex; 
+    gap: 4px; /* Tags mais próximas */
+    align-items: center; 
+    flex-wrap: wrap; 
+} 
+
+.tipo-tag { 
+    font-size: 0.65rem; /* Tags menores */
+    padding: 2px 6px; 
+    font-weight: 700; 
+    border-radius: 4px; 
+    text-transform: uppercase; 
+}
+
         .chat-container-dinamico { margin-top: 20px; margin-bottom: 20px; width: 100%; }
         .chat-input-area { display: flex; gap: 8px; background: var(--bg-container); padding: 6px 6px 6px 16px; border-radius: 24px; border: var(--espessura-borda) solid var(--borda); align-items: center; position: relative; box-shadow: var(--shadow); }
         .chat-input { flex-grow: 1; border: none; padding: 8px 0; font-size: 1rem; outline: none; background: transparent; color: var(--texto-principal); }
