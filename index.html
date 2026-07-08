@@ -272,10 +272,12 @@ gap: 6px; /* Espaço entre a linha 1 e a linha 2 */
             <h3>Saldo Disponível Atual</h3>
             <p id="card-saldo" class="valor-dinamico" data-valor="0.00">R$ 0,00</p>
             
-            <div class="info-subtil-container">
-                <div class="linha-subtil-valores">
-                    <div class="previsao-texto" id="card-previsao"><strong>Média/Dia:</strong> <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
-            <div class="alerta-comprometido" id="card-alerta-comprometido">⚠️ Orçamento Comprometido (>80%).</div>
+            <<div class="info-subtil-container">
+    <div class="linha-subtil-valores">
+        <!-- Média/Dia -->
+        <div class="previsao-texto">
+            <strong>Média/Dia:</strong> 
+            <span class="valor-dinamico" id="media-diaria-valor">R$ 0,00</span>
         </div>
     </div>
 
