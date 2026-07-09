@@ -269,14 +269,14 @@ gap: 6px; /* Espaço entre a linha 1 e a linha 2 */
             <p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao" data-valor="0.00">0,00</span></p>
         </div>
         <div class="card saldo-total">
-            <h3>Saldo Disponível Atual</h3>
+            <h3>Saldo Atual</h3>
             <p id="card-saldo" class="valor-dinamico" data-valor="0.00">R$ 0,00</p>
             
             <div class="info-subtil-container">
                 <div class="linha-subtil-valores">
                     <div class="previsao-texto" id="card-previsao"><strong>Média/Dia:</strong> <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
                     <div class="reserva-texto" id="card-reserva">
-                        <strong>Guardar</strong> (<span id="reserva-porcentagem-label">10</span>%): <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span> 
+                        <strong>Sugestão p/ Guardar</strong> (<span id="reserva-porcentagem-label">10</span>%): <span class="valor-dinamico" id="reserva-valor" data-valor="0.00">R$ 0,00</span> 
                         <span class="config-reserva-inline" onclick="abrirConfigReserva()" title="Mudar porcentagem">⚙️</span>
                     </div>
                 </div>
@@ -419,7 +419,7 @@ gap: 6px; /* Espaço entre a linha 1 e a linha 2 */
 
 
 <script>
-    let transacoes = [], idEdicaoAtual = null, saldosOcultos = false, porcentagemReserva = 10;
+    let transacoes = [], idEdicaoAtual = null, saldosOcultos = false, porcentagemReserva = 0;
     let modoGraficoRosca = 0; 
     let temasDisponiveis = ['padrao', 'escuro', 'pastel', 'retro', 'whatsapp'];
     let temaAtualIndex = 0;
