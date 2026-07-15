@@ -1,116 +1,102 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#2563eb">
-    <title>Meu Fluxo de Caixa Inteligente</title>
-    <style>
-        :root {
-            --bg-body: #f1f5f9; --bg-container: #ffffff; --texto-principal: #0f172a; --texto-secundario: #64748b;
-            --borda: #e2e8f0; --shadow: 0 1px 3px rgba(0,0,0,0.05); --radius: 12px;
-            --entrada: #10b981; --saida: #ef4444; --cartao: #f59e0b; --header-bg: #2563eb; --header-txt: #ffffff;
-        }
-    body.theme-escuro { --bg-body: #0f172a; --bg-container: #1e293b; --texto-principal: #f8fafc; --texto-secundario: #94a3b8; --borda: #334155; --header-bg: #1e293b; --header-txt: #3b82f6; }
-    body.theme-white { --bg-body: #ffffff; --bg-container: #f8fafc; --texto-principal: #1e293b; --texto-secundario: #64748b; --borda: #cbd5e1; --header-bg: #e2e8f0; --header-txt: #0f172a; }
-    body.theme-vintage { --bg-body: #fffae0; --bg-container: #fffdf5; --texto-principal: #2b2b2b; --texto-secundario: #706f68; --borda: #2b2b2b; --radius: 0px; --shadow: 4px 4px 0px #2b2b2b; --entrada: #49a078; --saida: #d64933; --header-bg: #2b2b2b; --header-txt: #fffae0; }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: var(--bg-body); color: var(--texto-principal); padding: 16px 16px 95px 16px; }
-.container { width: 100%; max-width: 500px; margin: 0 auto; }
-.app-header { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--header-bg); border-radius: var(--radius); margin-bottom: 16px; }
-.app-title { font-size: 1.3rem; font-weight: 700; color: var(--header-txt); }
-.icon-btn { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: var(--header-txt); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2563eb">
+<title>Meu Fluxo de Caixa Inteligente</title>
+<style>
+    :root { --bg-body: #f1f5f9; --bg-container: #ffffff; --texto-principal: #0f172a; --texto-secundario: #64748b; --borda: #e2e8f0; --radius: 12px; --entrada: #10b981; --saida: #ef4444; --cartao: #f59e0b; --reserva-cor: #06b6d4; --header-bg: #2563eb; --header-txt: #ffffff; }
+    body.theme-escuro { --bg-body: #0f172a; --bg-container: #1e293b; --texto-principal: #f8fafc; --texto-secundario: #94a3b8; --borda: #334155; --header-bg: #1e293b; }
+    body.theme-white { --bg-body: #ffffff; --bg-container: #f8fafc; --texto-principal: #1e293b; --borda: #cbd5e1; --header-bg: #e2e8f0; --header-txt: #0f172a; }
+    body.theme-vintage { --bg-body: #fffae0; --bg-container: #fffdf5; --texto-principal: #2b2b2b; --borda: #2b2b2b; --radius: 0px; --shadow: 4px 4px 0px #2b2b2b; --entrada: #49a078; --saida: #d64933; --header-bg: #2b2b2b; --header-txt: #fffae0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body { background: var(--bg-body); color: var(--texto-principal); padding: 16px 16px 95px 16px; }
+.container { max-width: 500px; margin: 0 auto; }
+.app-header { display: flex; justify-content: space-between; padding: 12px; background: var(--header-bg); border-radius: var(--radius); margin-bottom: 16px; color: var(--header-txt); }
+.icon-btn { background: none; border: none; font-size: 1.2rem; color: var(--header-txt); cursor: pointer; }
 .app-view { display: none; }
 .app-view.ativa { display: block; }
-.cards-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; } /* VOLTOU PRA 3 */
-.card { background: var(--bg-container); padding: 16px 8px; text-align: center; border-radius: var(--radius); border: 1px solid var(--borda); }
-.card h3 { font-size: 0.8rem; color: var(--texto-secundario); text-transform: uppercase; }
-.card p { font-size: 1.1rem; font-weight: 700; }
-.card.saldo-total { grid-column: span 3; padding: 24px; }
-.card.saldo-total p { font-size: 2.2rem; }
+.cards-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+.card { background: var(--bg-container); padding: 16px; text-align: center; border-radius: var(--radius); border: 1px solid var(--borda); }
+.card.saldo-total { grid-column: span 2; }
+.card.saldo-total p { font-size: 2.2rem; font-weight: 700; }
 .info-subtil-container { margin-top: 12px; border-top: 1px solid var(--borda); padding-top: 16px; }
-.previsao-texto { font-size: 0.85rem; color: var(--texto-secundario); }
-.cor-entrada { color: var(--entrada); }.cor-saida { color: var(--saida); }.cor-cartao { color: var(--cartao); }
-.filtros-container { display: flex; gap: 10px; margin-bottom: 20px; }
-.filtro-select { flex: 1; padding: 12px; border-radius: var(--radius); border: 1px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); }
+.cor-entrada { color: var(--entrada); }.cor-saida { color: var(--saida); }.cor-cartao { color: var(--cartao); }.cor-reserva { color: var(--reserva-cor); }
+.filtro-select { width: 100%; padding: 12px; border-radius: var(--radius); border: 1px solid var(--borda); margin-bottom: 10px; background: var(--bg-container); color: var(--texto-principal); }
 .secao-conteudo { background: var(--bg-container); padding: 20px; border-radius: var(--radius); border: 1px solid var(--borda); margin-bottom: 20px; }
 .colunas-container { display: flex; justify-content: center; gap: 36px; height: 120px; align-items: flex-end; border-bottom: 1px solid var(--borda); }
 .coluna-vertical-barra { width: 28px; border-radius: 6px 6px 0 0; }
 .donut-chart { width: 140px; height: 140px; border-radius: 50%; margin: 12px auto; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.donut-hole { width: 96px; height: 96px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.barra-horizontal-bg { background: var(--bg-body); height: 12px; border-radius: 6px; border: 1px solid var(--borda); }
-.barra-horizontal-preenchimento { height: 100%; }
-.config-btn-bloco { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: var(--radius); border: 1px solid var(--borda); background: var(--bg-container); font-weight: 600; text-align: left; cursor: pointer; color: var(--texto-principal); }
-.chat-input-area { display: flex; gap: 8px; background: var(--bg-container); padding: 6px 6px 6px 16px; border-radius: 24px; border: 1px solid var(--borda); }
-.chat-input { flex-grow: 1; border: none; background: transparent; outline: none; color: var(--texto-principal); }
+.donut-hole { width: 96px; height: 96px; background: var(--bg-container); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+.config-btn-bloco { width: 100%; padding: 16px; border-radius: var(--radius); border: 1px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); margin-bottom: 12px; text-align: left; cursor: pointer; }
+.chat-input-area { display: flex; gap: 8px; background: var(--bg-container); padding: 6px 16px; border-radius: 24px; border: 1px solid var(--borda); }
+.chat-input { flex: 1; border: none; background: none; outline: none; color: var(--texto-principal); }
 .btn-enviar { background: var(--header-bg); color: var(--header-txt); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
 .menu-rodape-wrapper { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--bg-container); padding: 10px 16px; border-top: 1px solid var(--borda); }
-.menu-rodape { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.tab-item { display: flex; flex-direction: column; align-items: center; gap: 4px; background: transparent; border: none; color: var(--texto-secundario); font-size: 0.75rem; }
+.menu-rodape { display: grid; grid-template-columns: repeat(4, 1fr); }
+.tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); font-size: 0.75rem; }
 .tab-item.ativo { color: var(--header-bg); }
 .item-transacao { padding: 10px 5px; border-bottom: 1px solid var(--borda); }
 .linha-1 { display: flex; justify-content: space-between; }
-.linha-2 { font-size: 0.75rem; color: var(--texto-secundario); margin-top: 4px; } /* LINHA DA DATA/CONTA */
-.descricao { font-weight: 600; }
-.valor { font-weight: 700; }
+.linha-2 { font-size: 0.75rem; color: var(--texto-secundario); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; }
+.modal-container { background: var(--bg-container); padding: 20px; border-radius: var(--radius); width: 90%; }
+.btn-resposta { padding: 8px 12px; margin: 4px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-body); cursor: pointer; }
 </style>
 </head>
 <body>
-
 <div class="container">
 <div class="app-header">
     <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
-    <div class="app-actions">
-        <button class="icon-btn" id="btn-visibilidade" onclick="alternarVisibilidade()">🔓</button>
-        <button class="icon-btn" onclick="alternarTema()">🫟</button>
-    </div>
+    <div><button class="icon-btn" onclick="alternarVisibilidade()">🔓</button><button class="icon-btn" onclick="alternarTema()">🫟</button></div>
 </div>
 
 <div class="app-view ativa" id="view-inicio">
-    <div class="cards-container"> <!-- SÓ 3 CARDS AGORA -->
-        <div class="card"><h3>entradas</h3><p class="cor-entrada">R$ <span class="valor-dinamico" id="card-entradas">0,00</span></p></div>
-        <div class="card"><h3>saídas</h3><p class="cor-saida">R$ <span class="valor-dinamico" id="card-saidas">0,00</span></p></div>
-        <div class="card"><h3>cartão</h3><p class="cor-cartao">R$ <span class="valor-dinamico" id="card-cartao">0,00</span></p></div>
+    <div class="cards-container">
+        <div class="card"><h3>entradas</h3><p class="cor-entrada">R$ <span id="card-entradas">0,00</span></p></div>
+        <div class="card"><h3>saídas</h3><p class="cor-saida">R$ <span id="card-saidas">0,00</span></p></div>
+        <div class="card"><h3>cartão</h3><p class="cor-cartao">R$ <span id="card-cartao">0,00</span></p></div>
+        <div class="card"><h3>reserva</h3><p class="cor-reserva">R$ <span id="card-reserva">0,00</span></p></div> <!-- CARD RESERVA VOLTOU -->
         <div class="card saldo-total">
             <h3>Saldo Atual</h3>
             <p id="card-saldo">R$ 0,00</p>
             <div class="info-subtil-container">
-                <div class="previsao-texto"><strong>Média/Dia:</strong> <span class="valor-dinamico" id="previsao-valor">R$ 0,00</span></div>
+                <div><strong>Média/Dia:</strong> <span id="previsao-valor">R$ 0,00</span></div>
             </div>
         </div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: reserva 200 ou ifood 50 no nubank" onkeypress="verificarTecla(event)">
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: gasolina 50 ou reserva 200" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
+    <div id="area-pergunta" style="margin-top: 10px;"></div> <!-- AREA PRA PERGUNTAR CONTA -->
 </div>
 
 <div class="app-view" id="view-historico">
-    <div class="filtros-container">
-        <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
-        <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
-            <option value="todos">Todos</option><option value="entrada">Entradas</option>
-            <option value="saida">Saídas</option><option value="cartao">Cartão</option>
-        </select>
-    </div>
+    <select id="filtro-mes" class="filtro-select" onchange="atualizarAplicativo()"></select>
+    <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
+        <option value="todos">Todos</option><option value="entrada">Entradas</option>
+        <option value="saida">Saídas</option><option value="cartao">Cartão</option><option value="reserva">Reserva</option>
+    </select>
     <div class="secao-conteudo" id="lista-transacoes-container"></div>
 </div>
 
-<div class="app-view" id="view-graficos">
+<div class="app-view" id="view-graficos"> <!-- GRAFICOS IGUAIS AO ANTIGO -->
     <div class="secao-conteudo">
         <h4>Comparativo do Mês</h4>
         <div class="colunas-container">
-            <div><span class="valor-dinamico" id="v-val-contas">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-contas" style="background: var(--saida); height: 10px;"></div><span>Saídas</span></div>
-            <div><span class="valor-dinamico" id="v-val-cartoes">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao); height: 10px;"></div><span>Cartões</span></div>
+            <div><span id="v-val-contas">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-contas" style="background: var(--saida);"></div><span>Saídas</span></div>
+            <div><span id="v-val-cartoes">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div><span>Cartões</span></div>
+            <div><span id="v-val-reserva">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div><span>Reserva</span></div>
         </div>
     </div>
     <div class="secao-conteudo">
-        <h4>Proporção Ganho vs Gasto</h4>
+        <h4>Proporção</h4>
         <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()"><div class="donut-hole"><span id="pizza-perc">0%</span></div></div>
     </div>
     <div class="secao-conteudo">
-        <h4>Maiores Gastos</h4>
+        <h4>Top 5 Gastos</h4>
         <div id="grafico-barras-horizontais"></div>
     </div>
 </div>
@@ -118,131 +104,128 @@
 <div class="app-view" id="view-config">
     <div class="secao-conteudo">
         <h4>Gerenciamento de Dados</h4>
-        <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar Banco de Dados (JSON)</button>
-        <button class="config-btn-bloco" onclick="document.getElementById('input-file-backup').click()">📤 Importar Banco de Dados (JSON)</button>
+        <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar</button>
+        <button class="config-btn-bloco" onclick="document.getElementById('input-file-backup').click()">📤 Importar</button>
         <input type="file" id="input-file-backup" accept=".json" style="display: none;" onchange="importarBackup(event)">
-        <h4 style="margin-top:24px; color:var(--saida);">Ações Críticas</h4>
-        <button class="config-btn-bloco" style="color:var(--saida);" onclick="resetarAplicativoTotal()">🗑️ Limpar Tudo Permanentemente</button>
+        <button class="config-btn-bloco" style="color:var(--saida);" onclick="resetarAplicativoTotal()">🗑️ Limpar Tudo</button>
     </div>
 </div>
 
 <div class="menu-rodape-wrapper">
     <div class="menu-rodape">
-        <button class="tab-item ativo" id="tab-inicio" onclick="navegarPara('inicio')"><span>💬</span><span>Conversa</span></button>
-        <button class="tab-item" id="tab-historico" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
-        <button class="tab-item" id="tab-graficos" onclick="navegarPara('graficos')"><span>📊</span><span>Status</span></button>
-        <button class="tab-item" id="tab-config" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
+        <button class="tab-item ativo" onclick="navegarPara('inicio')"><span>💬</span><span>Conversa</span></button>
+        <button class="tab-item" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
+        <button class="tab-item" onclick="navegarPara('graficos')"><span>📊</span><span>Status</span></button>
+        <button class="tab-item" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
     </div>
 </div>
 </div>
 
+<div class="modal-overlay" id="modal-pergunta"><div class="modal-container"><h3 id="texto-pergunta"></h3><div id="botoes-pergunta"></div></div></div>
+
 <script>
-    let transacoes = [], saldosOcultos = false, modoGraficoRosca = 0;
-    let temasDisponiveis = ['padrao', 'escuro', 'white', 'vintage']; let temaAtualIndex = 0;
-    const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-    const obterId = id => document.getElementById(id);
+let transacoes = [], saldosOcultos = false, modoGraficoRosca = 0, idPendente = null;
+let temasDisponiveis = ['padrao', 'escuro', 'white', 'vintage']; let temaAtualIndex = 0;
+const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
-    function navegarPara(idAba) {
-        document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
-        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo'));
-        obterId(`view-${idAba}`).classList.add('ativa'); obterId(`tab-${idAba}`).classList.add('ativo');
-        atualizarAplicativo();
+function navegarPara(idAba) { document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa')); document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo')); document.getElementById(`view-${idAba}`).classList.add('ativa'); event.target.closest('.tab-item').classList.add('ativo'); atualizarAplicativo(); }
+
+function inicializarFiltroMeses() { const hoje = new Date(); document.getElementById('filtro-mes').innerHTML = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual</option><option value="todos">Todos</option>`; }
+
+function processarComando() {
+    const input = document.getElementById('campo-texto'), txt = input.value.trim().toLowerCase();
+    const num = txt.match(/\d+([.,]\d+)?/g); if (!num) return;
+    const valor = parseFloat(num[0].replace(',', '.'));
+    let tipo = 'saida';
+    if (/\b(reserva|guardar)\b/.test(txt)) tipo = 'reserva';
+    else if (/\b(cartao|cartão)\b/.test(txt)) tipo = 'cartao';
+    else if (/\b(recebi|ganhei)\b/.test(txt)) tipo = 'entrada';
+
+    let conta = "", cartao = "";
+    if(txt.includes('nubank')) cartao = "Nubank"; if(txt.includes('itau')) cartao = "Itaú"; if(txt.includes('inter')) cartao = "Inter"; if(txt.includes('mp')) cartao = "Mercado Pago";
+
+    let desc = input.value.replace(num[0], '').trim() || "Lançamento";
+    let hoje = new Date();
+    const novoId = Date.now();
+    transacoes.unshift({ id: novoId, descricao: desc, valor: valor, tipo, conta, cartao, mes: hoje.getMonth(), ano: hoje.getFullYear(), dia: hoje.getDate() });
+
+    // SE NÃO TEM CONTA/CARTAO E É SAIDA/CARTAO/RESERVA -> PERGUNTA
+    if((tipo === 'saida' || tipo === 'cartao' || tipo === 'reserva') &&!cartao &&!conta){
+        idPendente = novoId;
+        mostrarPerguntaConta(novoId);
+    } else {
+        salvarTudo();
     }
+    input.value = '';
+}
 
-    function inicializarFiltroMeses() {
-        const hoje = new Date(), f = obterId('filtro-mes');
-        f.innerHTML = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual</option><option value="todos">Todos</option>`;
-    }
+function mostrarPerguntaConta(id) {
+    const modal = document.getElementById('modal-pergunta');
+    document.getElementById('texto-pergunta').innerText = "De qual conta/cartão saiu?";
+    document.getElementById('botoes-pergunta').innerHTML = `
+        <button class="btn-resposta" onclick="responderConta('${id}','Nubank')">Nubank</button>
+        <button class="btn-resposta" onclick="responderConta('${id}','Itaú')">Itaú</button>
+        <button class="btn-resposta" onclick="responderConta('${id}','Inter')">Inter</button>
+        <button class="btn-resposta" onclick="responderConta('${id}','Dinheiro')">Dinheiro</button>
+    `;
+    modal.style.display = 'flex';
+}
+function responderConta(id, valor) {
+    const t = transacoes.find(i => i.id == id); if(t) t.cartao = valor;
+    document.getElementById('modal-pergunta').style.display = 'none'; salvarTudo();
+}
 
-    function processarComando() {
-        const input = obterId('campo-texto'), txt = input.value.trim().toLowerCase();
-        const num = txt.match(/\d+([.,]\d+)?/g); if (!num) return;
-        const valor = parseFloat(num[0].replace(',', '.'));
+function salvarTudo() { localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); }
 
-        let tipo = 'saida'; let conta = ""; let cartao = "";
-        if (/\b(reserva|guardar)\b/.test(txt)) tipo = 'saida'; // RESERVA AGORA É SAIDA NORMAL
-        if (/\b(cartao|cartão|credito)\b/.test(txt)) tipo = 'cartao';
-        if (/\b(recebi|ganhei|salario)\b/.test(txt)) tipo = 'entrada';
+function atualizarAplicativo() {
+    let ent = 0, sai = 0, car = 0, res = 0;
+    transacoes.forEach(t => {
+        if(t.tipo === 'entrada') ent += t.valor;
+        else if(t.tipo === 'saida') sai += t.valor;
+        else if(t.tipo === 'cartao') car += t.valor;
+        else if(t.tipo === 'reserva') res += t.valor;
+    });
+    const saldo = ent - sai - car - res; const gastos = sai + car;
+    document.getElementById('card-entradas').innerText = ent.toFixed(2);
+    document.getElementById('card-saidas').innerText = sai.toFixed(2);
+    document.getElementById('card-cartao').innerText = car.toFixed(2);
+    document.getElementById('card-reserva').innerText = res.toFixed(2); // CARD RESERVA
+    document.getElementById('card-saldo').innerText = `R$ ${saldo.toFixed(2)}`;
+    document.getElementById('previsao-valor').innerText = `R$ ${(gastos / 30).toFixed(2)}`;
+    renderizarHistorico(); renderizarGraficos(ent, gastos, sai, car, res);
+}
 
-        // PEGA NOME DO BANCO/CARTAO
-        if(txt.includes('nubank') || txt.includes('nu')) cartao = "Nubank";
-        if(txt.includes('itau') || txt.includes('itaú')) cartao = "Itaú";
-        if(txt.includes('inter')) cartao = "Inter";
-        if(txt.includes('mp') || txt.includes('mercadopago')) cartao = "Mercado Pago";
+function renderizarHistorico() {
+    const l = document.getElementById('lista-transacoes-container'); l.innerHTML = '';
+    transacoes.forEach(t => {
+        let cls = t.tipo === 'entrada'? 'cor-entrada' : t.tipo === 'cartao'? 'cor-cartao' : t.tipo === 'reserva'? 'cor-reserva' : 'cor-saida';
+        l.innerHTML += `<div class="item-transacao"><div class="linha-1"><span>${t.descricao}</span><span class="${cls}">${t.tipo === 'entrada'? '+' : '-'} R$ ${t.valor.toFixed(2)}</span></div><div class="linha-2">${t.dia} ${nomesMeses[t.mes]} - ${t.cartao || t.conta || ''}</div></div>`;
+    });
+}
 
-        let desc = input.value.replace(num[0], '').replace(/no|na|de|com/gi, '').trim() || "Lançamento";
-        let hoje = new Date();
-        transacoes.unshift({ id: Date.now(), descricao: desc, valor: valor, tipo, conta, cartao, mes: hoje.getMonth(), ano: hoje.getFullYear(), dia: hoje.getDate() });
-        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
-        atualizarAplicativo(); input.value = '';
-    }
+function renderizarGraficos(receitas, totalGastos, saídas, cartões, valorReserva) {
+    const maxEixoV = Math.max(saídas, cartões, valorReserva, 100);
+    document.getElementById('v-val-contas').innerText = `R$ ${saídas.toFixed(2)}`;
+    document.getElementById('v-val-cartoes').innerText = `R$ ${cartões.toFixed(2)}`;
+    document.getElementById('v-val-reserva').innerText = `R$ ${valorReserva.toFixed(2)}`;
+    document.getElementById('v-bar-contas').style.height = `${(saídas / maxEixoV) * 100}%`;
+    document.getElementById('v-bar-cartoes').style.height = `${(cartões / maxEixoV) * 100}%`;
+    document.getElementById('v-bar-reserva').style.height = `${(valorReserva / maxEixoV) * 100}%`;
 
-    function alternarModoRosca() { modoGraficoRosca = (modoGraficoRosca + 1) % 2; atualizarAplicativo(); }
+    const totalFluxo = receitas + totalGastos; const percGasto = totalFluxo > 0? Math.round((totalGastos / totalFluxo) * 100) : 0;
+    document.getElementById('pizza-perc').innerText = `${percGasto}%`;
+    document.getElementById('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
+}
 
-    function atualizarAplicativo() {
-        let ent = 0, sai = 0, car = 0;
-        transacoes.forEach(t => {
-            if(t.tipo === 'entrada') ent += t.valor;
-            else if(t.tipo === 'saida') sai += t.valor;
-            else if(t.tipo === 'cartao') car += t.valor;
-        });
-        const saldo = ent - sai - car; const gastos = sai + car;
+function alternarModoRosca() { modoGraficoRosca = (modoGraficoRosca + 1) % 2; atualizarAplicativo(); }
+function alternarVisibilidade() { saldosOcultos =!saldosOcultos; atualizarAplicativo(); }
+function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
+function alternarTema() { temaAtualIndex = (temaAtualIndex + 1) % temasDisponiveis.length; document.body.className = `theme-${temasDisponiveis[temaAtualIndex]}`; }
+function resetarAplicativoTotal() { if (confirm("Limpar tudo?")) { transacoes = []; salvarTudo(); } }
+function exportarBackup() { const dl = document.createElement('a'); dl.href = "data:text/json," + encodeURIComponent(JSON.stringify(transacoes)); dl.download = `backup.json`; dl.click(); }
+function importarBackup(e) { const r = new FileReader(); r.onload = ev => { transacoes = JSON.parse(ev.target.result); salvarTudo(); }; r.readAsText(e.target.files[0]); }
 
-        obterId('card-entradas').innerText = ent.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-        obterId('card-saidas').innerText = sai.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-        obterId('card-cartao').innerText = car.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-        obterId('card-saldo').innerText = `R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-        obterId('previsao-valor').innerText = `R$ ${(gastos / 30).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-
-        renderizarHistorico(); renderizarGraficos(ent, gastos, sai, car);
-    }
-
-    function renderizarHistorico() {
-        const l = obterId('lista-transacoes-container'); l.innerHTML = '';
-        transacoes.forEach(t => {
-            let cls = t.tipo === 'entrada'? 'cor-entrada' : t.tipo === 'cartao'? 'cor-cartao' : 'cor-saida';
-            let tipoTxt = t.tipo === 'entrada'? 'Entrada' : t.tipo === 'cartao'? 'Cartão' : 'Saída';
-            let infoExtra = [];
-            if(t.dia) infoExtra.push(`${t.dia} ${nomesMeses[t.mes]}`);
-            if(t.cartao) infoExtra.push(t.cartao);
-            if(t.conta) infoExtra.push(t.conta);
-
-            let item = document.createElement('div'); item.className = `item-transacao`;
-            item.innerHTML = `
-                <div class="linha-1">
-                    <span class="descricao">${t.descricao}</span>
-                    <span class="valor ${cls}">${t.tipo === 'entrada'? '+' : '-'} R$ ${t.valor.toFixed(2)}</span>
-                </div>
-                <div class="linha-2">${infoExtra.join(' - ')}</div> <!-- DATA + CONTA + CARTAO -->
-            `;
-            l.appendChild(item);
-        });
-    }
-
-    function renderizarGraficos(receitas, totalGastos, saídas, cartões) {
-        const maxEixoV = Math.max(saídas, cartões, 100);
-        obterId('v-val-contas').innerText = `R$ ${saídas.toFixed(2)}`;
-        obterId('v-val-cartoes').innerText = `R$ ${cartões.toFixed(2)}`;
-        obterId('v-bar-contas').style.height = `${Math.max((saídas / maxEixoV) * 100, 5)}%`;
-        obterId('v-bar-cartoes').style.height = `${Math.max((cartões / maxEixoV) * 100, 5)}%`;
-
-        const totalFluxo = receitas + totalGastos;
-        const percGasto = totalFluxo > 0? Math.round((totalGastos / totalFluxo) * 100) : 0;
-        obterId('pizza-perc').innerText = `${percGasto}%`;
-        obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
-    }
-
-    function alternarVisibilidade() { saldosOcultos =!saldosOcultos; atualizarAplicativo(); }
-    function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
-    function alternarTema() { temaAtualIndex = (temaAtualIndex + 1) % temasDisponiveis.length; document.body.className = `theme-${temasDisponiveis[temaAtualIndex]}`; }
-    function resetarAplicativoTotal() { if (confirm("Limpar tudo?")) { transacoes = []; localStorage.setItem('saldo_transacoes', '[]'); atualizarAplicativo(); } }
-    function exportarBackup() { const dl = document.createElement('a'); dl.href = "data:text/json," + encodeURIComponent(JSON.stringify(transacoes)); dl.download = `backup.json`; dl.click(); }
-    function importarBackup(e) { const r = new FileReader(); r.onload = ev => { transacoes = JSON.parse(ev.target.result); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); }; r.readAsText(e.target.files[0]); }
-
-    window.onload = () => {
-        const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s);
-        inicializarFiltroMeses(); atualizarAplicativo();
-    };
+window.onload = () => { const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s); inicializarFiltroMeses(); atualizarAplicativo(); };
 </script>
 </body>
 </html>
