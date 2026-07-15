@@ -160,14 +160,9 @@ function processarComando() {
 function mostrarPerguntaConta(id, tipo) {
     const modal = document.getElementById('modal-pergunta');
     let texto = "";
-    
-    if(tipo === 'cartao'){
-        texto = "Em qual cartão foi essa compra?";
-    } else if(tipo === 'reserva'){
-        texto = "Transferir de qual conta pra Reserva?";
-    } else {
-        texto = "De qual conta saiu esse dinheiro?";
-    }
+    if(tipo === 'cartao'){ texto = "Em qual cartão foi essa compra?"; }
+    else if(tipo === 'reserva'){ texto = "Transferir de qual conta pra Reserva?"; }
+    else { texto = "De qual conta saiu esse dinheiro?"; }
 
     document.getElementById('texto-pergunta').innerText = texto;
     document.getElementById('botoes-pergunta').innerHTML = `
@@ -180,7 +175,7 @@ function mostrarPerguntaConta(id, tipo) {
     modal.style.display = 'flex';
 }
 function responderConta(id, valor) {
-    const t = transacoes.find(i => i.id == id); 
+    const t = transacoes.find(i => i.id == id);
     if(t) {
         if(tipoPendente === 'cartao') t.cartao = valor;
         else t.conta = valor;
@@ -235,7 +230,7 @@ function alternarModoRosca() { modoGraficoRosca = (modoGraficoRosca + 1) % 2; at
 function alternarVisibilidade() { saldosOcultos =!saldosOcultos; document.querySelectorAll('.valor-dinamico').forEach(el => el.innerText = saldosOcultos? 'R$ ••••' : `R$ ${parseFloat(el.getAttribute('data-valor') || 0).toFixed(2)}`); }
 function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
 function alternarTema() { temaAtualIndex = (temaAtualIndex + 1) % temasDisponiveis.length; document.body.className = `theme-${temasDisponiveis[temaAtualIndex]}`; }
-function resetarAplicativoTotal() { if (confirm("Limpar tudo?")) { transacoes = []; salvarTudo(); }
+function resetarAplicativoTotal() { if (confirm("Limpar tudo?")) { transacoes = []; salvarTudo(); } // <-- FECHEI A CHAVE AQUI
 function exportarBackup() { const dl = document.createElement('a'); dl.href = "data:text/json," + encodeURIComponent(JSON.stringify(transacoes)); dl.download = `backup.json`; dl.click(); }
 function importarBackup(e) { const r = new FileReader(); r.onload = ev => { transacoes = JSON.parse(ev.target.result); salvarTudo(); }; r.readAsText(e.target.files[0]); }
 
