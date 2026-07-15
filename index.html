@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#2563eb">
-<title>Meu Fluxo de Caixa Inteligente</title>
+<title>Fluxo Caixa</title>
 <style>
     :root { --bg-body: #f1f5f9; --bg-container: #ffffff; --texto-principal: #0f172a; --texto-secundario: #64748b; --borda: #e2e8f0; --radius: 12px; --entrada: #10b981; --saida: #ef4444; --cartao: #f59e0b; --reserva-cor: #06b6d4; --header-bg: #2563eb; --header-txt: #ffffff; }
     body.theme-escuro { --bg-body: #0f172a; --bg-container: #1e293b; --texto-principal: #f8fafc; --texto-secundario: #94a3b8; --borda: #334155; --header-bg: #1e293b; }
     body.theme-white { --bg-body: #ffffff; --bg-container: #f8fafc; --texto-principal: #1e293b; --borda: #cbd5e1; --header-bg: #e2e8f0; --header-txt: #0f172a; }
-    body.theme-vintage { --bg-body: #fffae0; --bg-container: #fffdf5; --texto-principal: #2b2b2b; --borda: #2b2b2b; --radius: 0px; --shadow: 4px 4px 0px #2b2b2b; --entrada: #49a078; --saida: #d64933; --header-bg: #2b2b2b; --header-txt: #fffae0; }
+    body.theme-vintage { --bg-body: #fffae0; --bg-container: #fffdf5; --texto-principal: #2b2b2b; --borda: #2b2b2b; --radius: 0px; --entrada: #49a078; --saida: #d64933; --header-bg: #2b2b2b; --header-txt: #fffae0; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
     body { background: var(--bg-body); color: var(--texto-principal); padding: 16px 16px 95px 16px; }
 .container { max-width: 500px; margin: 0 auto; }
@@ -25,8 +25,8 @@
 .cor-entrada { color: var(--entrada); }.cor-saida { color: var(--saida); }.cor-cartao { color: var(--cartao); }.cor-reserva { color: var(--reserva-cor); }
 .filtro-select { width: 100%; padding: 12px; border-radius: var(--radius); border: 1px solid var(--borda); margin-bottom: 10px; background: var(--bg-container); color: var(--texto-principal); }
 .secao-conteudo { background: var(--bg-container); padding: 20px; border-radius: var(--radius); border: 1px solid var(--borda); margin-bottom: 20px; }
-.colunas-container { display: flex; justify-content: center; gap: 36px; height: 120px; align-items: flex-end; border-bottom: 1px solid var(--borda); }
-.coluna-vertical-barra { width: 28px; border-radius: 6px 6px 0 0; }
+.colunas-container { display: flex; justify-content: space-around; height: 120px; align-items: flex-end; border-bottom: 1px solid var(--borda); text-align: center; }
+.coluna-vertical-barra { width: 30px; border-radius: 6px 6px 0 0; transition: height 0.3s; }
 .donut-chart { width: 140px; height: 140px; border-radius: 50%; margin: 12px auto; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .donut-hole { width: 96px; height: 96px; background: var(--bg-container); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-direction: column; }
 .config-btn-bloco { width: 100%; padding: 16px; border-radius: var(--radius); border: 1px solid var(--borda); background: var(--bg-container); color: var(--texto-principal); margin-bottom: 12px; text-align: left; cursor: pointer; }
@@ -35,8 +35,8 @@
 .btn-enviar { background: var(--header-bg); color: var(--header-txt); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
 .menu-rodape-wrapper { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--bg-container); padding: 10px 16px; border-top: 1px solid var(--borda); }
 .menu-rodape { display: grid; grid-template-columns: repeat(4, 1fr); }
-.tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); font-size: 0.75rem; }
-.tab-item.ativo { color: var(--header-bg); }
+.tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); font-size: 0.75rem; cursor: pointer; }
+.tab-item.ativo { color: var(--header-bg); font-weight: 700; }
 .item-transacao { padding: 10px 5px; border-bottom: 1px solid var(--borda); }
 .linha-1 { display: flex; justify-content: space-between; }
 .linha-2 { font-size: 0.75rem; color: var(--texto-secundario); }
@@ -54,20 +54,20 @@
 
 <div class="app-view ativa" id="view-inicio">
     <div class="cards-container">
-        <div class="card"><h3>entradas</h3><p class="cor-entrada">R$ <span id="card-entradas">0,00</span></p></div>
-        <div class="card"><h3>saídas</h3><p class="cor-saida">R$ <span id="card-saidas">0,00</span></p></div>
-        <div class="card"><h3>cartão</h3><p class="cor-cartao">R$ <span id="card-cartao">0,00</span></p></div>
-        <div class="card"><h3>reserva</h3><p class="cor-reserva">R$ <span id="card-reserva">0,00</span></p></div>
+        <div class="card"><h3>entradas</h3><p class="cor-entrada">R$ <span id="card-entradas">0.00</span></p></div>
+        <div class="card"><h3>saídas</h3><p class="cor-saida">R$ <span id="card-saidas">0.00</span></p></div>
+        <div class="card"><h3>cartão</h3><p class="cor-cartao">R$ <span id="card-cartao">0.00</span></p></div>
+        <div class="card"><h3>reserva</h3><p class="cor-reserva">R$ <span id="card-reserva">0.00</span></p></div>
         <div class="card saldo-total">
             <h3>Saldo Atual</h3>
-            <p id="card-saldo">R$ 0,00</p>
+            <p id="card-saldo">R$ 0.00</p>
             <div class="info-subtil-container">
-                <div><strong>Média/Dia:</strong> <span id="previsao-valor">R$ 0,00</span></div>
+                <div><strong>Média/Dia:</strong> <span id="previsao-valor">R$ 0.00</span></div>
             </div>
         </div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: gasolina 50 ou ifood 40 no nubank" onkeypress="verificarTecla(event)">
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: gasolina 50 ou ifood 40 no nubank">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
 </div>
@@ -85,18 +85,14 @@
     <div class="secao-conteudo">
         <h4>Comparativo do Mês</h4>
         <div class="colunas-container">
-            <div><span id="v-val-contas">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-contas" style="background: var(--saida); height:10px"></div><span>Saídas</span></div>
-            <div><span id="v-val-cartoes">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao); height:10px"></div><span>Cartões</span></div>
-            <div><span id="v-val-reserva">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor); height:10px"></div><span>Reserva</span></div>
+            <div><span id="v-val-contas">R$ 0.00</span><div class="coluna-vertical-barra" id="v-bar-contas" style="background: var(--saida);"></div><span>Saídas</span></div>
+            <div><span id="v-val-cartoes">R$ 0.00</span><div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div><span>Cartões</span></div>
+            <div><span id="v-val-reserva">R$ 0.00</span><div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div><span>Reserva</span></div>
         </div>
     </div>
     <div class="secao-conteudo">
         <h4>Proporção</h4>
-        <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()"><div class="donut-hole"><span id="pizza-perc">0%</span></div></div>
-    </div>
-    <div class="secao-conteudo">
-        <h4>Top 5 Gastos</h4>
-        <div id="grafico-barras-horizontais"></div>
+        <div class="donut-chart" id="grafico-pizza-elemento"><div class="donut-hole"><span id="pizza-perc">0%</span></div></div>
     </div>
 </div>
 
@@ -123,17 +119,28 @@
 <div class="modal-overlay" id="modal-pergunta"><div class="modal-container"><h3 id="texto-pergunta"></h3><div id="botoes-pergunta"></div></div></div>
 
 <script>
-let transacoes = [], saldosOcultos = false, modoGraficoRosca = 0, idPendente = null, tipoPendente = null;
+let transacoes = [], saldosOcultos = false, idPendente = null, tipoPendente = null;
 let temasDisponiveis = ['padrao', 'escuro', 'white', 'vintage']; let temaAtualIndex = 0;
 const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
-function navegarPara(idAba) { document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa')); document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo')); document.getElementById(`view-${idAba}`).classList.add('ativa'); event.target.closest('.tab-item').classList.add('ativo'); atualizarAplicativo(); }
+function navegarPara(idAba) {
+    document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo'));
+    document.getElementById(`view-${idAba}`).classList.add('ativa');
+    event.target.closest('.tab-item').classList.add('ativo');
+    atualizarAplicativo();
+}
 
-function inicializarFiltroMeses() { const hoje = new Date(); document.getElementById('filtro-mes').innerHTML = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual</option><option value="todos">Todos</option>`; }
+function inicializarFiltroMeses() {
+    const hoje = new Date();
+    document.getElementById('filtro-mes').innerHTML = `<option value="${hoje.getMonth()}-${hoje.getFullYear()}">Mês Atual</option><option value="todos">Todos</option>`;
+}
+
+document.getElementById('campo-texto').addEventListener('keypress', function(e) { if (e.key === 'Enter') processarComando(); });
 
 function processarComando() {
-    const input = document.getElementById('campo-texto'), txt = input.value.trim().toLowerCase();
-    const num = txt.match(/\d+([.,]\d+)?/g); if (!num) return;
+    const input = document.getElementById('campo-texto'); const txt = input.value.trim().toLowerCase();
+    const num = txt.match(/\d+([.,]\d+)?/g); if (!num) return alert("Digite um valor");
     const valor = parseFloat(num[0].replace(',', '.'));
     let tipo = 'saida';
     if (/\b(reserva|guardar)\b/.test(txt)) tipo = 'reserva';
@@ -170,7 +177,6 @@ function mostrarPerguntaConta(id, tipo) {
         <button class="btn-resposta" onclick="responderConta('${id}','Itaú')">Itaú</button>
         <button class="btn-resposta" onclick="responderConta('${id}','Inter')">Inter</button>
         <button class="btn-resposta" onclick="responderConta('${id}','Dinheiro')">Dinheiro</button>
-        <button class="btn-resposta" onclick="responderConta('${id}','PicPay')">PicPay</button>
     `;
     modal.style.display = 'flex';
 }
@@ -226,12 +232,10 @@ function renderizarGraficos(receitas, totalGastos, saídas, cartões, valorReser
     document.getElementById('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
 }
 
-function alternarModoRosca() { modoGraficoRosca = (modoGraficoRosca + 1) % 2; atualizarAplicativo(); }
-function alternarVisibilidade() { saldosOcultos =!saldosOcultos; document.querySelectorAll('.valor-dinamico').forEach(el => el.innerText = saldosOcultos? 'R$ ••••' : `R$ ${parseFloat(el.getAttribute('data-valor') || 0).toFixed(2)}`); }
-function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
+function alternarVisibilidade() { saldosOcultos =!saldosOcultos; }
 function alternarTema() { temaAtualIndex = (temaAtualIndex + 1) % temasDisponiveis.length; document.body.className = `theme-${temasDisponiveis[temaAtualIndex]}`; }
-function resetarAplicativoTotal() { if (confirm("Limpar tudo?")) { transacoes = []; salvarTudo(); } // <-- FECHEI A CHAVE AQUI
-function exportarBackup() { const dl = document.createElement('a'); dl.href = "data:text/json," + encodeURIComponent(JSON.stringify(transacoes)); dl.download = `backup.json`; dl.click(); }
+function resetarAplicativoTotal() { if (confirm("Limpar tudo?")) { transacoes = []; salvarTudo(); } // FECHADO
+function exportarBackup() { const dl = document.createElement('a'); dl.href = "data:text/json," + encodeURIComponent(JSON.stringify(transacoes)); dl.download = `backup.json`; dl.click(); } // FECHADO
 function importarBackup(e) { const r = new FileReader(); r.onload = ev => { transacoes = JSON.parse(ev.target.result); salvarTudo(); }; r.readAsText(e.target.files[0]); }
 
 window.onload = () => { const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s); inicializarFiltroMeses(); atualizarAplicativo(); };
