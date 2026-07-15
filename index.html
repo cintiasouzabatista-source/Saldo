@@ -40,15 +40,15 @@
 .item-transacao { padding: 10px 5px; border-bottom: 1px solid var(--borda); }
 .linha-1 { display: flex; justify-content: space-between; }
 .linha-2 { font-size: 0.75rem; color: var(--texto-secundario); }
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; }
-.modal-container { background: var(--bg-container); padding: 20px; border-radius: var(--radius); width: 90%; }
-.btn-resposta { padding: 8px 12px; margin: 4px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-body); cursor: pointer; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+.modal-container { background: var(--bg-container); color: var(--texto-principal); padding: 20px; border-radius: var(--radius); width: 90%; max-width: 400px; }
+.btn-resposta { padding: 10px 14px; margin: 6px; border-radius: 20px; border: 1px solid var(--borda); background: var(--bg-body); color: var(--texto-principal); cursor: pointer; font-weight: 600; }
 </style>
 </head>
 <body>
 <div class="container">
 <div class="app-header">
-    <div class="app-title" id="titulo-dinamico">Meu Saldo</div>
+    <div class="app-title">Meu Saldo</div>
     <div><button class="icon-btn" onclick="alternarVisibilidade()">🔓</button><button class="icon-btn" onclick="alternarTema()">🫟</button></div>
 </div>
 
@@ -57,7 +57,7 @@
         <div class="card"><h3>entradas</h3><p class="cor-entrada">R$ <span id="card-entradas">0,00</span></p></div>
         <div class="card"><h3>saídas</h3><p class="cor-saida">R$ <span id="card-saidas">0,00</span></p></div>
         <div class="card"><h3>cartão</h3><p class="cor-cartao">R$ <span id="card-cartao">0,00</span></p></div>
-        <div class="card"><h3>reserva</h3><p class="cor-reserva">R$ <span id="card-reserva">0,00</span></p></div> <!-- CARD RESERVA VOLTOU -->
+        <div class="card"><h3>reserva</h3><p class="cor-reserva">R$ <span id="card-reserva">0,00</span></p></div>
         <div class="card saldo-total">
             <h3>Saldo Atual</h3>
             <p id="card-saldo">R$ 0,00</p>
@@ -67,10 +67,9 @@
         </div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: gasolina 50 ou reserva 200" onkeypress="verificarTecla(event)">
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: gasolina 50 ou ifood 40 no nubank" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
-    <div id="area-pergunta" style="margin-top: 10px;"></div> <!-- AREA PRA PERGUNTAR CONTA -->
 </div>
 
 <div class="app-view" id="view-historico">
@@ -82,13 +81,13 @@
     <div class="secao-conteudo" id="lista-transacoes-container"></div>
 </div>
 
-<div class="app-view" id="view-graficos"> <!-- GRAFICOS IGUAIS AO ANTIGO -->
+<div class="app-view" id="view-graficos">
     <div class="secao-conteudo">
         <h4>Comparativo do Mês</h4>
         <div class="colunas-container">
-            <div><span id="v-val-contas">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-contas" style="background: var(--saida);"></div><span>Saídas</span></div>
-            <div><span id="v-val-cartoes">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div><span>Cartões</span></div>
-            <div><span id="v-val-reserva">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div><span>Reserva</span></div>
+            <div><span id="v-val-contas">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-contas" style="background: var(--saida); height:10px"></div><span>Saídas</span></div>
+            <div><span id="v-val-cartoes">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao); height:10px"></div><span>Cartões</span></div>
+            <div><span id="v-val-reserva">R$ 0,00</span><div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor); height:10px"></div><span>Reserva</span></div>
         </div>
     </div>
     <div class="secao-conteudo">
@@ -124,7 +123,7 @@
 <div class="modal-overlay" id="modal-pergunta"><div class="modal-container"><h3 id="texto-pergunta"></h3><div id="botoes-pergunta"></div></div></div>
 
 <script>
-let transacoes = [], saldosOcultos = false, modoGraficoRosca = 0, idPendente = null;
+let transacoes = [], saldosOcultos = false, modoGraficoRosca = 0, idPendente = null, tipoPendente = null;
 let temasDisponiveis = ['padrao', 'escuro', 'white', 'vintage']; let temaAtualIndex = 0;
 const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
@@ -138,40 +137,54 @@ function processarComando() {
     const valor = parseFloat(num[0].replace(',', '.'));
     let tipo = 'saida';
     if (/\b(reserva|guardar)\b/.test(txt)) tipo = 'reserva';
-    else if (/\b(cartao|cartão)\b/.test(txt)) tipo = 'cartao';
+    else if (/\b(cartao|cartão|credito)\b/.test(txt)) tipo = 'cartao';
     else if (/\b(recebi|ganhei)\b/.test(txt)) tipo = 'entrada';
 
     let conta = "", cartao = "";
     if(txt.includes('nubank')) cartao = "Nubank"; if(txt.includes('itau')) cartao = "Itaú"; if(txt.includes('inter')) cartao = "Inter"; if(txt.includes('mp')) cartao = "Mercado Pago";
 
-    let desc = input.value.replace(num[0], '').trim() || "Lançamento";
+    let desc = input.value.replace(num[0], '').replace(/no|na|do|da/gi, '').trim() || "Lançamento";
     let hoje = new Date();
     const novoId = Date.now();
     transacoes.unshift({ id: novoId, descricao: desc, valor: valor, tipo, conta, cartao, mes: hoje.getMonth(), ano: hoje.getFullYear(), dia: hoje.getDate() });
 
-    // SE NÃO TEM CONTA/CARTAO E É SAIDA/CARTAO/RESERVA -> PERGUNTA
     if((tipo === 'saida' || tipo === 'cartao' || tipo === 'reserva') &&!cartao &&!conta){
-        idPendente = novoId;
-        mostrarPerguntaConta(novoId);
+        idPendente = novoId; tipoPendente = tipo;
+        mostrarPerguntaConta(novoId, tipo);
     } else {
         salvarTudo();
     }
     input.value = '';
 }
 
-function mostrarPerguntaConta(id) {
+function mostrarPerguntaConta(id, tipo) {
     const modal = document.getElementById('modal-pergunta');
-    document.getElementById('texto-pergunta').innerText = "De qual conta/cartão saiu?";
+    let texto = "";
+    
+    if(tipo === 'cartao'){
+        texto = "Em qual cartão foi essa compra?";
+    } else if(tipo === 'reserva'){
+        texto = "Transferir de qual conta pra Reserva?";
+    } else {
+        texto = "De qual conta saiu esse dinheiro?";
+    }
+
+    document.getElementById('texto-pergunta').innerText = texto;
     document.getElementById('botoes-pergunta').innerHTML = `
         <button class="btn-resposta" onclick="responderConta('${id}','Nubank')">Nubank</button>
         <button class="btn-resposta" onclick="responderConta('${id}','Itaú')">Itaú</button>
         <button class="btn-resposta" onclick="responderConta('${id}','Inter')">Inter</button>
         <button class="btn-resposta" onclick="responderConta('${id}','Dinheiro')">Dinheiro</button>
+        <button class="btn-resposta" onclick="responderConta('${id}','PicPay')">PicPay</button>
     `;
     modal.style.display = 'flex';
 }
 function responderConta(id, valor) {
-    const t = transacoes.find(i => i.id == id); if(t) t.cartao = valor;
+    const t = transacoes.find(i => i.id == id); 
+    if(t) {
+        if(tipoPendente === 'cartao') t.cartao = valor;
+        else t.conta = valor;
+    }
     document.getElementById('modal-pergunta').style.display = 'none'; salvarTudo();
 }
 
@@ -189,7 +202,7 @@ function atualizarAplicativo() {
     document.getElementById('card-entradas').innerText = ent.toFixed(2);
     document.getElementById('card-saidas').innerText = sai.toFixed(2);
     document.getElementById('card-cartao').innerText = car.toFixed(2);
-    document.getElementById('card-reserva').innerText = res.toFixed(2); // CARD RESERVA
+    document.getElementById('card-reserva').innerText = res.toFixed(2);
     document.getElementById('card-saldo').innerText = `R$ ${saldo.toFixed(2)}`;
     document.getElementById('previsao-valor').innerText = `R$ ${(gastos / 30).toFixed(2)}`;
     renderizarHistorico(); renderizarGraficos(ent, gastos, sai, car, res);
@@ -199,7 +212,8 @@ function renderizarHistorico() {
     const l = document.getElementById('lista-transacoes-container'); l.innerHTML = '';
     transacoes.forEach(t => {
         let cls = t.tipo === 'entrada'? 'cor-entrada' : t.tipo === 'cartao'? 'cor-cartao' : t.tipo === 'reserva'? 'cor-reserva' : 'cor-saida';
-        l.innerHTML += `<div class="item-transacao"><div class="linha-1"><span>${t.descricao}</span><span class="${cls}">${t.tipo === 'entrada'? '+' : '-'} R$ ${t.valor.toFixed(2)}</span></div><div class="linha-2">${t.dia} ${nomesMeses[t.mes]} - ${t.cartao || t.conta || ''}</div></div>`;
+        let origem = t.cartao || t.conta || '';
+        l.innerHTML += `<div class="item-transacao"><div class="linha-1"><span>${t.descricao}</span><span class="${cls}">${t.tipo === 'entrada'? '+' : '-'} R$ ${t.valor.toFixed(2)}</span></div><div class="linha-2">${t.dia} ${nomesMeses[t.mes]} - ${origem}</div></div>`;
     });
 }
 
@@ -208,9 +222,9 @@ function renderizarGraficos(receitas, totalGastos, saídas, cartões, valorReser
     document.getElementById('v-val-contas').innerText = `R$ ${saídas.toFixed(2)}`;
     document.getElementById('v-val-cartoes').innerText = `R$ ${cartões.toFixed(2)}`;
     document.getElementById('v-val-reserva').innerText = `R$ ${valorReserva.toFixed(2)}`;
-    document.getElementById('v-bar-contas').style.height = `${(saídas / maxEixoV) * 100}%`;
-    document.getElementById('v-bar-cartoes').style.height = `${(cartões / maxEixoV) * 100}%`;
-    document.getElementById('v-bar-reserva').style.height = `${(valorReserva / maxEixoV) * 100}%`;
+    document.getElementById('v-bar-contas').style.height = `${Math.max((saídas / maxEixoV) * 100, 5)}%`;
+    document.getElementById('v-bar-cartoes').style.height = `${Math.max((cartões / maxEixoV) * 100, 5)}%`;
+    document.getElementById('v-bar-reserva').style.height = `${Math.max((valorReserva / maxEixoV) * 100, 5)}%`;
 
     const totalFluxo = receitas + totalGastos; const percGasto = totalFluxo > 0? Math.round((totalGastos / totalFluxo) * 100) : 0;
     document.getElementById('pizza-perc').innerText = `${percGasto}%`;
@@ -218,10 +232,10 @@ function renderizarGraficos(receitas, totalGastos, saídas, cartões, valorReser
 }
 
 function alternarModoRosca() { modoGraficoRosca = (modoGraficoRosca + 1) % 2; atualizarAplicativo(); }
-function alternarVisibilidade() { saldosOcultos =!saldosOcultos; atualizarAplicativo(); }
+function alternarVisibilidade() { saldosOcultos =!saldosOcultos; document.querySelectorAll('.valor-dinamico').forEach(el => el.innerText = saldosOcultos? 'R$ ••••' : `R$ ${parseFloat(el.getAttribute('data-valor') || 0).toFixed(2)}`); }
 function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
 function alternarTema() { temaAtualIndex = (temaAtualIndex + 1) % temasDisponiveis.length; document.body.className = `theme-${temasDisponiveis[temaAtualIndex]}`; }
-function resetarAplicativoTotal() { if (confirm("Limpar tudo?")) { transacoes = []; salvarTudo(); } }
+function resetarAplicativoTotal() { if (confirm("Limpar tudo?")) { transacoes = []; salvarTudo(); }
 function exportarBackup() { const dl = document.createElement('a'); dl.href = "data:text/json," + encodeURIComponent(JSON.stringify(transacoes)); dl.download = `backup.json`; dl.click(); }
 function importarBackup(e) { const r = new FileReader(); r.onload = ev => { transacoes = JSON.parse(ev.target.result); salvarTudo(); }; r.readAsText(e.target.files[0]); }
 
