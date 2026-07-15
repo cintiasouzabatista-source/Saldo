@@ -17,46 +17,47 @@
     body.theme-escuro { --bg-body: #0f172a; --bg-container: #1e293b; --texto-principal: #f8fafc; --texto-secundario: #94a3b8; --borda: #334155; --header-bg: #1e293b; --header-txt: #3b82f6; --saldo-box-bg: #1e293b; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
     body { background-color: var(--bg-body); color: var(--texto-principal); padding: 16px 16px 95px 16px; display: flex; flex-direction: column; align-items: center; }
-  .container { width: 100%; max-width: 500px; }
-  .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 16px; padding: 12px; background: var(--header-bg); border-radius: var(--radius); }
-  .app-title { font-size: 1.3rem; font-weight: 700; color: var(--header-txt); }
-  .icon-btn { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: var(--header-txt); width: 38px; height: 38px; }
-  .app-view { display: none; width: 100%; }
-  .app-view.ativa { display: flex; flex-direction: column; }
-  .cards-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
-  .card { background: var(--bg-container); padding: 16px 8px; text-align: center; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); }
-  .card h3 { font-size: 0.8rem; color: var(--texto-secundario); margin-bottom: 6px; font-weight: bold; text-transform: uppercase; }
-  .card p { font-size: 1.1rem; font-weight: 700; }
-  .card.saldo-total { grid-column: span 2; padding: 24px; background: var(--saldo-box-bg); }
-  .card.saldo-total h3 { font-size: 0.85rem; color: var(--texto-secundario); }
-  .card.saldo-total p { font-size: 2.2rem; font-weight: 700; }
-
-  .info-subtil-container { display: flex; justify-content: center; width: 100%; margin-top: 12px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; } /* SÓ MEDIA/DIA */
-  .previsao-texto { font-size: 0.85rem; color: var(--texto-secundario); font-weight: normal; }
-  .previsao-texto strong { font-weight: 700; color: var(--texto-principal); }
-
-  .cor-entrada { color: var(--entrada); }
-  .cor-saida { color: var(--saida); }
-  .cor-cartao { color: var(--cartao); }
-  .cor-reserva { color: var(--reserva-cor); }
-  .filtros-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; }
-  .filtro-select { flex: 1; padding: 12px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); }
-  .secao-conteudo { background: var(--bg-container); padding: 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); margin-bottom: 20px; }
-  .chat-input-area { display: flex; gap: 8px; background: var(--bg-container); padding: 6px 6px 6px 16px; border-radius: 24px; border: var(--espessura-borda) solid var(--borda); }
-  .chat-input { flex-grow: 1; border: none; background: transparent; color: var(--texto-principal); outline: none; }
-  .btn-enviar { background: var(--header-bg); color: var(--header-txt); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
-  .alerta-temporario { position: absolute; top: -54px; left: 50%; transform: translateX(-50%); background: #111b21; color: #ffffff; padding: 8px 20px; border-radius: 20px; opacity: 0; transition: 0.2s; }
-  .alerta-temporario.mostrar { opacity: 1; }
-  .menu-rodape-wrapper { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--bg-container); padding: 10px 16px; border-top: var(--espessura-borda) solid var(--borda); }
-  .menu-rodape { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .tab-item { display: flex; flex-direction: column; align-items: center; gap: 4px; background: transparent; border: none; color: var(--texto-secundario); font-size: 0.75rem; }
-  .tab-item.ativo { color: var(--header-bg); }
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; }
-  .modal-container { background: var(--bg-container); width: 90%; max-width: 400px; border-radius: var(--radius); padding: 24px; }
-  .item-transacao { display: flex; flex-direction: column; padding: 10px 5px; border-bottom: 1px solid var(--borda); gap: 6px; }
-  .linha-1 { display: flex; justify-content: space-between; }
-  .descricao { font-size: 0.95rem; font-weight: 600; }
-  .valor { font-size: 0.95rem; font-weight: 700; }
+ .container { width: 100%; max-width: 500px; }
+ .app-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 16px; padding: 12px; background: var(--header-bg); border-radius: var(--radius); }
+ .app-title { font-size: 1.3rem; font-weight: 700; color: var(--header-txt); }
+ .icon-btn { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: var(--header-txt); width: 38px; height: 38px; }
+ .app-view { display: none; width: 100%; }
+ .app-view.ativa { display: flex; flex-direction: column; }
+ .cards-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+ .card { background: var(--bg-container); padding: 16px 8px; text-align: center; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); }
+ .card h3 { font-size: 0.8rem; color: var(--texto-secundario); margin-bottom: 6px; font-weight: bold; text-transform: uppercase; }
+ .card p { font-size: 1.1rem; font-weight: 700; }
+ .card.saldo-total { grid-column: span 2; padding: 24px; background: var(--saldo-box-bg); }
+ .card.saldo-total p { font-size: 2.2rem; }
+ .info-subtil-container { display: flex; justify-content: center; width: 100%; margin-top: 12px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; }
+ .previsao-texto { font-size: 0.85rem; color: var(--texto-secundario); }
+ .cor-entrada { color: var(--entrada); }.cor-saida { color: var(--saida); }.cor-cartao { color: var(--cartao); }.cor-reserva { color: var(--reserva-cor); }
+ .filtros-container { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; }
+ .filtro-select { flex: 1; padding: 12px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); }
+ .secao-conteudo { background: var(--bg-container); padding: 20px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); margin-bottom: 20px; }
+ .colunas-container { display: flex; justify-content: center; gap: 36px; height: 120px; align-items: flex-end; padding-top: 25px; margin-bottom: 20px; border-bottom: var(--espessura-borda) solid var(--borda); }
+ .coluna-vertical-bloco { display: flex; flex-direction: column; align-items: center; width: 65px; position: relative; }
+ .coluna-vertical-barra { width: 28px; border-radius: 6px 6px 0 0; height: 2px; min-height: 2px; transition: height 0.5s ease; }
+ .coluna-vertical-valor { font-size: 0.75rem; font-weight: 700; position: absolute; top: -20px; }
+ .coluna-vertical-rotulo { font-size: 0.8rem; font-weight: bold; position: absolute; bottom: -24px; color: var(--texto-secundario); }
+ .donut-chart { width: 140px; height: 140px; border-radius: 50%; margin: 12px auto; display: flex; align-items: center; justify-content: center; background: conic-gradient(var(--saida) 0% 50%, var(--entrada) 50% 100%); cursor: pointer; }
+ .donut-hole { width: 96px; height: 96px; background: var(--bg-container); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75rem; text-align: center; }
+ .barra-horizontal-linha { margin-bottom: 14px; }
+ .barra-horizontal-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+ .barra-horizontal-bg { background: #f1f5f9; height: 12px; width: 100%; border-radius: 6px; overflow: hidden; border: var(--espessura-borda) solid var(--borda); }
+ .barra-horizontal-preenchimento { height: 100%; width: 0%; transition: width 0.5s ease; }
+ .config-btn-bloco { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: var(--radius); border: var(--espessura-borda) solid var(--borda); background: var(--bg-container); font-weight: 600; text-align: left; cursor: pointer; }
+ .chat-input-area { display: flex; gap: 8px; background: var(--bg-container); padding: 6px 6px 6px 16px; border-radius: 24px; border: var(--espessura-borda) solid var(--borda); }
+ .chat-input { flex-grow: 1; border: none; background: transparent; outline: none; }
+ .btn-enviar { background: var(--header-bg); color: var(--header-txt); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
+ .menu-rodape-wrapper { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--bg-container); padding: 10px 16px; border-top: var(--espessura-borda) solid var(--borda); }
+ .menu-rodape { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+ .tab-item { display: flex; flex-direction: column; align-items: center; gap: 4px; background: transparent; border: none; color: var(--texto-secundario); font-size: 0.75rem; }
+ .tab-item.ativo { color: var(--header-bg); }
+ .item-transacao { display: flex; flex-direction: column; padding: 10px 5px; border-bottom: 1px solid var(--borda); gap: 6px; }
+ .linha-1 { display: flex; justify-content: space-between; }
+ .descricao { font-size: 0.95rem; font-weight: 600; }
+ .valor { font-size: 0.95rem; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -79,14 +80,12 @@
         <div class="card saldo-total">
             <h3>Saldo Atual</h3>
             <p id="card-saldo" class="valor-dinamico" data-valor="0.00">R$ 0,00</p>
-            <div class="info-subtil-container"> <!-- SÓ SOBROU A MEDIA -->
+            <div class="info-subtil-container">
                 <div class="previsao-texto"><strong>Média/Dia:</strong> <span class="valor-dinamico" id="previsao-valor" data-valor="0.00">R$ 0,00</span></div>
             </div>
         </div>
     </div>
-
     <div class="chat-input-area">
-        <div id="alerta" class="alerta-temporario">Salvo! 📁</div>
         <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: reserva 200 ou gasolina 50" onkeypress="verificarTecla(event)">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
@@ -104,8 +103,51 @@
     <div class="secao-conteudo" id="lista-transacoes-container"></div>
 </div>
 
-<div class="app-view" id="view-graficos"><div class="secao-conteudo"><h4>Gráficos em breve</h4></div></div>
-<div class="app-view" id="view-config"><div class="secao-conteudo"><button onclick="resetarAplicativoTotal()">🗑️ Limpar Tudo</button></div></div>
+<!-- GRAFICOS VOLTOU -->
+<div class="app-view" id="view-graficos">
+    <div class="secao-conteudo">
+        <h4>Comparativo do Mês</h4>
+        <div class="colunas-container">
+            <div class="coluna-vertical-bloco">
+                <span class="coluna-vertical-valor valor-dinamico" id="v-val-contas" data-valor="0.00">R$ 0,00</span>
+                <div class="coluna-vertical-barra" id="v-bar-contas" style="background: var(--saida);"></div>
+                <span class="coluna-vertical-rotulo">Saídas</span>
+            </div>
+            <div class="coluna-vertical-bloco">
+                <span class="coluna-vertical-valor valor-dinamico" id="v-val-cartoes" data-valor="0.00">R$ 0,00</span>
+                <div class="coluna-vertical-barra" id="v-bar-cartoes" style="background: var(--cartao);"></div>
+                <span class="coluna-vertical-rotulo">Cartões</span>
+            </div>
+            <div class="coluna-vertical-bloco">
+                <span class="coluna-vertical-valor valor-dinamico" id="v-val-reserva" data-valor="0.00">R$ 0,00</span>
+                <div class="coluna-vertical-barra" id="v-bar-reserva" style="background: var(--reserva-cor);"></div>
+                <span class="coluna-vertical-rotulo">Reserva</span>
+            </div>
+        </div>
+    </div>
+    <div class="secao-conteudo">
+        <h4>Proporção Ganho vs Gasto</h4>
+        <div class="donut-chart" id="grafico-pizza-elemento" onclick="alternarModoRosca()">
+            <div class="donut-hole"><span id="pizza-perc">0%</span><span id="pizza-rotulo">gasto</span></div>
+        </div>
+    </div>
+    <div class="secao-conteudo">
+        <h4>Maiores Gastos do Mês</h4>
+        <div id="grafico-barras-horizontais"></div>
+    </div>
+</div>
+
+<!-- CONFIG VOLTOU -->
+<div class="app-view" id="view-config">
+    <div class="secao-conteudo">
+        <h4 style="margin-bottom:12px;">Gerenciamento de Dados</h4>
+        <button class="config-btn-bloco" onclick="exportarBackup()">📥 Exportar Banco de Dados (JSON)</button>
+        <button class="config-btn-bloco" onclick="document.getElementById('input-file-backup').click()">📤 Importar Banco de Dados (JSON)</button>
+        <input type="file" id="input-file-backup" accept=".json" style="display: none;" onchange="importarBackup(event)">
+        <h4 style="margin-top:24px; margin-bottom:12px; color:var(--saida);">Ações Críticas</h4>
+        <button class="config-btn-bloco" style="color:var(--saida); border-color: var(--saida);" onclick="resetarAplicativoTotal()">🗑️ Limpar Tudo Permanentemente</button>
+    </div>
+</div>
 
 <div class="menu-rodape-wrapper">
     <div class="menu-rodape">
@@ -117,17 +159,8 @@
 </div>
 </div>
 
-<div class="modal-overlay" id="modal-edicao">
-    <div class="modal-container">
-        <div>Editar</div>
-        <input type="text" id="modal-desc"><input type="number" id="modal-valor">
-        <select id="modal-tipo"><option value="entrada">Entrada</option><option value="saida">Saída</option><option value="cartao">Cartão</option><option value="reserva">Reserva</option></select>
-        <button onclick="acaoSalvar()">Salvar</button><button onclick="fecharModal()">Cancelar</button>
-    </div>
-</div>
-
 <script>
-    let transacoes = [], idEdicaoAtual = null, saldosOcultos = false;
+    let transacoes = [], saldosOcultos = false, modoGraficoRosca = 0;
     let temasDisponiveis = ['padrao', 'escuro']; let temaAtualIndex = 0;
     const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     const obterId = id => document.getElementById(id);
@@ -160,9 +193,12 @@
         atualizarAplicativo(); input.value = '';
     }
 
+    function alternarModoRosca() { modoGraficoRosca = (modoGraficoRosca + 1) % 3; atualizarAplicativo(); }
+
     function atualizarAplicativo() {
-        let ent = 0, sai = 0, car = 0, res = 0;
+        let ent = 0, sai = 0, car = 0, res = 0, fMes = obterId('filtro-mes').value;
         transacoes.forEach(t => {
+            if (fMes!== 'todos' && (t.mes!= fMes.split('-')[0] || t.ano!= fMes.split('-')[1])) return;
             if(t.tipo === 'entrada') ent += t.valor;
             else if(t.tipo === 'saida') sai += t.valor;
             else if(t.tipo === 'cartao') car += t.valor;
@@ -175,13 +211,13 @@
         obterId('card-cartao').setAttribute('data-valor', car.toFixed(2));
         obterId('card-reserva').setAttribute('data-valor', res.toFixed(2));
         obterId('card-saldo').setAttribute('data-valor', saldo.toFixed(2));
-        obterId('previsao-valor').setAttribute('data-valor', (gastos / 30).toFixed(2)); // SÓ MEDIA/DIA
+        obterId('previsao-valor').setAttribute('data-valor', (gastos / 30).toFixed(2));
 
         document.querySelectorAll('.valor-dinamico').forEach(el => {
             const v = parseFloat(el.getAttribute('data-valor')).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             el.innerText = saldosOcultos? "R$ ••••" : `R$ ${v}`;
         });
-        renderizarHistorico();
+        renderizarHistorico(); renderizarGraficos(ent, gastos, sai, car, res);
     }
 
     function renderizarHistorico() {
@@ -194,11 +230,37 @@
         });
     }
 
+    function renderizarGraficos(receitas, totalGastos, saídas, cartões, valorReserva) {
+        const maxEixoV = Math.max(saídas, cartões, valorReserva, 100);
+        obterId('v-val-contas').setAttribute('data-valor', saídas.toFixed(2));
+        obterId('v-val-cartoes').setAttribute('data-valor', cartões.toFixed(2));
+        obterId('v-val-reserva').setAttribute('data-valor', valorReserva.toFixed(2));
+        obterId('v-bar-contas').style.height = `${Math.max((saídas / maxEixoV) * 100, 5)}%`;
+        obterId('v-bar-cartoes').style.height = `${Math.max((cartões / maxEixoV) * 100, 5)}%`;
+        obterId('v-bar-reserva').style.height = `${Math.max((valorReserva / maxEixoV) * 100, 5)}%`;
+
+        const totalFluxo = receitas + totalGastos;
+        const percGasto = totalFluxo > 0? Math.round((totalGastos / totalFluxo) * 100) : 0;
+        obterId('pizza-perc').innerText = `${percGasto}%`;
+        obterId('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
+
+        const boxBarras = obterId('grafico-barras-horizontais'); boxBarras.innerHTML = '';
+        let despesasOrdenadas = transacoes.filter(t => t.tipo === 'saida' || t.tipo === 'cartao' || t.tipo === 'reserva').sort((a,b) => b.valor - a.valor).slice(0, 5);
+        const maiorGastoUnico = despesasOrdenadas.length > 0? despesasOrdenadas[0].valor : 1;
+        despesasOrdenadas.forEach(d => {
+            let pBarra = (d.valor / maiorGastoUnico) * 100;
+            let linha = document.createElement('div'); linha.className = 'barra-horizontal-linha';
+            linha.innerHTML = `<div class="barra-horizontal-info"><span>${d.descricao}</span><span>R$ ${d.valor.toFixed(2)}</span></div><div class="barra-horizontal-bg"><div class="barra-horizontal-preenchimento" style="width: ${pBarra}%; background:${d.tipo=='cartao'?'var(--cartao)':d.tipo=='reserva'?'var(--reserva-cor)':'var(--saida)'}"></div></div>`;
+            boxBarras.appendChild(linha);
+        });
+    }
+
     function alternarVisibilidade() { saldosOcultos =!saldosOcultos; atualizarAplicativo(); }
     function verificarTecla(e) { if (e.key === 'Enter') processarComando(); }
-    function acaoSalvar() { fecharModal(); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); }
-    function fecharModal() { obterId('modal-edicao').style.display = 'none'; }
+    function alternarTema() { temaAtualIndex = (temaAtualIndex + 1) % temasDisponiveis.length; document.body.className = temaAtualIndex === 1? 'theme-escuro' : ''; }
     function resetarAplicativoTotal() { if (confirm("Limpar tudo?")) { transacoes = []; localStorage.setItem('saldo_transacoes', '[]'); atualizarAplicativo(); } }
+    function exportarBackup() { const dl = document.createElement('a'); dl.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transacoes))); dl.setAttribute("download", `backup.json`); dl.click(); }
+    function importarBackup(e) { const f = e.target.files[0]; const r = new FileReader(); r.onload = ev => { transacoes = JSON.parse(ev.target.result); localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes)); atualizarAplicativo(); }; r.readAsText(f); }
 
     window.onload = () => {
         const s = localStorage.getItem('saldo_transacoes'); if (s) transacoes = JSON.parse(s);
