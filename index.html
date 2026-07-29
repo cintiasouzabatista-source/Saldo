@@ -188,7 +188,7 @@
         </div>
         <div class="form-grupo">
             <label>Conta / Cartão / Origem</label>
-            <input type="text" id="edit-origem" placeholder="Ex: Nubank, Itaú, Dinheiro...">
+            <input type="text" id="edit-origem" placeholder="Ex: Nubank, Itaú, Mercado Pago, Bradesco, PicPay,Dinheiro...">
         </div>
         <div class="modal-botoes">
             <button class="btn-acao-modal btn-excluir" onclick="excluirTransacaoModal()">Excluir</button>
@@ -325,6 +325,9 @@ function mostrarPerguntaConta(id, tipo) {
         <button class="btn-resposta" onclick="responderConta('${id}','Nubank')">Nubank</button>
         <button class="btn-resposta" onclick="responderConta('${id}','Itaú')">Itaú</button>
         <button class="btn-resposta" onclick="responderConta('${id}','Inter')">Inter</button>
+         <button class="btn-resposta" onclick="responderConta('${id}','Mercado Pago')">MP</button>
+          <button class="btn-resposta" onclick="responderConta('${id}','Bradesco')">Bradesco</button>
+           <button class="btn-resposta" onclick="responderConta('${id}','Pic Pay')">Pic Pay</button>
         <button class="btn-resposta" onclick="responderConta('${id}','Dinheiro')">Dinheiro</button>
     `;
     modal.style.display = 'flex';
