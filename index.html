@@ -617,7 +617,7 @@ function renderizarHistorico(listaTransacoes) {
         let cls = t.tipo === 'entrada' ? 'cor-entrada' : t.tipo === 'cartao' ? 'cor-cartao' : t.tipo === 'reserva' ? 'cor-reserva' : 'cor-saida';
         let origem = t.cartao || t.conta || '';
         const parcelaInfo = t.totalParcelas > 1 ? ` · ${t.parcela}/${t.totalParcelas}` : '';
-        l.innerHTML += `<div class="item-transacao" style="cursor:pointer;" onclick="abrirModalEditar(\"${t.id}\")">
+        l.innerHTML += `<div class="item-transacao" style="cursor:pointer;" onclick="abrirModalEditar('${String(t.id).replace(/'/g, "\\'")}')">
             <div class="linha-1"><span>${t.descricao}</span><span class="${cls}">${t.tipo === 'entrada' ? '+' : '-'} R$ ${t.valor.toFixed(2)}</span></div>
             <div class="linha-2">${t.dia} ${nomesMeses[t.mes]}/${t.ano}${parcelaInfo} - ${origem}</div>
         </div>`;
