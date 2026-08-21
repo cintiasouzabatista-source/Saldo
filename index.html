@@ -41,9 +41,21 @@
 .chat-input { flex: 1; border: none; background: none; outline: none; color: var(--texto-principal); }
 .btn-enviar { background: var(--header-bg); color: var(--header-txt); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
 .menu-rodape-wrapper { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--bg-container); padding: 10px 16px; border-top: 1px solid var(--borda); z-index: 99; }
-.menu-rodape { display: grid; grid-template-columns: repeat(4, 1fr); }
+.menu-rodape { display: grid; grid-template-columns: repeat(5, 1fr); }
 .tab-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--texto-secundario); font-size: 0.75rem; cursor: pointer; }
 .tab-item.ativo { color: var(--header-bg); font-weight: 700; }
+.beneficio-resumo { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:16px; }
+.beneficio-card { background:var(--bg-container); padding:14px; border:1px solid var(--borda); border-radius:var(--radius); }
+.beneficio-card.clicavel { cursor:pointer; transition:transform .12s, border-color .12s, box-shadow .12s; }
+.beneficio-card.clicavel:hover { transform:translateY(-1px); }
+.beneficio-card.clicavel.selecionado { border-color:var(--header-bg); box-shadow:0 0 0 2px color-mix(in srgb, var(--header-bg) 15%, transparent); }
+.beneficio-titulo { display:flex; justify-content:space-between; align-items:center; font-weight:700; margin-bottom:8px; }
+.beneficio-seta { font-size:1.3rem; color:var(--texto-secundario); }
+.beneficio-valor { font-size:1.45rem; font-weight:700; margin-bottom:6px; }
+.beneficio-card .linha-2 { line-height:1.5; }
+.beneficio-acoes { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:16px; }
+.btn-beneficio { padding:12px; border-radius:var(--radius); border:1px solid var(--borda); background:var(--bg-container); color:var(--texto-principal); cursor:pointer; font-weight:600; }
+.badge-beneficio { display:inline-block; font-size:.7rem; padding:3px 7px; border-radius:10px; background:var(--bg-body); border:1px solid var(--borda); margin-left:5px; }
 .item-transacao { padding: 10px 5px; border-bottom: 1px solid var(--borda); cursor: pointer; transition: background 0.1s; }
 .item-transacao:hover { background: var(--bg-body); }
 .linha-1 { display: flex; justify-content: space-between; }
@@ -103,11 +115,64 @@
 </div>
 
 <div class="app-view" id="view-historico">
-    <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
-        <option value="todos">Todos os Tipos</option><option value="entrada">Entradas</option>
-        <option value="saida">Saídas</option><option value="cartao">Cartão</option><option value="reserva">Reserva</option>
-    </select>
-    <div class="secao-conteudo" id="lista-transacoes-container"></div>
+    <div class="secao-conteudo">
+        <div class="linha-1" style="cursor:pointer;" onclick="alternarHistorico('despesas')">
+            <h4 style="margin:0;">Histórico de despesas</h4><span id="seta-historico-despesas">▸</span>
+        </div>
+        <div id="painel-historico-despesas" style="display:none;margin-top:12px;">
+            <label class="linha-2">Período</label>
+            <select id="filtro-periodo-despesas" class="filtro-select" onchange="atualizarAplicativo()">
+                <option value="mes" selected>Este mês</option>
+                <option value="hoje">Hoje</option><option value="7dias">Últimos 7 dias</option><option value="mesAnterior">Mês anterior</option><option value="personalizado">Personalizado</option>
+            </select>
+            <div id="datas-personalizadas-despesas" style="display:none;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:10px;">
+                <input type="date" id="data-inicio-despesas" onchange="atualizarAplicativo()">
+                <input type="date" id="data-fim-despesas" onchange="atualizarAplicativo()">
+            </div>
+            <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
+                <option value="todos">Todos os Tipos</option><option value="entrada">Entradas</option>
+                <option value="saida">Saídas</option><option value="cartao">Cartão</option><option value="reserva">Reserva</option>
+            </select>
+            <div id="lista-transacoes-container"></div>
+        </div>
+    </div>
+</div>
+
+<div class="app-view" id="view-beneficios">
+    <div class="beneficio-resumo" id="resumo-por-beneficio">
+        <div class="beneficio-card clicavel" data-beneficio="VR" onclick="selecionarBeneficio('VR')"><div class="beneficio-titulo"><span>🍽️ VR</span><span class="beneficio-seta">›</span></div><div class="beneficio-valor cor-entrada" id="saldo-VR">R$ 0,00</div><div class="linha-2"><span>Recebido <b id="recebido-VR">R$ 0,00</b></span> · <span>Utilizado <b id="utilizado-VR">R$ 0,00</b></span></div></div>
+        <div class="beneficio-card clicavel" data-beneficio="VA" onclick="selecionarBeneficio('VA')"><div class="beneficio-titulo"><span>🛒 VA</span><span class="beneficio-seta">›</span></div><div class="beneficio-valor cor-entrada" id="saldo-VA">R$ 0,00</div><div class="linha-2"><span>Recebido <b id="recebido-VA">R$ 0,00</b></span> · <span>Utilizado <b id="utilizado-VA">R$ 0,00</b></span></div></div>
+        <div class="beneficio-card clicavel" data-beneficio="Combustível" onclick="selecionarBeneficio('Combustível')"><div class="beneficio-titulo"><span>⛽ Combustível</span><span class="beneficio-seta">›</span></div><div class="beneficio-valor cor-entrada" id="saldo-Combustível">R$ 0,00</div><div class="linha-2"><span>Recebido <b id="recebido-Combustível">R$ 0,00</b></span> · <span>Utilizado <b id="utilizado-Combustível">R$ 0,00</b></span></div></div>
+        <div class="beneficio-card clicavel" data-beneficio="Outros" onclick="selecionarBeneficio('Outros')"><div class="beneficio-titulo"><span>🎁 Outros</span><span class="beneficio-seta">›</span></div><div class="beneficio-valor cor-entrada" id="saldo-Outros">R$ 0,00</div><div class="linha-2"><span>Recebido <b id="recebido-Outros">R$ 0,00</b></span> · <span>Utilizado <b id="utilizado-Outros">R$ 0,00</b></span></div></div>
+    </div>
+    <div class="secao-conteudo" id="detalhe-beneficio" style="display:none;">
+        <div class="linha-1"><h4 id="titulo-detalhe-beneficio">Detalhes</h4><button class="btn-beneficio" style="padding:6px 10px;" onclick="selecionarBeneficio('todos')">Todos</button></div>
+        <div class="linha-2" id="subtitulo-detalhe-beneficio" style="margin-top:6px;"></div>
+    </div>
+    <div class="beneficio-acoes">
+        <button class="btn-beneficio" onclick="abrirModalNovoBeneficio('entrada')">➕ Receber</button>
+        <button class="btn-beneficio" onclick="abrirModalNovoBeneficio('saida')">➖ Utilizar</button>
+    </div>
+    <div class="secao-conteudo">
+        <div class="linha-1" style="cursor:pointer;" onclick="alternarHistorico('beneficios')">
+            <h4 style="margin:0;">Histórico de Benefícios</h4><span id="seta-historico-beneficios">▸</span>
+        </div>
+        <div id="painel-historico-beneficios" style="display:none;margin-top:12px;">
+            <label class="linha-2">Período</label>
+            <select id="filtro-periodo-beneficios" class="filtro-select" onchange="atualizarBeneficios()">
+                <option value="mes" selected>Este mês</option>
+                <option value="hoje">Hoje</option><option value="7dias">Últimos 7 dias</option><option value="mesAnterior">Mês anterior</option><option value="personalizado">Personalizado</option>
+            </select>
+            <div id="datas-personalizadas-beneficios" style="display:none;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:10px;">
+                <input type="date" id="data-inicio-beneficios" onchange="atualizarBeneficios()">
+                <input type="date" id="data-fim-beneficios" onchange="atualizarBeneficios()">
+            </div>
+            <select id="filtro-beneficio" class="filtro-select" onchange="atualizarBeneficios()">
+                <option value="todos">Todos</option><option value="VR">VR</option><option value="VA">VA</option><option value="Combustível">Combustível</option><option value="Outros">Outros</option>
+            </select>
+            <div id="lista-beneficios"></div>
+        </div>
+    </div>
 </div>
 
 <div class="app-view" id="view-graficos">
@@ -139,6 +204,7 @@
     <div class="menu-rodape">
         <button class="tab-item ativo" onclick="navegarPara('inicio')"><span>💬</span><span>Conversa</span></button>
         <button class="tab-item" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
+        <button class="tab-item" onclick="navegarPara('beneficios')"><span>🎁</span><span>Benefícios</span></button>
         <button class="tab-item" onclick="navegarPara('graficos')"><span>📊</span><span>Status</span></button>
         <button class="tab-item" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
     </div>
@@ -161,6 +227,19 @@
         <div class="modal-botoes" style="margin-top: 16px;">
             <button class="btn-acao-modal btn-cancelar" onclick="fecharModalSeletorMes()">Fechar</button>
         </div>
+    </div>
+</div>
+
+<!-- MODAL BENEFÍCIO -->
+<div class="modal-overlay" id="modal-beneficio">
+    <div class="modal-container">
+        <h3 id="titulo-modal-beneficio">Lançar Benefício</h3>
+        <input type="hidden" id="beneficio-id">
+        <input type="hidden" id="beneficio-operacao">
+        <div class="form-grupo" style="margin-top:12px;"><label>Benefício</label><select id="beneficio-tipo"><option value="VR">VR</option><option value="VA">VA</option><option value="Combustível">Combustível</option><option value="Outros">Outros</option></select></div>
+        <div class="form-grupo"><label>Valor (R$)</label><input type="number" step="0.01" id="beneficio-valor"></div>
+        <div class="form-grupo"><label>Descrição</label><input type="text" id="beneficio-desc" placeholder="Ex: crédito mensal, abastecimento..."></div>
+        <div class="modal-botoes"><button class="btn-acao-modal btn-excluir" id="btn-excluir-beneficio-modal" style="display:none;" onclick="excluirBeneficioModal()">Excluir</button><button class="btn-acao-modal btn-cancelar" onclick="fecharModalBeneficio()">Cancelar</button><button class="btn-acao-modal btn-salvar" onclick="salvarBeneficioModal()">Salvar</button></div>
     </div>
 </div>
 
@@ -199,7 +278,7 @@
 </div>
 
 <script>
-let transacoes = [], saldosOcultos = false, idPendente = null, tipoPendente = null;
+let transacoes = [], beneficios = [], saldosOcultos = false, idPendente = null, tipoPendente = null, aguardandoParcelas = false;
 let anoAtualGlobal = new Date().getFullYear();
 let mesAtualGlobal = new Date().getMonth();
 let temasDisponiveis = ['padrao', 'escuro', 'white', 'vintage']; let temaAtualIndex = 0;
@@ -210,7 +289,9 @@ function navegarPara(idAba) {
     document.querySelectorAll('.app-view').forEach(v => v.classList.remove('ativa'));
     document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('ativo'));
     document.getElementById(`view-${idAba}`).classList.add('ativa');
-    event.target.closest('.tab-item').classList.add('ativo');
+    const alvo = (typeof event !== 'undefined' && event && event.target) ? event.target.closest('.tab-item') : null;
+    if (alvo) alvo.classList.add('ativo');
+    else document.querySelector(`.tab-item[onclick="navegarPara('${idAba}')"]`)?.classList.add('ativo');
     atualizarAplicativo();
 }
 
@@ -264,19 +345,35 @@ function selecionarMesAno(m, ano) {
 
 document.getElementById('campo-texto').addEventListener('keypress', function(e) { if (e.key === 'Enter') processarComando(); });
 
+function detectarBeneficio(txt) {
+    if (/\b(vr|vale refeição|vale-refeição)\b/.test(txt)) return 'VR';
+    if (/\b(va|vale alimentação|vale-alimentacao|vale-alimentação)\b/.test(txt)) return 'VA';
+    if (/\b(combust[ií]vel|gasolina|abastec(?:i|e|ei|imento))\b/.test(txt) && /\b(benef[ií]cio|vale|recebi|gastei|usei|abasteci|cr[eé]dito)\b/.test(txt)) return 'Combustível';
+    if (/\b(outros|outro benefício|outro beneficio)\b/.test(txt)) return 'Outros';
+    return null;
+}
+
 function processarComando() {
     const input = document.getElementById('campo-texto'); const txt = input.value.trim().toLowerCase();
     const num = txt.match(/\d+([.,]\d+)?/g); if (!num) return alert("Digite um valor");
     const valor = parseFloat(num[0].replace(',', '.'));
-    
-    let tipo = 'saida';
-    if (/\b(reserva|guardar)\b/.test(txt)) {
-        tipo = 'reserva';
-    } else if (/\b(cartao|cartão|credito)\b/.test(txt)) {
-        tipo = 'cartao';
-    } else if (/\b(recebi|ganhei|salario|salário|pix|deposito|depósito|renda)\b/.test(txt)) {
-        tipo = 'entrada';
+    const beneficio = detectarBeneficio(txt);
+
+    if (beneficio) {
+        let operacao = /\b(gastei|usei|utilizei|pagamento|paguei|abasteci|consumi|saiu|sai)\b/.test(txt) ? 'saida' : 'entrada';
+        if (/\b(n[aã]o|sem)\b/.test(txt) && /\bbenef[ií]cio\b/.test(txt)) operacao = 'saida';
+        const desc = input.value.replace(num[0], '').replace(/\b(vr|va|combust[ií]vel|gasolina|vale|benef[ií]cio|recebi|gastei|usei|utilizei|paguei|abasteci|abastecimento|de|do|da|no|na|em|com)\b/gi, ' ').replace(/\s+/g,' ').trim() || (operacao === 'entrada' ? 'Crédito de benefício' : 'Uso de benefício');
+        beneficios.unshift({ id: Date.now(), tipo: beneficio, operacao, valor, descricao: desc, mes: mesAtualGlobal, ano: anoAtualGlobal, dia: new Date().getDate() });
+        salvarBeneficios();
+        input.value = '';
+        navegarPara('beneficios');
+        return;
     }
+
+    let tipo = 'saida';
+    if (/\b(reserva|guardar)\b/.test(txt)) tipo = 'reserva';
+    else if (/\b(cartao|cartão|credito)\b/.test(txt)) tipo = 'cartao';
+    else if (/\b(recebi|ganhei|salario|salário|pix|deposito|depósito|renda)\b/.test(txt)) tipo = 'entrada';
 
     let conta = "", cartao = "";
     if(txt.includes('nubank')) { if(tipo==='cartao') cartao = "Nubank"; else conta = "Nubank"; }
@@ -284,33 +381,85 @@ function processarComando() {
     if(txt.includes('inter')) { if(tipo==='cartao') cartao = "Inter"; else conta = "Inter"; }
     if(txt.includes('mp')) { if(tipo==='cartao') cartao = "Mercado Pago"; else conta = "Mercado Pago"; }
 
-    let desc = input.value.replace(num[0], '').replace(/no|na|do|da/gi, '').trim() || "Lançamento";
+    let desc = input.value.replace(num[0], '').replace(/\b\d{1,2}\s*x\b/gi, '').replace(/no|na|do|da/gi, '').trim() || "Lançamento";
     const novoId = Date.now();
-    
-    // Insere no mês e ano que estão selecionados atualmente na tela
-    transacoes.unshift({ 
-        id: novoId, 
-        descricao: desc, 
-        valor: valor, 
-        tipo, 
-        conta, 
-        cartao, 
-        mes: mesAtualGlobal, 
-        ano: anoAtualGlobal, 
-        dia: new Date().getDate() 
-    });
-
-    if((tipo === 'saida' || tipo === 'cartao' || tipo === 'reserva') && !cartao && !conta){
+    transacoes.unshift({ id: novoId, descricao: desc, valor: valor, tipo, conta, cartao, mes: mesAtualGlobal, ano: anoAtualGlobal, dia: new Date().getDate() });
+    // Cartão sempre passa pelo fluxo de cartão -> parcelas. Se o cartão já foi informado no texto, pulamos apenas a pergunta do cartão.
+    if(tipo === 'cartao') {
         idPendente = novoId; tipoPendente = tipo;
-        mostrarPerguntaConta(novoId, tipo);
-    } else if(tipo === 'entrada' && !conta) {
-        idPendente = novoId; tipoPendente = tipo;
-        mostrarPerguntaConta(novoId, tipo);
-    } else {
-        salvarTudo();
+        if(cartao) mostrarPerguntaParcelas(novoId);
+        else mostrarPerguntaConta(novoId, tipo);
     }
+    else if((tipo === 'saida' || tipo === 'reserva') && !cartao && !conta){ idPendente = novoId; tipoPendente = tipo; mostrarPerguntaConta(novoId, tipo); }
+    else if(tipo === 'entrada' && !conta){ idPendente = novoId; tipoPendente = tipo; mostrarPerguntaConta(novoId, tipo); }
+    else salvarTudo();
     input.value = '';
 }
+
+function salvarBeneficios() { localStorage.setItem('saldo_beneficios', JSON.stringify(beneficios)); atualizarBeneficios(); }
+function dataLancamento(x) { return new Date(Number(x.ano), Number(x.mes), Number(x.dia || 1)); }
+function periodoSelecionado(id) {
+    const v = document.getElementById(id).value; if (!v) return null;
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    if (v === 'hoje') return [hoje, hoje];
+    if (v === '7dias') { const ini=new Date(hoje); ini.setDate(ini.getDate()-6); return [ini, hoje]; }
+    if (v === 'mes') return [new Date(hoje.getFullYear(),hoje.getMonth(),1), new Date(hoje.getFullYear(),hoje.getMonth()+1,0)];
+    if (v === 'mesAnterior') return [new Date(hoje.getFullYear(),hoje.getMonth()-1,1), new Date(hoje.getFullYear(),hoje.getMonth(),0)];
+    const ini=document.getElementById(id.includes('beneficios')?'data-inicio-beneficios':'data-inicio-despesas').value;
+    const fim=document.getElementById(id.includes('beneficios')?'data-fim-beneficios':'data-fim-despesas').value;
+    return ini && fim ? [new Date(ini+'T00:00:00'), new Date(fim+'T23:59:59')] : null;
+}
+function obterBeneficiosFiltrados() { const p=periodoSelecionado('filtro-periodo-beneficios'); return p ? beneficios.filter(b=>{const d=dataLancamento(b); return d>=p[0]&&d<=p[1];}) : []; }
+function alternarHistorico(tipo) { const painel=document.getElementById(`painel-historico-${tipo}`); const seta=document.getElementById(`seta-historico-${tipo}`); const aberto=painel.style.display!=='none'; painel.style.display=aberto?'none':'block'; seta.innerText=aberto?'▸':'▾'; }
+function selecionarBeneficio(tipo) {
+    const filtro = document.getElementById('filtro-beneficio');
+    const detalhe = document.getElementById('detalhe-beneficio');
+    document.querySelectorAll('.beneficio-card.clicavel').forEach(c => c.classList.toggle('selecionado', c.dataset.beneficio === tipo));
+    if (tipo === 'todos') { filtro.value = 'todos'; detalhe.style.display = 'none'; }
+    else {
+        filtro.value = tipo; detalhe.style.display = 'block';
+        document.getElementById('titulo-detalhe-beneficio').innerText = `Detalhes — ${tipo}`;
+        const t = calcularTotaisBeneficio(tipo);
+        document.getElementById('subtitulo-detalhe-beneficio').innerText = `Saldo R$ ${formatarMoeda(t[0]-t[1])} · Recebido R$ ${formatarMoeda(t[0])} · Utilizado R$ ${formatarMoeda(t[1])}`;
+    }
+    atualizarBeneficios();
+}
+function calcularTotaisBeneficio(tipo) {
+    const totais=[0,0];
+    const p=periodoSelecionado('filtro-periodo-beneficios');
+    const base=p ? obterBeneficiosFiltrados() : beneficios.filter(b => b.mes === mesAtualGlobal && b.ano === anoAtualGlobal);
+    base.filter(b=>b.tipo===tipo).forEach(b=>{ totais[b.operacao==='entrada'?0:1]+=Number(b.valor)||0; });
+    return totais;
+}
+function formatarMoeda(v) { return Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function atualizarBeneficios() {
+    const sel=document.getElementById('filtro-periodo-beneficios'); const datas=document.getElementById('datas-personalizadas-beneficios'); datas.style.display=sel.value==='personalizado'?'grid':'none';
+    const lista = obterBeneficiosFiltrados();
+    const resumo = beneficios.filter(b => b.mes === mesAtualGlobal && b.ano === anoAtualGlobal);
+    const tipos = ['VR','VA','Combustível','Outros'];
+    const totais = { 'VR': [0,0], 'VA': [0,0], 'Combustível': [0,0], 'Outros': [0,0] };
+    resumo.forEach(b => { const i=b.operacao==='entrada'?0:1; if(totais[b.tipo]) totais[b.tipo][i]+=Number(b.valor)||0; });
+    tipos.forEach(tipo => {
+        const [rec,uso]=totais[tipo];
+        document.getElementById(`saldo-${tipo}`).innerText=`R$ ${formatarMoeda(rec-uso)}`;
+        document.getElementById(`recebido-${tipo}`).innerText=`R$ ${formatarMoeda(rec)}`;
+        document.getElementById(`utilizado-${tipo}`).innerText=`R$ ${formatarMoeda(uso)}`;
+    });
+    const filtro=document.getElementById('filtro-beneficio').value;
+    const filtradas=lista.filter(b=>filtro==='todos'||b.tipo===filtro);
+    const l=document.getElementById('lista-beneficios'); l.innerHTML='';
+    if(!filtradas.length){ l.innerHTML='<div style="text-align:center;color:var(--texto-secundario);padding:20px;">Nenhum lançamento de benefício neste período.</div>'; return; }
+    filtradas.forEach(b=>{ l.innerHTML += `<div class="item-transacao" style="cursor:pointer;" onclick="abrirModalEditarBeneficio(${b.id})">
+        <div class="linha-1"><span>${b.descricao} <span class="badge-beneficio">${b.tipo}</span></span><span class="${b.operacao==='entrada'?'cor-entrada':'cor-saida'}">${b.operacao==='entrada'?'+':'-'} R$ ${b.valor.toFixed(2)}</span></div>
+        <div class="linha-2">${b.dia} ${nomesMeses[b.mes]}/${b.ano}</div>
+    </div>`; });
+}
+function abrirModalNovoBeneficio(op){ document.getElementById('beneficio-id').value=''; document.getElementById('btn-excluir-beneficio-modal').style.display='none'; document.getElementById('beneficio-operacao').value=op; document.getElementById('titulo-modal-beneficio').innerText=op==='entrada'?'Receber Benefício':'Utilizar Benefício'; document.getElementById('beneficio-valor').value=''; document.getElementById('beneficio-desc').value=''; document.getElementById('modal-beneficio').style.display='flex'; }
+function abrirModalEditarBeneficio(id){ const b=beneficios.find(x=>x.id==id); if(!b)return; document.getElementById('btn-excluir-beneficio-modal').style.display='block'; document.getElementById('beneficio-id').value=b.id; document.getElementById('beneficio-operacao').value=b.operacao; document.getElementById('titulo-modal-beneficio').innerText='Editar Benefício'; document.getElementById('beneficio-tipo').value=b.tipo; document.getElementById('beneficio-valor').value=b.valor; document.getElementById('beneficio-desc').value=b.descricao; document.getElementById('modal-beneficio').style.display='flex'; }
+function fecharModalBeneficio(){document.getElementById('modal-beneficio').style.display='none';}
+function salvarBeneficioModal(){ const id=document.getElementById('beneficio-id').value; const op=document.getElementById('beneficio-operacao').value; const tipo=document.getElementById('beneficio-tipo').value; const valor=parseFloat(document.getElementById('beneficio-valor').value)||0; if(valor<=0)return alert('Informe um valor válido.'); const desc=document.getElementById('beneficio-desc').value|| (op==='entrada'?'Crédito de benefício':'Uso de benefício'); if(id){const b=beneficios.find(x=>x.id==id); if(b){b.tipo=tipo;b.operacao=op;b.valor=valor;b.descricao=desc;}} else beneficios.unshift({id:Date.now(),tipo,operacao:op,valor,descricao:desc,mes:mesAtualGlobal,ano:anoAtualGlobal,dia:new Date().getDate()}); fecharModalBeneficio(); salvarBeneficios();}
+function excluirBeneficio(id){ if(confirm('Excluir este benefício?')){beneficios=beneficios.filter(b=>b.id!=id);salvarBeneficios();} }
+function excluirBeneficioModal(){ const id=document.getElementById('beneficio-id').value; if(id) { excluirBeneficio(id); fecharModalBeneficio(); } }
 
 function mostrarPerguntaConta(id, tipo) {
     const modal = document.getElementById('modal-pergunta');
@@ -336,10 +485,72 @@ function mostrarPerguntaConta(id, tipo) {
 function responderConta(id, valor) {
     const t = transacoes.find(i => i.id == id);
     if(t) {
-        if(tipoPendente === 'cartao') t.cartao = valor;
+        if(tipoPendente === 'cartao') {
+            t.cartao = valor;
+            document.getElementById('modal-pergunta').style.display = 'none';
+            mostrarPerguntaParcelas(id);
+            return;
+        }
         else t.conta = valor;
     }
     document.getElementById('modal-pergunta').style.display = 'none'; 
+    salvarTudo();
+}
+
+function mostrarPerguntaParcelas(id) {
+    idPendente = id; aguardandoParcelas = true;
+    const modal = document.getElementById('modal-pergunta');
+    document.getElementById('texto-pergunta').innerText = 'Em quantas vezes foi essa compra?';
+    let html = '';
+    for(let i=1;i<=24;i++) html += `<button class="btn-resposta" onclick="responderParcelas('${id}',${i})">${i}x</button>`;
+    document.getElementById('botoes-pergunta').innerHTML = html;
+    modal.style.display = 'flex';
+}
+
+function responderParcelas(id, quantidade) {
+    const t = transacoes.find(i => i.id == id);
+    if(!t) return;
+    document.getElementById('modal-pergunta').style.display = 'none';
+    aguardandoParcelas = false;
+
+    if(quantidade <= 1) {
+        t.parcela = 1; t.totalParcelas = 1; t.compraParceladaId = null;
+        salvarTudo();
+        return;
+    }
+
+    const totalCentavos = Math.round(Number(t.valor) * 100);
+    const baseCentavos = Math.floor(totalCentavos / quantidade);
+    const resto = totalCentavos - (baseCentavos * quantidade);
+    const compraId = `parc-${Date.now()}`;
+    const dataBase = new Date(Number(t.ano), Number(t.mes), Number(t.dia || 1));
+    const parcelas = [];
+
+    // Remove o lançamento original e substitui pelas parcelas vinculadas.
+    transacoes = transacoes.filter(i => i.id != id);
+    for(let i=1;i<=quantidade;i++) {
+        const d = new Date(dataBase.getFullYear(), dataBase.getMonth() + (i-1), dataBase.getDate());
+        // Se o dia não existir no mês (ex.: 31), usa o último dia daquele mês.
+        if(d.getMonth() !== ((dataBase.getMonth() + (i-1)) % 12 + 12) % 12) {
+            d.setDate(0);
+        }
+        const centavos = baseCentavos + (i <= resto ? 1 : 0);
+        parcelas.push({
+            id: `${compraId}-${i}`,
+            compraParceladaId: compraId,
+            parcela: i,
+            totalParcelas: quantidade,
+            descricao: `${t.descricao} (${i}/${quantidade})`,
+            valor: centavos / 100,
+            tipo: 'cartao',
+            conta: '',
+            cartao: t.cartao || '',
+            mes: d.getMonth(),
+            ano: d.getFullYear(),
+            dia: d.getDate()
+        });
+    }
+    transacoes = parcelas.concat(transacoes);
     salvarTudo();
 }
 
@@ -369,6 +580,7 @@ function atualizarAplicativo() {
     document.getElementById('previsao-valor').innerText = `R$ ${(gastos / 30).toFixed(2)}`;
     renderizarHistorico(transacoesFiltradas); 
     renderizarGraficos(ent, gastos, sai, car, res);
+    atualizarBeneficios();
 }
 
 function renderizarHistorico(listaTransacoes) {
@@ -376,7 +588,10 @@ function renderizarHistorico(listaTransacoes) {
     const l = document.getElementById('lista-transacoes-container'); 
     l.innerHTML = '';
     
-    const filtradas = listaTransacoes.filter(t => tipoFiltro === 'todos' || t.tipo === tipoFiltro);
+    const p=periodoSelecionado('filtro-periodo-despesas');
+    document.getElementById('datas-personalizadas-despesas').style.display=document.getElementById('filtro-periodo-despesas').value==='personalizado'?'grid':'none';
+    const porPeriodo=p ? listaTransacoes.filter(t=>{const d=dataLancamento(t); return d>=p[0]&&d<=p[1];}) : [];
+    const filtradas = porPeriodo.filter(t => tipoFiltro === 'todos' || t.tipo === tipoFiltro);
 
     if (filtradas.length === 0) {
         l.innerHTML = `<div style="text-align:center; color: var(--texto-secundario); padding: 20px;">Nenhuma transação neste período.</div>`;
@@ -386,9 +601,10 @@ function renderizarHistorico(listaTransacoes) {
     filtradas.forEach(t => {
         let cls = t.tipo === 'entrada' ? 'cor-entrada' : t.tipo === 'cartao' ? 'cor-cartao' : t.tipo === 'reserva' ? 'cor-reserva' : 'cor-saida';
         let origem = t.cartao || t.conta || '';
-        l.innerHTML += `<div class="item-transacao" onclick="abrirModalEditar(${t.id})">
+        const parcelaInfo = t.totalParcelas > 1 ? ` · ${t.parcela}/${t.totalParcelas}` : '';
+        l.innerHTML += `<div class="item-transacao" style="cursor:pointer;" onclick="abrirModalEditar(${t.id})">
             <div class="linha-1"><span>${t.descricao}</span><span class="${cls}">${t.tipo === 'entrada' ? '+' : '-'} R$ ${t.valor.toFixed(2)}</span></div>
-            <div class="linha-2">${t.dia} ${nomesMeses[t.mes]}/${t.ano} - ${origem}</div>
+            <div class="linha-2">${t.dia} ${nomesMeses[t.mes]}/${t.ano}${parcelaInfo} - ${origem}</div>
         </div>`;
     });
 }
@@ -428,6 +644,19 @@ function salvarEdicaoModal() {
     salvarTudo();
 }
 
+function excluirTransacaoRapido(id) {
+    const t = transacoes.find(i => i.id == id);
+    if (!t) return;
+    let mensagem = 'Deseja realmente excluir esta transação?';
+    if (t.compraParceladaId && t.totalParcelas > 1) {
+        mensagem = `Excluir somente a parcela ${t.parcela}/${t.totalParcelas}?\n\nPara excluir a compra inteira, abra a edição da parcela e confirme a exclusão em seguida.`;
+    }
+    if (confirm(mensagem)) {
+        transacoes = transacoes.filter(i => i.id != id);
+        salvarTudo();
+    }
+}
+
 function excluirTransacaoModal() {
     if(confirm("Deseja realmente excluir esta transação?")) {
         const id = document.getElementById('edit-id').value;
@@ -462,14 +691,14 @@ function alternarTema() {
 
 function resetarAplicativoTotal() { 
     if (confirm("Limpar tudo?")) { 
-        transacoes = []; 
-        salvarTudo(); 
+        transacoes = []; beneficios = [];
+        salvarTudo(); salvarBeneficios(); 
     } 
 }
 
 function exportarBackup() { 
     const dl = document.createElement('a'); 
-    dl.href = "data:text/json," + encodeURIComponent(JSON.stringify(transacoes)); 
+    dl.href = "data:text/json," + encodeURIComponent(JSON.stringify({ versao: 2, transacoes, beneficios })); 
     dl.download = `backup.json`; 
     dl.click(); 
 }
@@ -477,8 +706,9 @@ function exportarBackup() {
 function importarBackup(e) { 
     const r = new FileReader(); 
     r.onload = ev => { 
-        transacoes = JSON.parse(ev.target.result); 
-        salvarTudo(); 
+        const dados = JSON.parse(ev.target.result);
+        if (Array.isArray(dados)) { transacoes = dados; beneficios = []; } else { transacoes = dados.transacoes || []; beneficios = dados.beneficios || []; }
+        salvarTudo(); salvarBeneficios(); 
     }; 
     r.readAsText(e.target.files[0]); 
 }
