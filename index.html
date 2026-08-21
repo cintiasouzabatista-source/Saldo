@@ -410,7 +410,22 @@ function periodoSelecionado(id) {
     return ini && fim ? [new Date(ini+'T00:00:00'), new Date(fim+'T23:59:59')] : null;
 }
 function obterBeneficiosFiltrados() { const p=periodoSelecionado('filtro-periodo-beneficios'); return p ? beneficios.filter(b=>{const d=dataLancamento(b); return d>=p[0]&&d<=p[1];}) : []; }
-function alternarHistorico(tipo) { const painel=document.getElementById(`painel-historico-${tipo}`); const seta=document.getElementById(`seta-historico-${tipo}`); const aberto=painel.style.display!=='none'; painel.style.display=aberto?'none':'block'; seta.innerText=aberto?'▸':'▾'; }
+function alternarHistorico(tipo) {
+    const painel = document.getElementById(`painel-historico-${tipo}`);
+    const seta = document.getElementById(`seta-historico-${tipo}`);
+    const aberto = painel.style.display !== 'none';
+    painel.style.display = aberto ? 'none' : 'block';
+    seta.innerText = aberto ? '▸' : '▾';
+
+    // Ao abrir o histórico, aplica imediatamente o período padrão (Este mês).
+    // Não depende de o usuário alterar o seletor para disparar o filtro.
+    if (!aberto) {
+        const filtro = document.getElementById(`filtro-periodo-${tipo}`);
+        if (filtro && !filtro.value) filtro.value = 'mes';
+        if (tipo === 'despesas') atualizarAplicativo();
+        if (tipo === 'beneficios') atualizarBeneficios();
+    }
+}
 function selecionarBeneficio(tipo) {
     const filtro = document.getElementById('filtro-beneficio');
     const detalhe = document.getElementById('detalhe-beneficio');
@@ -713,21 +728,19 @@ function importarBackup(e) {
     r.readAsText(e.target.files[0]); 
 }
 
-window.onload = () => { 
+function inicializarFiltrosHistorico() {
+    const fd = document.getElementById('filtro-periodo-despesas');
+    const fb = document.getElementById('filtro-periodo-beneficios');
+    if (fd) fd.value = 'mes';
+    if (fb) fb.value = 'mes';
+}
+
+window.onload = () => {
+    inicializarFiltrosHistorico(); 
     const s = localStorage.getItem('saldo_transacoes'); 
     if (s) transacoes = JSON.parse(s); 
     atualizarAplicativo(); 
 };
-</script>
-<script>
-// Atualiza o Service Worker no celular e evita ficar preso em uma versão antiga.
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
-      .then(reg => { reg.update(); })
-      .catch(err => console.warn('Service Worker:', err));
-  });
-}
 </script>
 </body>
 </html>
