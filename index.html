@@ -695,10 +695,32 @@ function renderizarGraficos(receitas, totalGastos, saídas, cartões, valorReser
     document.getElementById('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
 }
 
-function alternarVisibilidade() { 
-    saldosOcultos = !saldosOcultos; 
-}
+function alternarVisibilidade() {
+    saldosOcultos = !saldosOcultos;
 
+    const botao = document.querySelector('.app-header .icon-btn');
+
+    if (saldosOcultos) {
+        botao.innerText = '🔒';
+        document.querySelectorAll(
+            '#card-entradas, #card-saidas, #card-cartao, #card-reserva, #card-saldo, #previsao-valor'
+        ).forEach(el => {
+            if (!el.dataset.valorOriginal) {
+                el.dataset.valorOriginal = el.innerText;
+            }
+            el.innerText = '••••••';
+        });
+    } else {
+        botao.innerText = '🔓';
+        document.querySelectorAll(
+            '#card-entradas, #card-saidas, #card-cartao, #card-reserva, #card-saldo, #previsao-valor'
+        ).forEach(el => {
+            if (el.dataset.valorOriginal) {
+                el.innerText = el.dataset.valorOriginal;
+            }
+        });
+    }
+}
 function alternarTema() { 
     temaAtualIndex = (temaAtualIndex + 1) % temasDisponiveis.length; 
     document.body.className = temaAtualIndex === 0 ? '' : `theme-${temasDisponiveis[temaAtualIndex]}`; 
@@ -746,6 +768,15 @@ window.onload = () => {
 
     atualizarAplicativo(); 
 };
+    atualizarBeneficios();
+
+if (saldosOcultos) {
+    document.querySelectorAll(
+        '#card-entradas, #card-saidas, #card-cartao, #card-reserva, #card-saldo, #previsao-valor'
+    ).forEach(el => {
+        el.innerText = '••••••';
+    });
+}
 </script>
 </body>
 </html>
