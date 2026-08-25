@@ -737,8 +737,13 @@ function inicializarFiltrosHistorico() {
 
 window.onload = () => {
     inicializarFiltrosHistorico(); 
+
     const s = localStorage.getItem('saldo_transacoes'); 
     if (s) transacoes = JSON.parse(s); 
+
+    const b = localStorage.getItem('saldo_beneficios'); 
+    if (b) beneficios = JSON.parse(b);
+
     atualizarAplicativo(); 
 };
 </script>
