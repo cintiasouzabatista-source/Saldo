@@ -78,6 +78,14 @@
 .grid-meses-modal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-height: 300px; overflow-y: auto; margin-top: 10px; }
 .btn-mes-grid { padding: 10px; border-radius: var(--radius); border: 1px solid var(--borda); background: var(--bg-body); color: var(--texto-principal); font-size: 0.85rem; cursor: pointer; text-align: center; }
 .btn-mes-grid.ativo { background: var(--header-bg); color: var(--header-txt); border-color: transparent; font-weight: bold; }
+    .valor-oculto {
+        font-size: 0 !important;
+    }
+    .valor-oculto::after {
+        content: '••••••';
+        font-size: 1rem;
+        letter-spacing: 2px;
+    }
 </style>
 </head>
 <body>
@@ -460,6 +468,7 @@ function atualizarBeneficios() {
         document.getElementById(`recebido-${tipo}`).innerText=`R$ ${formatarMoeda(rec)}`;
         document.getElementById(`utilizado-${tipo}`).innerText=`R$ ${formatarMoeda(uso)}`;
     });
+    atualizarBloqueioValores();
     const filtro=document.getElementById('filtro-beneficio').value;
     const filtradas=lista.filter(b=>filtro==='todos'||b.tipo===filtro);
     const l=document.getElementById('lista-beneficios'); l.innerHTML='';
@@ -695,31 +704,29 @@ function renderizarGraficos(receitas, totalGastos, saídas, cartões, valorReser
     document.getElementById('grafico-pizza-elemento').style.background = `conic-gradient(var(--saida) 0% ${percGasto}%, var(--entrada) ${percGasto}% 100%)`;
 }
 
-function alternarVisibilidade() {
-    saldosOcultos = !saldosOcultos;
+function atualizarBloqueioValores() {
+    const idsValores = [
+        'card-entradas', 'card-saidas', 'card-cartao', 'card-reserva',
+        'card-saldo', 'previsao-valor',
+        'v-val-contas', 'v-val-cartoes', 'v-val-reserva',
+        'saldo-VR', 'recebido-VR', 'utilizado-VR',
+        'saldo-VA', 'recebido-VA', 'utilizado-VA',
+        'saldo-Combustível', 'recebido-Combustível', 'utilizado-Combustível',
+        'saldo-Outros', 'recebido-Outros', 'utilizado-Outros'
+    ];
+
+    idsValores.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('valor-oculto', saldosOcultos);
+    });
 
     const botao = document.querySelector('.app-header .icon-btn');
+    if (botao) botao.innerText = saldosOcultos ? '🔒' : '🔓';
+}
 
-    if (saldosOcultos) {
-        botao.innerText = '🔒';
-        document.querySelectorAll(
-            '#card-entradas, #card-saidas, #card-cartao, #card-reserva, #card-saldo, #previsao-valor'
-        ).forEach(el => {
-            if (!el.dataset.valorOriginal) {
-                el.dataset.valorOriginal = el.innerText;
-            }
-            el.innerText = '••••••';
-        });
-    } else {
-        botao.innerText = '🔓';
-        document.querySelectorAll(
-            '#card-entradas, #card-saidas, #card-cartao, #card-reserva, #card-saldo, #previsao-valor'
-        ).forEach(el => {
-            if (el.dataset.valorOriginal) {
-                el.innerText = el.dataset.valorOriginal;
-            }
-        });
-    }
+function alternarVisibilidade() {
+    saldosOcultos = !saldosOcultos;
+    atualizarBloqueioValores();
 }
 function alternarTema() { 
     temaAtualIndex = (temaAtualIndex + 1) % temasDisponiveis.length; 
@@ -768,15 +775,6 @@ window.onload = () => {
 
     atualizarAplicativo(); 
 };
-    atualizarBeneficios();
-
-if (saldosOcultos) {
-    document.querySelectorAll(
-        '#card-entradas, #card-saidas, #card-cartao, #card-reserva, #card-saldo, #previsao-valor'
-    ).forEach(el => {
-        el.innerText = '••••••';
-    });
-}
 </script>
 </body>
 </html>
