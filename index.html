@@ -118,7 +118,7 @@
     </div>
     <div class="chat-input-area">
         <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: salário 3500, gasolina 50 ou saldo +100">
-        <button class="btn-enviar" onclick="processarComando()">➔</button>
+        <button type="button" class="btn-enviar" id="btn-enviar-comando" onclick="enviarComando()">➔</button>
     </div>
 </div>
 
@@ -355,7 +355,23 @@ function selecionarMesAno(m, ano) {
     atualizarAplicativo();
 }
 
-document.getElementById('campo-texto').addEventListener('keypress', function(e) { if (e.key === 'Enter') processarComando(); });
+function enviarComando() {
+    const campo = document.getElementById('campo-texto');
+    if (!campo) return;
+    campo.blur();
+    processarComando();
+}
+
+const campoComando = document.getElementById('campo-texto');
+if (campoComando) {
+    campoComando.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            e.preventDefault();
+            e.stopPropagation();
+            enviarComando();
+        }
+    });
+}
 
 function detectarBeneficio(txt) {
     if (/\b(vr|vale refeição|vale-refeição)\b/.test(txt)) return 'VR';
@@ -816,9 +832,11 @@ function fecharModalAtual() {
 }
 
 const navegarParaBase = navegarPara;
+let navegacaoInterna = false;
+
 navegarPara = function(idAba) {
     const atual = historicoNavegacao[historicoNavegacao.length - 1];
-    if (atual !== idAba) {
+    if (!navegacaoInterna && atual !== idAba) {
         historicoNavegacao.push(idAba);
         history.pushState({ aba: idAba }, '', '#' + idAba);
     }
@@ -839,9 +857,16 @@ window.addEventListener('keydown', function(e) {
 
 window.addEventListener('popstate', function() {
     if (fecharModalAtual()) return;
+
     if (historicoNavegacao.length > 1) {
         historicoNavegacao.pop();
-        navegarParaBase(historicoNavegacao[historicoNavegacao.length - 1] || 'inicio');
+        const anterior = historicoNavegacao[historicoNavegacao.length - 1] || 'inicio';
+        navegacaoInterna = true;
+        navegarParaBase(anterior);
+        navegacaoInterna = false;
+    } else {
+        // Evita que um toque acidental volte para fora do aplicativo.
+        history.pushState({ aba: 'inicio' }, '', '#inicio');
     }
 });
 
