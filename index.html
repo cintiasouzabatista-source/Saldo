@@ -117,7 +117,7 @@
         </div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: salário 3500 ou gasolina 50">
+        <input type="text" id="campo-texto" class="chat-input" placeholder="Ex: salário 3500, gasolina 50 ou saldo +100">
         <button class="btn-enviar" onclick="processarComando()">➔</button>
     </div>
 </div>
@@ -139,7 +139,7 @@
             </div>
             <select id="filtro-tipo" class="filtro-select" onchange="atualizarAplicativo()">
                 <option value="todos">Todos os Tipos</option><option value="entrada">Entradas</option>
-                <option value="saida">Saídas</option><option value="cartao">Cartão</option><option value="reserva">Reserva</option>
+                <option value="saida">Saídas</option><option value="cartao">Cartão</option><option value="reserva">Reserva</option><option value="ajuste">Ajustes</option>
             </select>
             <div id="lista-transacoes-container"></div>
         </div>
@@ -224,6 +224,9 @@
     <div class="modal-container">
         <h3 id="texto-pergunta"></h3>
         <div id="botoes-pergunta"></div>
+        <div class="modal-botoes" style="margin-top:12px;">
+            <button class="btn-acao-modal btn-cancelar" onclick="cancelarPergunta()">Cancelar</button>
+        </div>
     </div>
 </div>
 
@@ -271,6 +274,7 @@
                 <option value="saida">Saída</option>
                 <option value="cartao">Cartão</option>
                 <option value="reserva">Reserva</option>
+                <option value="ajuste">Ajuste de saldo</option>
             </select>
         </div>
         <div class="form-grupo">
@@ -378,8 +382,16 @@ function processarComando() {
         return;
     }
 
+    // Saldo/Ajuste é uma conciliação, não uma saída.
+    // "saldo +100" aumenta R$100; "saldo -100" reduz R$100.
     let tipo = 'saida';
-    if (/\b(reserva|guardar)\b/.test(txt)) tipo = 'reserva';
+    const ehAjuste = /\b(saldo|ajuste|ajustar|acerto|acertar)\b/.test(txt);
+    const valorComSinal = txt.match(/(?:saldo|ajuste|ajustar|acerto|acertar)\s*([+-])\s*\d+[.,]?\d*/i);
+
+    if (ehAjuste) {
+        tipo = 'ajuste';
+        valor = valorComSinal && valorComSinal[1] === '-' ? -Math.abs(valor) : Math.abs(valor);
+    } else if (/\b(reserva|guardar)\b/.test(txt)) tipo = 'reserva';
     else if (/\b(cartao|cartão|credito)\b/.test(txt)) tipo = 'cartao';
     else if (/\b(recebi|ganhei|salario|salário|pix|deposito|depósito|renda)\b/.test(txt)) tipo = 'entrada';
 
@@ -392,6 +404,13 @@ function processarComando() {
     let desc = input.value.replace(num[0], '').replace(/\b\d{1,2}\s*x\b/gi, '').replace(/no|na|do|da/gi, '').trim() || "Lançamento";
     const novoId = Date.now();
     transacoes.unshift({ id: novoId, descricao: desc, valor: valor, tipo, conta, cartao, mes: mesAtualGlobal, ano: anoAtualGlobal, dia: new Date().getDate() });
+    if (tipo === 'ajuste') {
+        idPendente = novoId;
+        tipoPendente = tipo;
+        mostrarPerguntaConta(novoId, tipo);
+        input.value = '';
+        return;
+    }
     // Cartão sempre passa pelo fluxo de cartão -> parcelas. Se o cartão já foi informado no texto, pulamos apenas a pergunta do cartão.
     if(tipo === 'cartao') {
         idPendente = novoId; tipoPendente = tipo;
@@ -491,6 +510,7 @@ function mostrarPerguntaConta(id, tipo) {
     if(tipo === 'cartao'){ texto = "Em qual cartão foi essa compra?"; }
     else if(tipo === 'reserva'){ texto = "Transferir de qual conta pra Reserva?"; }
     else if(tipo === 'entrada'){ texto = "Em qual conta você recebeu?"; }
+    else if(tipo === 'ajuste'){ texto = "Em qual conta está esse saldo?"; }
     else { texto = "De qual conta saiu esse dinheiro?"; }
 
     document.getElementById('texto-pergunta').innerText = texto;
@@ -594,6 +614,7 @@ function atualizarAplicativo() {
         else if(t.tipo === 'saida') sai += t.valor;
         else if(t.tipo === 'cartao') car += t.valor;
         else if(t.tipo === 'reserva') res += t.valor;
+        else if(t.tipo === 'ajuste') ent += t.valor;
     });
     const saldo = ent - sai - car - res; const gastos = sai + car;
     document.getElementById('card-entradas').innerText = ent.toFixed(2);
@@ -623,12 +644,15 @@ function renderizarHistorico(listaTransacoes) {
     }
 
     filtradas.forEach(t => {
-        let cls = t.tipo === 'entrada' ? 'cor-entrada' : t.tipo === 'cartao' ? 'cor-cartao' : t.tipo === 'reserva' ? 'cor-reserva' : 'cor-saida';
+        let cls = t.tipo === 'entrada' ? 'cor-entrada' : t.tipo === 'cartao' ? 'cor-cartao' : t.tipo === 'reserva' ? 'cor-reserva' : t.tipo === 'ajuste' ? (t.valor >= 0 ? 'cor-entrada' : 'cor-saida') : 'cor-saida';
         let origem = t.cartao || t.conta || '';
         const parcelaInfo = t.totalParcelas > 1 ? ` · ${t.parcela}/${t.totalParcelas}` : '';
-        l.innerHTML += `<div class="item-transacao" style="cursor:pointer;" onclick="abrirModalEditar('${String(t.id).replace(/'/g, "\\'")}')">
-            <div class="linha-1"><span>${t.descricao}</span><span class="${cls}">${t.tipo === 'entrada' ? '+' : '-'} R$ ${t.valor.toFixed(2)}</span></div>
-            <div class="linha-2">${t.dia} ${nomesMeses[t.mes]}/${t.ano}${parcelaInfo} - ${origem}</div>
+        const sinal = t.tipo === 'entrada' ? '+' : t.tipo === 'ajuste' ? (t.valor >= 0 ? '+' : '-') : '-';
+        const valorExibicao = Math.abs(Number(t.valor) || 0);
+        const rotuloAjuste = t.tipo === 'ajuste' ? ' · Ajuste' : '';
+        l.innerHTML += `<div class="item-transacao" style="cursor:pointer;" onclick="abrirModalEditar('${String(t.id).replace(/'/g, "\'")}')">
+            <div class="linha-1"><span>${t.descricao}${rotuloAjuste}</span><span class="${cls}">${sinal} R$ ${valorExibicao.toFixed(2)}</span></div>
+            <div class="linha-2">${t.dia} ${nomesMeses[t.mes]}/${t.ano}${parcelaInfo}${origem ? ' - ' + origem : ''}</div>
         </div>`;
     });
 }
@@ -653,8 +677,9 @@ function salvarEdicaoModal() {
     const t = transacoes.find(i => i.id == id);
     if(t) {
         t.descricao = document.getElementById('edit-desc').value || "Lançamento";
-        t.valor = parseFloat(document.getElementById('edit-valor').value) || 0;
+        let valorEditado = parseFloat(document.getElementById('edit-valor').value) || 0;
         t.tipo = document.getElementById('edit-tipo').value;
+        t.valor = t.tipo === 'ajuste' ? valorEditado : Math.abs(valorEditado);
         const origemVal = document.getElementById('edit-origem').value;
         if(t.tipo === 'cartao') {
             t.cartao = origemVal;
@@ -755,6 +780,73 @@ function importarBackup(e) {
         salvarTudo(); salvarBeneficios(); 
     }; 
     r.readAsText(e.target.files[0]); 
+}
+
+
+// ===== RETORNO / ESC / BOTÃO VOLTAR =====
+let historicoNavegacao = ['inicio'];
+
+function modalAberto() {
+    return Array.from(document.querySelectorAll('.modal-overlay'))
+        .find(m => getComputedStyle(m).display !== 'none');
+}
+
+function cancelarPergunta() {
+    const id = idPendente;
+    if (id !== null) {
+        transacoes = transacoes.filter(i => i.id != id);
+        localStorage.setItem('saldo_transacoes', JSON.stringify(transacoes));
+    }
+    idPendente = null;
+    tipoPendente = null;
+    aguardandoParcelas = false;
+    document.getElementById('modal-pergunta').style.display = 'none';
+    atualizarAplicativo();
+}
+
+function fecharModalAtual() {
+    const modal = modalAberto();
+    if (!modal) return false;
+    if (modal.id === 'modal-pergunta') cancelarPergunta();
+    else if (modal.id === 'modal-seletor-mes') fecharModalSeletorMes();
+    else if (modal.id === 'modal-beneficio') fecharModalBeneficio();
+    else if (modal.id === 'modal-editar') fecharModalEditar();
+    else modal.style.display = 'none';
+    return true;
+}
+
+const navegarParaBase = navegarPara;
+navegarPara = function(idAba) {
+    const atual = historicoNavegacao[historicoNavegacao.length - 1];
+    if (atual !== idAba) {
+        historicoNavegacao.push(idAba);
+        history.pushState({ aba: idAba }, '', '#' + idAba);
+    }
+    navegarParaBase(idAba);
+};
+
+window.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    if (fecharModalAtual()) {
+        e.preventDefault();
+        return;
+    }
+    if (historicoNavegacao.length > 1) {
+        history.back();
+        e.preventDefault();
+    }
+});
+
+window.addEventListener('popstate', function() {
+    if (fecharModalAtual()) return;
+    if (historicoNavegacao.length > 1) {
+        historicoNavegacao.pop();
+        navegarParaBase(historicoNavegacao[historicoNavegacao.length - 1] || 'inicio');
+    }
+});
+
+if (!location.hash) {
+    history.replaceState({ aba: 'inicio' }, '', '#inicio');
 }
 
 function inicializarFiltrosHistorico() {
