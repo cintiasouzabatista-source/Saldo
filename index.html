@@ -210,12 +210,16 @@
 
 <div class="menu-rodape-wrapper">
     <div class="menu-rodape">
-        <button class="tab-item ativo" onclick="navegarPara('inicio')"><span>💬</span><span>Conversa</span></button>
-        <button class="tab-item" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
-        <button class="tab-item" onclick="navegarPara('beneficios')"><span>🎁</span><span>Benefícios</span></button>
-        <button class="tab-item" onclick="navegarPara('graficos')"><span>📊</span><span>Status</span></button>
-        <button class="tab-item" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
-    </div>
+    <button class="tab-item ativo" onclick="navegarPara('inicio')"><span>💬</span><span>Conversa</span></button>
+
+    <button class="tab-item" onclick="navegarPara('historico')"><span>📝</span><span>Histórico</span></button>
+
+    <button class="tab-item" onclick="navegarPara('graficos')"><span>📊</span><span>Status</span></button>
+
+    <button class="tab-item" onclick="navegarPara('beneficios')"><span>🎁</span><span>Benefícios</span></button>
+
+    <button class="tab-item" onclick="navegarPara('config')"><span>⚙️</span><span>Config</span></button>
+</div>
 </div>
 </div>
 
@@ -439,8 +443,15 @@ function processarComando() {
     input.value = '';
 }
 
-function salvarBeneficios() { localStorage.setItem('saldo_beneficios', JSON.stringify(beneficios)); atualizarBeneficios(); }
-function dataLancamento(x) { return new Date(Number(x.ano), Number(x.mes), Number(x.dia || 1)); }
+function salvarBeneficios() {
+    try {
+        localStorage.setItem('saldo_beneficios', JSON.stringify(beneficios));
+        atualizarBeneficios();
+    } catch (erro) {
+        console.error('Erro ao salvar benefícios:', erro);
+        alert('Não foi possível salvar os benefícios.');
+    }
+}function dataLancamento(x) { return new Date(Number(x.ano), Number(x.mes), Number(x.dia || 1)); }
 function periodoSelecionado(id) {
     const v = document.getElementById(id).value; if (!v) return null;
     const hoje = new Date(); hoje.setHours(0,0,0,0);
@@ -887,8 +898,22 @@ window.onload = () => {
     const s = localStorage.getItem('saldo_transacoes'); 
     if (s) transacoes = JSON.parse(s); 
 
-    const b = localStorage.getItem('saldo_beneficios'); 
-    if (b) beneficios = JSON.parse(b);
+   const b = localStorage.getItem('saldo_beneficios');
+
+if (b) {
+    try {
+        const dadosBeneficios = JSON.parse(b);
+
+        if (Array.isArray(dadosBeneficios)) {
+            beneficios = dadosBeneficios;
+        } else {
+            beneficios = [];
+        }
+    } catch (erro) {
+        console.error('Erro ao carregar benefícios:', erro);
+        beneficios = [];
+    }
+}
 
     atualizarAplicativo(); 
 };
